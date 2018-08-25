@@ -1,10 +1,10 @@
 {
   "name": "sardonyx",
+  "description": "mobile client for Sardonyx",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
     "eslint-plugin-react": "^7.11.1",
-    "eslint-plugin-react-native": "^3.2.1",
     "jest-expo": "~27.0.0",
     "react-native-scripts": "1.14.0",
     "react-test-renderer": "16.3.1"
@@ -23,6 +23,7 @@
   "dependencies": {
     "expo": "^27.0.1",
     "react": "16.3.1",
-    "react-native": "~0.55.2"
+    "react-native": "~0.55.2",
+    "react-native-svg": "^6.5.2"
   }
 }
