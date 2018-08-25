@@ -23,7 +23,7 @@ class Container extends React.Component {
       render: null
     };
 
-    fetch('https://sardonyx.glitch.me/api/web/validate')
+    fetch('https://sardonyx.glitch.me/api/validate')
       .then(response => {
         if (response.status === 401) {
         //validation failed
