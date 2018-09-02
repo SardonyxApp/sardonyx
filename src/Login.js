@@ -1,5 +1,10 @@
 import React from 'react';
-import { View, Text, Image, Linking } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  Linking
+} from 'react-native';
 import { styles } from './styles';
 
 export default class Login extends React.Component {
@@ -19,7 +24,7 @@ export default class Login extends React.Component {
         </Text>
       </View>
     );
-    
+
   }
 
 }
