@@ -1,5 +1,8 @@
 import React from 'react';
-import { Text, View, Linking } from 'react-native';
+import {
+  Text,
+  View
+} from 'react-native';
 import Login from './src/Login';
 import { styles } from './src/styles';
 
