@@ -47,7 +47,7 @@ class Container extends React.Component {
       })
       .catch(error => {
         this.setState({
-          render: <View style={styles.containerAlignChildrenCenter}><Text>There was an error while validating. Please retry. {error}</Text></View>
+          render: <Login error={'There was an error while validating. Please retry. ' + error} />
         });
       });
       
