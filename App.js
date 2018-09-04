@@ -1,64 +1,48 @@
-import React from 'react';
 import {
   Text,
   View
 } from 'react-native';
-import Login from './src/Login';
-import { styles } from './src/styles';
 
-class App extends React.Component {
+import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
-  render() {
+import HomeScreen from './src/screens/HomeScreen';
+import LoginCheckScreen from './src/screens/LoginCheckScreen';
+import LoginScreen from './src/screens/LoginScreen';
 
-    return (
-      <View style={styles.containerAlignChildrenCenter} >
-        <Text style={styles.h1}>This is the app!!</Text>
-      </View>
-    );
+// The Main app navigation stack.
+// Screens made later on (individual message screens, feed, or whatever) will be added here
+const AppStack = createStackNavigator(
+  {
+    Home: HomeScreen
+  },
+);
 
+// The login navigation stack
+// Login authentication is an entirely different process and should be treated with a different
+// navigation stack using a switchNavigator
+const LoginStack = createStackNavigator(
+  {
+    Login: LoginScreen
+  },
+  {
+    navigationOptions: {
+      header: null // Hide the default empty header bar
+    }
   }
+);
 
-}
-
-class Container extends React.Component {
-
-  constructor() {
-
-    super();
-    this.state = {
-      render: null
-    };
-
-    fetch('https://sardonyx.glitch.me/api/validate')
-      .then(response => {
-        if (response.status === 401) {
-        //validation failed
-          this.setState({
-            render: <Login error='Login failed, please try again.' />
-          });
-        }
-
-        else if (response.status === 200) {
-        //validation succeeded
-          this.setState({
-            render: <App />
-          });
-        }
-      })
-      .catch(error => {
-        this.setState({
-          render: <Login error={'There was an error while validating. Please retry. ' + error} />
-        });
-      });
-      
+// https://reactnavigation.org/docs/en/auth-flow.html
+// Switch navigators make sure the app nav stack and auth nav stack are two different things
+// and that you can't back-button into one another
+export default createSwitchNavigator(
+  {
+    // Make sure no names for screens overlap (e.g. LoginStack and Login), since they are unique
+    //  identifiers that can be navigated to from anywhere in the app
+    LoginCheck: LoginCheckScreen,
+    AppStack: AppStack, // navigators can contain navigators
+    LoginStack: LoginStack
+  },
+  {
+    initialRouteName: 'LoginCheck'
   }
-  
-  render() {
-
-    return this.state.render;
-
-  }
-
-}
-
-export default Container;
+);
