@@ -11,7 +11,7 @@
     "primaryColor": "#d17b46",
     "icon": "./src/logos/Icon.png",
     "androidStatusBar": {
-      "barStyle": "dark-content",
+      "barStyle": "light-content",
       "backgroundColor": "#d17b46"
     },
     "splash": {
