@@ -9,6 +9,12 @@ import { styles } from '../styles';
 
 export default class HomeScreen extends React.Component {
 
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'HomeScreen - Sardonyx',
+    };
+  };
+
   render() {
 
     return (

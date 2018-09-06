@@ -15,6 +15,17 @@ const AppStack = createStackNavigator(
   {
     Home: HomeScreen
   },
+  {
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: "#d17b46"
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "normal"
+      }
+    }
+  }
 );
 
 // The login navigation stack

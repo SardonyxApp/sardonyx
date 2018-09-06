@@ -1,7 +1,9 @@
 {
+  "name": "Sardonyx",
+  "displayName": "Sardonyx",
   "expo": {
-    "name": "sardonyx",
-    "description": "mobile client for Sardonyx",
+    "name": "Sardonyx",
+    "description": "A mobile client for Sardonyx",
     "slug": "sardonyx",
     "sdkVersion": "27.0.0",
     "version": "0.1.0",
@@ -10,12 +12,8 @@
     "orientation": "portrait",
     "primaryColor": "#d17b46",
     "icon": "./src/logos/Icon.png",
-    "androidStatusBar": {
-      "barStyle": "light-content",
-      "backgroundColor": "#d17b46"
-    },
     "splash": {
-      "backgroundColor": "#8c8c8b",
+      "backgroundColor": "#d8d8e0",
       "resizeMode": "contain",
       "image": "./src/logos/splash.png"
     }
