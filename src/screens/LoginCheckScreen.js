@@ -5,7 +5,7 @@ import {
   Text,
   StatusBar,
   ActivityIndicator,
-} from 'react-native'
+} from 'react-native';
 
 export default class LoginCheckScreen extends React.Component {
 
