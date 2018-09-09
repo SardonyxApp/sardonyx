@@ -13,7 +13,7 @@
     "primaryColor": "#d17b46",
     "icon": "./src/logos/Icon.png",
     "splash": {
-      "backgroundColor": "#d8d8e0",
+      "backgroundColor": "#eeeeee",
       "resizeMode": "contain",
       "image": "./src/logos/splash.png"
     }

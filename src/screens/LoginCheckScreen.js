@@ -11,10 +11,10 @@ export default class LoginCheckScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    this._checkAsync();
+    this.check();
   }
 
-  _checkAsync = async () => {
+  check() {
     // Check for existing session.
     // This is NOT authenticating credentials for the first time, it is simply checking if the user
     // was logged in last time and if so, continuing to the main App.

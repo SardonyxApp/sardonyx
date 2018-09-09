@@ -18,11 +18,11 @@ const AppStack = createStackNavigator(
   {
     navigationOptions: {
       headerStyle: {
-        backgroundColor: "#d17b46"
+        backgroundColor: '#d17b46'
       },
-      headerTintColor: "#fff",
+      headerTintColor: '#fff',
       headerTitleStyle: {
-        fontWeight: "normal"
+        fontWeight: 'normal'
       }
     }
   }

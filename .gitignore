@@ -1,10 +1,11 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
-
 # android studio
 .idea/
 
 # expo
 .expo/
+
+# visual studio 
+.vs/
 
 # dependencies
 /node_modules
