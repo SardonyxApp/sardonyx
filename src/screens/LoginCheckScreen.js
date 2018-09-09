@@ -29,18 +29,23 @@ export default class LoginCheckScreen extends React.Component {
           // 2. Parameters (errorMessage) doesn't propagate through Stacks unfortunately, so the
           //    screen itself has to be called.
           this.props.navigation.navigate('Login', {
-            errorMessage: 'Login check failed, please try again.',
+            errorMessage: 'Invalid login information, please try again.',
           });
         }
 
-        else if (response.status === 200) {
+        else if (response.status === 205) {
           //validation succeeded
           this.props.navigation.navigate('AppStack');
         }
+
+        // Other error code.
+        this.props.navigation.navigate('Login', {
+          errorMessage: 'Login check failed due to a network error.',
+        });
       })
       .catch(error => {
         this.props.navigation.navigate('Login', {
-          errorMessage: 'There was an error while validating. Please retry. ' + error,
+          errorMessage: 'There was an unknown error while validating. Please retry. ' + error,
         });
       });
 
