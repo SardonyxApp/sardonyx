@@ -33,7 +33,7 @@ export default class LoginCheckScreen extends React.Component {
           });
         }
 
-        else if (response.status === 205) {
+        else if (response.status === 200) {
           //validation succeeded
           this.props.navigation.navigate('AppStack');
         }
