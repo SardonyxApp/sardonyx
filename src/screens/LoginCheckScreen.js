@@ -14,7 +14,7 @@ export default class LoginCheckScreen extends React.Component {
     this._checkAsync();
   }
 
-  _checkAsync = async () => {
+  _checkAsync = () => {
     // Check for existing session.
     // This is NOT authenticating credentials for the first time, it is simply checking if the user
     // was logged in last time and if so, continuing to the main App.
@@ -38,10 +38,12 @@ export default class LoginCheckScreen extends React.Component {
           this.props.navigation.navigate('AppStack');
         }
 
-        // Other error code.
-        this.props.navigation.navigate('Login', {
-          errorMessage: 'Login check failed due to a network error.',
-        });
+        else {
+          // Other error code.
+          this.props.navigation.navigate('Login', {
+            errorMessage: 'Login check failed due to a network error.',
+          });
+        }
       })
       .catch(error => {
         this.props.navigation.navigate('Login', {
