@@ -3,16 +3,13 @@ import React from 'react';
 import {
   View,
   Text,
-  Image,
-  Linking
+  Image
 } from 'react-native';
 
 import { styles } from '../styles';
 
 export default class Login extends React.Component {
-
   render() {
-
     return (
       <View style={styles.containerAlignChildrenCenter}>
         <View style={styles.containerLightBackgroundBox}>
@@ -22,24 +19,18 @@ export default class Login extends React.Component {
           <ErrorMessage error={this.props.navigation.getParam('errorMessage', null)} />
         </View>
         <Text style={styles.p}>
-          Sardonyx is not affiliated, associated, authorized, endorsed by, or in any way officially connected with ManageBac, or any of its subsidiaries or its affiliates. The official ManageBac website can be found at <Text onPress={() => Linking.openURL('https://www.managebac.com')} style={styles.link}>https://www.managebac.com</Text>.
+          Sardonyx is not affiliated, associated, authorized, endorsed by, or in any way officially connected with ManageBac, or any of its subsidiaries or its affiliates.
         </Text>
       </View>
     );
-
   }
-
 }
 
 class ErrorMessage extends React.Component {
-
   render() {
-
     if (this.props.error) {
-      return <Text style={[styles.p, styles.textAlignCenter, styles.error]}>{this.props.error}</Text>
+      return <Text style={[styles.p, styles.textAlignCenter, styles.error]}>{this.props.error}</Text>;
     }
     return (null); // Shows nothing
-
   }
-
 }
