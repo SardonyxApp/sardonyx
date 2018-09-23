@@ -6,8 +6,6 @@ import {
   Image
 } from 'react-native';
 
-import { CheckBox } from 'react-native-elements';
-
 import { styles, preset } from '../styles';
 
 export default class Login extends React.Component {
