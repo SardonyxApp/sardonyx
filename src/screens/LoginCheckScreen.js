@@ -5,10 +5,12 @@ import {
   Text,
   StatusBar,
   ActivityIndicator,
+  Image
 } from 'react-native';
 
-export default class LoginCheckScreen extends React.Component {
+import { styles } from '../styles';
 
+export default class LoginCheckScreen extends React.Component {
   constructor(props) {
     super(props);
     this.check();
@@ -41,28 +43,26 @@ export default class LoginCheckScreen extends React.Component {
         else {
           // Other error code.
           this.props.navigation.navigate('Login', {
-            errorMessage: 'Login check failed due to a network error.',
+            errorMessage: 'Validation failed due to a network error.'
           });
         }
       })
       .catch(error => {
         this.props.navigation.navigate('Login', {
-          errorMessage: 'There was an unknown error while validating. Please retry. ' + error,
+          errorMessage: 'There was an error while validating. Please retry. ' + error
         });
       });
-
   }
 
   render() {
-    
     return (
-      <View>
+      <View style={styles.containerAlignChildrenCenter}>
+        <Image source={require('../logos/Icon.png')} style={styles.logoIcon} />
         <Text>Recovering session if it exists...</Text>
         <ActivityIndicator />
         <StatusBar hidden={true} />
       </View>
-    )
-    
+    );
   }
 
 }
