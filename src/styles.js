@@ -19,28 +19,42 @@ const colors = {
   'error': '#f44138'
 };
 
+/*modularized styles*/
 const styles = StyleSheet.create({
   //apply to any
-  error: {
-    color: colors.error
+  padding5: {
+    padding: 5
   },
+  padding10: {
+    padding: 10
+  },
+  padding20: {
+    padding:20
+  },
+
   //apply to View
-  containerAlignChildrenCenter: {
+  fullScreen: {
     height: '100%',
-    width: '100%',
+    width: '100%'
+  },
+  width90Percent: {
+    width: '90%'
+  },
+  alignChildrenCenter: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
   },
-  containerLightBackgroundBox: {
-    backgroundColor: colors.lightBackground,
-    borderRadius: 16,
-    width: '80%',
-    padding: 20,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
+  lightBackground: {
+    backgroundColor: colors.lightBackground
   },
+  transparentBackground: {
+    backgroundColor: 'transparent'
+  },
+  roundCorners: {
+    borderRadius: 16
+  },
+
   //apply to Text
   h1: {
     fontSize: 28,
@@ -48,19 +62,31 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   p: {
-    fontSize: 14
+    fontSize: 12
+  },
+  tiny: {
+    fontSize: 8
   },
   link: {
     color: colors.primary
   },
-  textAlignCenter: {
+  alignCenter: {
     textAlign: 'center'
   },
-  //apply to logo icon
+  error: {
+    color: colors.error
+  },
+
+  //apply to Image
   logoIcon: {
     height: 100,
     width: 100
   }
 });
 
-export { styles, colors };
+/*useful abstractions*/
+const preset = {
+  loginBox: [styles.alignChildrenCenter, styles.lightBackground, styles.padding20, styles.width90Percent, styles.roundCorners]
+};
+
+export { styles, colors, preset };

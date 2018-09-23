@@ -17,37 +17,40 @@ export default class LoginCheckScreen extends React.Component {
   }
 
   check() {
-    // Check for existing session.
-    // This is NOT authenticating credentials for the first time, it is simply checking if the user
-    // was logged in last time and if so, continuing to the main App.
+    /*
+    Check for existing session
+    NOT for authenticating creditials for the first time.
+    */
 
     fetch('https://sardonyx.glitch.me/api/validate')
       .then(response => {
         if (response.status === 401) {
-          //validation failed
-          // Navigate directly to the Login screen instead of the LoginStack, because 
-          // 1. We want to ensure the user is lead to the login page, in case any other screens are
-          //    added into LoginStack, and the default is changed
-          // 2. Parameters (errorMessage) doesn't propagate through Stacks unfortunately, so the
-          //    screen itself has to be called.
+          /* 
+          Validation failed: unauthorized
+          Produce no error message because this is initial login
+          Navigate directly to LoginScreen instead of LoginStack, because
+          1. User should be led to LoginPage instead of default page of LoginStack
+          2. errorMessage doesn't propagate through stacks
+          */
           this.props.navigation.navigate('Login', {
-            errorMessage: 'Invalid login information, please try again.',
+            errorMessage: null
           });
         }
 
         else if (response.status === 200) {
-          //validation succeeded
+          // validation succeeded
           this.props.navigation.navigate('AppStack');
         }
 
         else {
-          // Other error code.
+          // other error code
           this.props.navigation.navigate('Login', {
             errorMessage: 'Validation failed due to a network error.'
           });
         }
       })
       .catch(error => {
+        // promise rejected
         this.props.navigation.navigate('Login', {
           errorMessage: 'There was an error while validating. Please retry. ' + error
         });
@@ -56,7 +59,7 @@ export default class LoginCheckScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.containerAlignChildrenCenter}>
+      <View style={[styles.alignChildrenCenter, styles.fullScreen]}>
         <Image source={require('../logos/Icon.png')} style={styles.logoIcon} />
         <Text>Recovering session if it exists...</Text>
         <ActivityIndicator />
