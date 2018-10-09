@@ -3,16 +3,16 @@ import React from 'react';
 import {
   View,
   Text,
-  Image
+  Image,
+  ScrollView,
+  TextInput,
 } from 'react-native';
 
-<<<<<<< HEAD
-import { CheckBox } from 'react-native-elements';
+import {
+  CheckBox
+} from 'react-native-elements';
 
 import { styles, colors, preset } from '../styles';
-=======
-import { styles, preset } from '../styles';
->>>>>>> 50ff87bb6a0d7a12092ffc8cc011c918ed5a0fc3
 
 export default class Login extends React.Component {
   render() {
@@ -37,12 +37,40 @@ class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      username: '',
+      password: '',
       agree: false
     };
   }
+
+  //Will handle this mess later...
   render() {
     return (
-      <View>
+      <View style={{ flexDirection: 'column' }}>
+        <Text style={[styles.hidden, styles.alignCenter, styles.error]}>Your username or password is incorrect.</Text>
+        <TextInput 
+          placeholder="Username"
+          value={this.state.username}
+          style={preset.inputLine}
+          textContentType="username"
+          keyboardType="email-address"
+          onChangeText={text => this.setState({
+            username: text
+          })}
+        />
+        <Text style={[styles.hidden, styles.error]}>Please enter a username.</Text>
+        <TextInput
+          placeholder="Password"
+          value={this.state.password}
+          style={preset.inputLine}
+          textContentType="password"
+          keyboardType="default"
+          secureTextEntry={true}
+          onChangeText={text => this.setState({
+            password: text 
+          })}
+        />
+        <Text style={[styles.hidden, styles.error]}>Please enter a password.</Text>
         <CheckBox 
           title="I agree to the Terms of Service and Privacy Policy"
           checked={this.state.agree}

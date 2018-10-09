@@ -31,6 +31,9 @@ const styles = StyleSheet.create({
   padding20: {
     padding:20
   },
+  hidden: {
+    display: 'none'
+  },
 
   //apply to View
   fullScreen: {
@@ -92,7 +95,8 @@ const styles = StyleSheet.create({
 
 /*useful abstractions*/
 const preset = {
-  loginBox: [styles.alignChildrenCenter, styles.lightBackground, styles.padding20, styles.width90Percent, styles.roundCorners]
+  loginBox: [styles.alignChildrenCenter, styles.lightBackground, styles.padding20, styles.width90Percent, styles.roundCorners],
+  inputLine: [styles.padding10]
 };
 
 export { styles, colors, preset };
