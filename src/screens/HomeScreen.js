@@ -11,7 +11,7 @@ export default class HomeScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'HomeScreen - Sardonyx',
+      title: 'Home - Sardonyx',
     };
   };
 

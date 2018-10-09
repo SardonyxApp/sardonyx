@@ -6,9 +6,13 @@ import {
   Image
 } from 'react-native';
 
+<<<<<<< HEAD
 import { CheckBox } from 'react-native-elements';
 
 import { styles, colors, preset } from '../styles';
+=======
+import { styles, preset } from '../styles';
+>>>>>>> 50ff87bb6a0d7a12092ffc8cc011c918ed5a0fc3
 
 export default class Login extends React.Component {
   render() {
