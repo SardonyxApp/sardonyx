@@ -73,6 +73,12 @@ const styles = StyleSheet.create({
   alignCenter: {
     textAlign: 'center'
   },
+  light: {
+    fontWeight: '100'
+  },
+  regular: {
+    fontWeight: '400'
+  },
   error: {
     color: colors.error
   },
