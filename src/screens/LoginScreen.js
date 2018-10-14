@@ -43,6 +43,9 @@ class LoginForm extends React.Component {
       username: '',
       password: '',
       agree: false,
+      usernameError: false,
+      passwordError: false,
+      agreeError: false,
       disabled: false
     };
 
@@ -50,8 +53,34 @@ class LoginForm extends React.Component {
   }
 
   handleSubmit() {
-    this.setState({
-      disabled: true
+    this.validateForm().then(response => {
+      if (response) return;
+      else {
+        this.setState({
+          disabled: true
+        });
+      }
+    });
+  }
+
+  validateForm() {
+    //regex to match email address
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+    //returning a promise because setState does not get immediately reflected
+    return new Promise(resolve => {
+      //raise error if username is not a valid email address
+      //raise error if password is empty
+      //raise error if checkbox is empty
+      this.setState({
+        usernameError: !emailRegex.test(this.state.username),
+        passwordError: this.state.password.length < 1,
+        agreeError: !this.state.agree
+      }, () => {
+        //if there is either error, return false to reject request
+        //if there are no errors, return true to accept request
+        resolve(this.state.usernameError || this.state.passwordError || this.state.agreeError);
+      });
     });
   }
 
@@ -69,7 +98,9 @@ class LoginForm extends React.Component {
             username: text
           })}
         />
-        <Text style={[styles.hidden, styles.error]}>Please enter a username.</Text>
+        <Text style={[styles.error, styles.alignCenter, this.state.usernameError ? {} : styles.hidden]}>
+          Please enter a valid email address.
+        </Text>
 
         <TextInput
           placeholder="Password"
@@ -82,7 +113,9 @@ class LoginForm extends React.Component {
             password: text 
           })}
         />
-        <Text style={[styles.hidden, styles.error]}>Please enter a password.</Text>
+        <Text style={[styles.error, styles.alignCenter, this.state.passwordError ? {} : styles.hidden]}>
+          Please enter a password.
+        </Text>
 
         <CheckBox 
           title="I agree to the Terms of Service and Privacy Policy"
@@ -91,17 +124,21 @@ class LoginForm extends React.Component {
           uncheckedColor={colors.black}
           checkedIcon="check-square"
           uncheckedIcon="square-o"
-          containerStyle={styles.transparentBackground}
+          containerStyle={[styles.transparentBackground, {paddingBottom: 0}]}
           onPress={() => this.setState({
             agree: !this.state.agree
           })}
           textstyle={/*[styles.regular, styles.p]*/ styles.link}
         />
+        <Text style={[styles.error, styles.alignCenter, this.state.agreeError ? {} : styles.hidden]}>
+          Please agree to the Conditions.
+        </Text>
 
         <Button
           title="Sign in"
           backgroundColor={colors.primary}
           onPress={this.handleSubmit}
+          containerViewStyle={styles.padding10}
           disabled={this.state.disabled}
           disabledStyle={{ backgroundColor: colors.lightPrimary }}
         />
