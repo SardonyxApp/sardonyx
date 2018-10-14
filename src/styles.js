@@ -16,7 +16,9 @@ const colors = {
   'darkBackground': '#8c8c8b',
   'lightBackground': '#eee',
   'white': '#fff',
-  'error': '#f44138'
+  'error': '#f44138',
+
+  'lightPrimary': '#eda67b'
 };
 
 /*modularized styles*/
