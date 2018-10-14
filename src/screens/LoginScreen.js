@@ -17,6 +17,9 @@ import {
 
 import { styles, colors, preset } from '../styles';
 
+const forge = require('node-forge');
+//using node-forge since the native module is broken here
+
 export default class Login extends React.Component {
   render() {
     return (
@@ -82,6 +85,10 @@ class LoginForm extends React.Component {
         resolve(this.state.usernameError || this.state.passwordError || this.state.agreeError);
       });
     });
+  }
+
+  encryptForm() {
+    //encrypt form
   }
 
   render() {
