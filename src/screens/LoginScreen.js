@@ -4,8 +4,9 @@ import {
   View,
   Text,
   Image,
-  ScrollView,
   TextInput,
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native';
 
 import {
@@ -17,18 +18,18 @@ import { styles, colors, preset } from '../styles';
 export default class Login extends React.Component {
   render() {
     return (
-      <View style={[styles.alignChildrenCenter, styles.fullScreen]}>
-        <View style={preset.loginBox}>
-          <Image source={require('../logos/Icon.png')} style={styles.logoIcon} />
-          <Text style={[styles.h1, styles.alignCenter]}>Welcome</Text>
-          <Text style={[styles.p, styles.alignCenter]}>Login with ManageBac</Text>
-          <LoginForm />
-          <ErrorMessage error={this.props.navigation.getParam('errorMessage', null)} />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={[styles.alignChildrenCenter, styles.fullScreen]}>
+          <View style={preset.loginBox}>
+            <Image source={require('../logos/Icon.png')} style={styles.logoIcon} />
+            <Text style={[styles.h1, styles.alignCenter]}>Welcome</Text>
+            <Text style={[styles.p, styles.alignCenter]}>Login with ManageBac</Text>
+            <LoginForm />
+            <ErrorMessage error={this.props.navigation.getParam('errorMessage', null)} />
+          </View>
+          <DisclaimerMessage />
         </View>
-        <Text style={[styles.tiny, styles.alignCenter, styles.padding5]}>
-          Sardonyx is not affiliated, associated, authorized, endorsed by, or in any way officially connected with ManageBac, or any of its subsidiaries or its affiliates.
-        </Text>
-      </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -43,7 +44,6 @@ class LoginForm extends React.Component {
     };
   }
 
-  //Will handle this mess later...
   render() {
     return (
       <View style={{ flexDirection: 'column' }}>
@@ -89,11 +89,17 @@ class LoginForm extends React.Component {
   }
 }
 
-class ErrorMessage extends React.Component {
-  render() {
-    if (this.props.error) {
-      return <Text style={[styles.p, styles.alignCenter, styles.error]}>{this.props.error}</Text>;
-    }
-    return (null); // Shows nothing
+function DisclaimerMessage() {
+  return (
+    <Text style={[styles.tiny, styles.alignCenter, styles.padding5]}>
+      Sardonyx is not affiliated, associated, authorized, endorsed by, or in any way officially connected with ManageBac, or any of its subsidiaries or its affiliates.
+    </Text>
+  );
+}
+
+function ErrorMessage(props) {
+  if (props.error) {
+    return <Text style={[styles.p, styles.alignCenter, styles.error]}>{props.error}</Text>;
   }
+  return null;
 }
