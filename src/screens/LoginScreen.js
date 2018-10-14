@@ -5,12 +5,14 @@ import {
   Text,
   Image,
   TextInput,
+  KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard
 } from 'react-native';
 
 import {
-  CheckBox
+  CheckBox,
+  Button
 } from 'react-native-elements';
 
 import { styles, colors, preset } from '../styles';
@@ -19,7 +21,7 @@ export default class Login extends React.Component {
   render() {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.alignChildrenCenter, styles.fullScreen]}>
+        <KeyboardAvoidingView style={[styles.alignChildrenCenter, styles.fullScreen]}>
           <View style={preset.loginBox}>
             <Image source={require('../logos/Icon.png')} style={styles.logoIcon} />
             <Text style={[styles.h1, styles.alignCenter]}>Welcome</Text>
@@ -28,7 +30,7 @@ export default class Login extends React.Component {
             <ErrorMessage error={this.props.navigation.getParam('errorMessage', null)} />
           </View>
           <DisclaimerMessage />
-        </View>
+        </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     );
   }
@@ -40,14 +42,23 @@ class LoginForm extends React.Component {
     this.state = {
       username: '',
       password: '',
-      agree: false
+      agree: false,
+      disabled: false
     };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit() {
+    this.setState({
+      disabled: true
+    });
   }
 
   render() {
     return (
       <View style={{ flexDirection: 'column' }}>
-        <Text style={[styles.hidden, styles.alignCenter, styles.error]}>Your username or password is incorrect.</Text>
+
         <TextInput 
           placeholder="Username"
           value={this.state.username}
@@ -59,6 +70,7 @@ class LoginForm extends React.Component {
           })}
         />
         <Text style={[styles.hidden, styles.error]}>Please enter a username.</Text>
+
         <TextInput
           placeholder="Password"
           value={this.state.password}
@@ -71,6 +83,7 @@ class LoginForm extends React.Component {
           })}
         />
         <Text style={[styles.hidden, styles.error]}>Please enter a password.</Text>
+
         <CheckBox 
           title="I agree to the Terms of Service and Privacy Policy"
           checked={this.state.agree}
@@ -82,8 +95,17 @@ class LoginForm extends React.Component {
           onPress={() => this.setState({
             agree: !this.state.agree
           })}
-          textstyle={[styles.regular, styles.p]}
+          textstyle={/*[styles.regular, styles.p]*/ styles.link}
         />
+
+        <Button
+          title="Sign in"
+          backgroundColor={colors.primary}
+          onPress={this.handleSubmit}
+          disabled={this.state.disabled}
+          disabledStyle={{ backgroundColor: colors.lightPrimary }}
+        />
+        
       </View>
     );
   }
