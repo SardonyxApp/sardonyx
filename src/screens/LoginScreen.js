@@ -26,7 +26,7 @@ export default class Login extends React.Component {
             <Image source={require('../logos/Icon.png')} style={styles.logoIcon} />
             <Text style={[styles.h1, styles.alignCenter]}>Welcome</Text>
             <Text style={[styles.p, styles.alignCenter]}>Login with ManageBac</Text>
-            <LoginForm />
+            <LoginForm navigation={this.props.navigation} />
             <ErrorMessage error={this.props.navigation.getParam('errorMessage', null)} />
           </View>
           <DisclaimerMessage />
@@ -57,8 +57,10 @@ class LoginForm extends React.Component {
       if (response) return;
       else {
         this.setState({
-          disabled: true
+        //  disabled: true //disabled temporarily
         });
+
+        this.sendForm();
       }
     });
   }
@@ -80,6 +82,38 @@ class LoginForm extends React.Component {
         //if there is either error, return false to reject request
         //if there are no errors, return true to accept request
         resolve(this.state.usernameError || this.state.passwordError || this.state.agreeError);
+      });
+    });
+  }
+
+  sendForm() {
+    fetch('https://sardonyx.glitch.me/api/random', { //url is glitch for now
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'applicataion/json'
+      },
+      body: JSON.stringify({
+        'session_login': this.state.username,
+        'session_password': this.state.password
+      }), // this body cannot be read yet...
+      mode: 'no-cors',
+      cache: 'no-store' //do not cache new login requests...
+    }).then(response => {
+      console.log(response);
+      if (response.status === 200) this.props.navigation.navigate('AppStack');
+      else if (response.status === 401) this.props.navigation.navigate('Login', {
+        errorMessage: 'Your username and password did not match.'
+      });
+      else if (response.status === 404) this.props.navigation.navigate('Login', {
+        errorMessage: 'Validation failed due to a network error.'
+      });
+      else this.props.navigation.navigate('Login', {
+        errorMessage: 'Validation failed for an unknown error. Error code: ' + response.status
+      });
+    }).catch(error => {
+      this.props.navigation.navigate('Login', {
+        errorMessage: 'There was an error while validating. Please retry. ' + error
       });
     });
   }
