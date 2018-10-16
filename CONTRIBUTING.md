@@ -53,7 +53,7 @@ When ready, do one of the following:
 ## Testing
 Jest is included with Expo for testing.
 ```
-$ jest
+$ npm run test
 ```
 
 ## Production
@@ -91,11 +91,12 @@ Install dependencies.
 ```
 $ npm install
 ```
-Make a .env file. (`touch` command only available on Bash: on windows, just create file from a text editor)
+Make and edit a .env file. (`touch` and `vi` command only available on Bash: on windows, just use a text editor)
 ```
 $ touch .env
+$ vi .env
 ```
-Define `PORT`.
+Define `PORT` as appropriate.
 ```
 PORT=8080
 ```
