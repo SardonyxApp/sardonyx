@@ -41,6 +41,10 @@ module.exports = {
     "no-console": [
       "off"
       /* We are not in production mode */
+    ],
+    "no-control-regex": [
+      "off"
+      /* Because this raises an error for the email regex */
     ]
   }
 };

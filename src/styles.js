@@ -16,7 +16,9 @@ const colors = {
   'darkBackground': '#8c8c8b',
   'lightBackground': '#eee',
   'white': '#fff',
-  'error': '#f44138'
+  'error': '#f44138',
+
+  'lightPrimary': '#eda67b'
 };
 
 /*modularized styles*/
@@ -30,6 +32,9 @@ const styles = StyleSheet.create({
   },
   padding20: {
     padding:20
+  },
+  hidden: {
+    display: 'none'
   },
 
   //apply to View
@@ -64,6 +69,9 @@ const styles = StyleSheet.create({
   p: {
     fontSize: 12
   },
+  small: {
+    fontSize: 10
+  },
   tiny: {
     fontSize: 8
   },
@@ -72,6 +80,12 @@ const styles = StyleSheet.create({
   },
   alignCenter: {
     textAlign: 'center'
+  },
+  light: {
+    fontWeight: '100'
+  },
+  regular: {
+    fontWeight: '400'
   },
   error: {
     color: colors.error
@@ -86,7 +100,8 @@ const styles = StyleSheet.create({
 
 /*useful abstractions*/
 const preset = {
-  loginBox: [styles.alignChildrenCenter, styles.lightBackground, styles.padding20, styles.width90Percent, styles.roundCorners]
+  loginBox: [styles.alignChildrenCenter, styles.lightBackground, styles.padding20, styles.width90Percent, styles.roundCorners],
+  inputLine: [styles.padding10]
 };
 
 export { styles, colors, preset };

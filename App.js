@@ -1,8 +1,3 @@
-import {
-  Text,
-  View
-} from 'react-native';
-
 import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
 import HomeScreen from './src/screens/HomeScreen';
