@@ -24,7 +24,7 @@ export default class Login extends React.Component {
         <KeyboardAvoidingView style={[styles.alignChildrenCenter, styles.fullScreen]}>
           <View style={preset.loginBox}>
             <Image source={require('../logos/Icon.png')} style={styles.logoIcon} />
-            <Text style={[styles.h1, styles.alignCenter]}>Welcome</Text>
+            <Text style={[styles.h1, styles.alignCenter]}>Sardonyx</Text>
             <Text style={[styles.p, styles.alignCenter]}>Login with ManageBac</Text>
             <LoginForm navigation={this.props.navigation} />
             <ErrorMessage error={this.props.navigation.getParam('errorMessage', null)} />
@@ -184,7 +184,7 @@ class LoginForm extends React.Component {
 
 function DisclaimerMessage() {
   return (
-    <Text style={[styles.tiny, styles.alignCenter, styles.padding5]}>
+    <Text style={[styles.small, styles.alignCenter, styles.padding5]}>
       Sardonyx is not affiliated, associated, authorized, endorsed by, or in any way officially connected with ManageBac, or any of its subsidiaries or its affiliates.
     </Text>
   );

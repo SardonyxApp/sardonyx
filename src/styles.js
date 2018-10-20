@@ -69,6 +69,9 @@ const styles = StyleSheet.create({
   p: {
     fontSize: 12
   },
+  small: {
+    fontSize: 10
+  },
   tiny: {
     fontSize: 8
   },
