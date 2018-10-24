@@ -87,18 +87,18 @@ class LoginForm extends React.Component {
   }
 
   sendForm() {
-    fetch('https://sardonyx.glitch.me/api/random', { //url is glitch for now
+    const formData = new FormData();
+    formData.append('login', this.state.username);
+    formData.append('password', this.state.password);
+    formData.append('remember_me', '1');
+
+    fetch('https://sardonyx.glitch.me/api/login', { //url is glitch for now
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'applicataion/json'
+        'Content-Type': 'multipart/form-data'
       },
-      body: JSON.stringify({
-        'session_login': this.state.username,
-        'session_password': this.state.password
-      }), // this body cannot be read yet...
+      body: formData,
       mode: 'no-cors',
-      cache: 'no-store' //do not cache new login requests...
     }).then(response => {
       console.log(response);
       if (response.status === 200) this.props.navigation.navigate('AppStack');
