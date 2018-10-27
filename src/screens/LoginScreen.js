@@ -139,9 +139,15 @@ class LoginForm extends React.Component {
           style={preset.inputLine}
           textContentType="username"
           keyboardType="email-address"
+          returnKeyType="next"
+          autoCapitalize="none"
           onChangeText={text => this.setState({
             username: text
           })}
+          onSubmitEditing={() => {
+            this.passwordInput.focus();
+          }}
+          blurOnSubmit={false}
         />
         <Text style={[styles.error, styles.alignCenter, this.state.usernameError ? {} : styles.hidden]}>
           Please enter a valid email address.
@@ -149,10 +155,15 @@ class LoginForm extends React.Component {
 
         <TextInput
           placeholder="Password"
+          ref={input => {
+            this.passwordInput = input;
+          }}
           value={this.state.password}
           style={preset.inputLine}
           textContentType="password"
           keyboardType="default"
+          returnKeyType="done"
+          autoCapitalize="none"
           secureTextEntry={true}
           onChangeText={text => this.setState({
             password: text 
