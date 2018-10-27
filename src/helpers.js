@@ -37,7 +37,7 @@ export const RetrieveManagebacTokens = async () => {
 /**
  * @description Retreive Managebac tokens, login, and password from SecureStore
  * @returns {Promise}
- * @example RetrieveManagebacToken().then(token => console.log(token));
+ * @example RetrieveManagebacCredentials().then(credentials => console.log(credentials));
  */
 export const RetrieveManagebacCredentials = async () => {
   return Promise.all([
@@ -73,7 +73,7 @@ export const RetrieveValue = async (key) => {
  * @description Write Managebac login and password to SecureStore 
  * @param {Object} tokens 
  * @returns {Promise}
- * @example WriteManagebacCredentials().then(() => console.log('done')).catch(err => console.error(err));
+ * @example WriteManagebacTokens().then(() => console.log('done')).catch(err => console.error(err));
  * Must catch error in the case of invalid tokens
  */
 export const WriteManagebacTokens = async (tokens) => {
