@@ -8,33 +8,26 @@ import {
   Image
 } from 'react-native';
 
-import { SecureStore } from 'expo';
-
+import { RetrieveManagebacCredentials } from '../helpers';
 import { styles } from '../styles';
 
 export default class LoginCheckScreen extends React.Component {
   constructor(props) {
     super(props);
-    SecureStore.getItemAsync('credentials').then(credentials => {
-      //null is passed if the key does not exist
-      console.log(credentials);
+    RetrieveManagebacCredentials().then(credentials => {
       this.check(credentials);
-    }).catch(error => {
-      console.warn('An error occurred while retrieving credentials.' + error);
+    }).catch(err => {
+      console.warn(err);
       this.check();
     });
   }
 
-  check(token = null) {
-    /*
-    Check for existing session
-    NOT for authenticating creditials for the first time.
-    */
-
+  check(credentials = '{}') {
+    //check for existing session
     fetch('https://sardonyx.app/api/validate', {
       method: 'GET',
       headers: {
-        'Login-Token': token
+        'Login-Token': credentials
       },
       mode: 'no-cors'
     }).then(response => {

@@ -15,8 +15,7 @@ import {
   Button
 } from 'react-native-elements';
 
-import { SecureStore } from 'expo';
-
+import { WriteManagebacCredentials} from '../helpers';
 import { styles, colors, preset } from '../styles';
 
 export default class Login extends React.Component {
@@ -106,12 +105,8 @@ class LoginForm extends React.Component {
     }).then(response => {
       if (response.status === 200) {
         //store response tokens
-        const token = JSON.parse(response.headers.map['login-token']);
-        Promise.all([
-          SecureStore.setItemAsync('credentials', JSON.stringify(token.credentials)),
-          SecureStore.setItemAsync('cfdiud', token.cfdiud),
-          SecureStore.setItemAsync('managebacSession', token.managebacSession)
-        ]).then(() => {
+        const credentials = JSON.parse(response.headers.map['login-token']);
+        WriteManagebacCredentials(credentials).then(() => {
           this.toggleButton();
           this.props.navigation.navigate('AppStack');
         }).catch(error => {

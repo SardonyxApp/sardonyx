@@ -1,6 +1,6 @@
 /**
  * @fileoverview stores necessary styles and colors
- * @author Natsu Ozawa, Yuto Takano
+ * @author SardonyxApp
  * @license MIT
  * @example import { styles, colors } from './src/styles.js';
  */
