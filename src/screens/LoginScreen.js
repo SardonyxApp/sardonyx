@@ -144,9 +144,7 @@ class LoginForm extends React.Component {
           onChangeText={text => this.setState({
             username: text
           })}
-          onSubmitEditing={() => {
-            this.passwordInput.focus();
-          }}
+          onSubmitEditing={() => this.passwordInput.focus()}
           blurOnSubmit={false}
         />
         <Text style={[styles.error, styles.alignCenter, this.state.usernameError ? {} : styles.hidden]}>
