@@ -8,7 +8,7 @@ import {
   Image
 } from 'react-native';
 
-import { RetrieveManagebacCredentials } from '../helpers';
+import { RetrieveManagebacCredentials, WriteManagebacCredentials } from '../helpers';
 import { styles } from '../styles';
 
 export default class LoginCheckScreen extends React.Component {
@@ -45,21 +45,31 @@ export default class LoginCheckScreen extends React.Component {
         }
 
         else if (response.status === 200) {
-          // validation succeeded
-          this.props.navigation.navigate('AppStack');
+          //validation succeeded
+          const credentials = JSON.parse(response.headers.map['login-token'] || '{}');
+          WriteManagebacCredentials(credentials).then(() => {
+            this.props.navigation.navigate('AppStack');
+          });
+        }
+
+        else if (response.status === 404) {
+          //network error
+          this.props.navigation.navigate('Login', {
+            errorMessage: 'Validation failed due to a network error.'
+          });
         }
 
         else {
-          // other error code
+          //other error code
           this.props.navigation.navigate('Login', {
-            errorMessage: 'Validation failed due to a network error.'
+            errorMessage: 'Validation failed due to an unkown error. Error code: ' + response.status
           });
         }
       })
       .catch(error => {
         // promise rejected
         this.props.navigation.navigate('Login', {
-          errorMessage: 'There was an error while validating. Please retry. ' + error
+          errorMessage: 'There was an error while validating.' + error
         });
       });
   }

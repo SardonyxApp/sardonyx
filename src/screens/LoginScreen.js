@@ -105,20 +105,20 @@ class LoginForm extends React.Component {
     }).then(response => {
       if (response.status === 200) {
         //store response tokens
-        const credentials = JSON.parse(response.headers.map['login-token']);
+        const credentials = JSON.parse(response.headers.map['login-token'] || '{}');
         WriteManagebacCredentials(credentials).then(() => {
           this.toggleButton();
           this.props.navigation.navigate('AppStack');
         }).catch(error => {
           this.toggleButton();
           this.props.navigation.navigate('Login', {
-            errorMessage: 'There was an error while validating. Please retry. ' + error
+            errorMessage: 'There was an error while storing login. ' + error
           });
         });
       } else {
         this.toggleButton();
         if (response.status === 401) this.props.navigation.navigate('Login', {
-          errorMessage: 'Your username and password did not match.'
+          errorMessage: 'Your username and password did not match. Please retry.'
         });
         else if (response.status === 404) this.props.navigation.navigate('Login', {
           errorMessage: 'Validation failed due to a network error.'
@@ -130,7 +130,7 @@ class LoginForm extends React.Component {
     }).catch(error => {
       this.toggleButton();
       this.props.navigation.navigate('Login', {
-        errorMessage: 'There was an error while validating. Please retry. ' + error
+        errorMessage: 'There was an error while processing your login. Please retry. ' + error
       });
     });
   }

@@ -84,7 +84,7 @@ export const WriteManagebacTokens = async (tokens) => {
     ]);
   }
   return new Promise((resolve, reject) => {
-    reject(new Error('Invalid tokens'));
+    reject(new Error('Invalid server response.'));
   });
 };
 
@@ -99,13 +99,13 @@ export const WriteManagebacCredentials = async (credentials) => {
   if (credentials.cfdiud && credentials.managebacSession && credentials.login && credentials.password) {
     return Promise.all([
       SecureStore.setItemAsync('cfdiud', credentials.cfdiud),
-      SecureStore.setItemAsync('managebacSession', credentials.cfdiud),
+      SecureStore.setItemAsync('managebacSession', credentials.managebacSession),
       SecureStore.setItemAsync('login', credentials.login),
       SecureStore.setItemAsync('password', credentials.password)
     ]);
   }
   return new Promise((resolve, reject) => {
-    reject(new Error('Invalid credentials'));
+    reject(new Error('Invalid server response.'));
   });
 };
 
