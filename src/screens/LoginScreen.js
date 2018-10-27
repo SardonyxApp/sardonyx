@@ -15,6 +15,8 @@ import {
   Button
 } from 'react-native-elements';
 
+import { SecureStore } from 'expo';
+
 import { styles, colors, preset } from '../styles';
 
 export default class Login extends React.Component {
@@ -71,16 +73,13 @@ class LoginForm extends React.Component {
 
     //returning a promise because setState does not get immediately reflected
     return new Promise(resolve => {
-      //raise error if username is not a valid email address
-      //raise error if password is empty
-      //raise error if checkbox is empty
+      //raise error if username is not a valid email address, or if one of the fields are empty
       this.setState({
         usernameError: !emailRegex.test(this.state.username),
         passwordError: this.state.password.length < 1,
         agreeError: !this.state.agree
       }, () => {
         //if there is either error, return false to reject request
-        //if there are no errors, return true to accept request
         resolve(this.state.usernameError || this.state.passwordError || this.state.agreeError);
       });
     });
@@ -92,7 +91,7 @@ class LoginForm extends React.Component {
     formData.append('password', this.state.password);
     formData.append('remember_me', '1');
 
-    fetch('https://sardonyx.glitch.me/api/login', { //url is glitch for now
+    fetch('https://sardonyx.app/api/login', { 
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -100,8 +99,20 @@ class LoginForm extends React.Component {
       body: formData,
       mode: 'no-cors',
     }).then(response => {
-      console.log(response);
-      if (response.status === 200) this.props.navigation.navigate('AppStack');
+      if (response.status === 200) {
+        const token = JSON.parse(response.headers.map['login-token']);
+        Promise.all([
+          SecureStore.setItemAsync('credentials', JSON.stringify(token.credentials)),
+          SecureStore.setItemAsync('cfdiud', token.cfdiud),
+          SecureStore.setItemAsync('managebacSession', token.managebacSession)
+        ]).then(() => {
+          this.props.navigation.navigate('AppStack');
+        }).catch(error => {
+          this.props.navigation.navigate('Login', {
+            errorMessage: 'There was an error while validating. Please retry. ' + error
+          });
+        });
+      } 
       else if (response.status === 401) this.props.navigation.navigate('Login', {
         errorMessage: 'Your username and password did not match.'
       });

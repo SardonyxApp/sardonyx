@@ -22,7 +22,7 @@ export default class LoginCheckScreen extends React.Component {
     NOT for authenticating creditials for the first time.
     */
 
-    fetch('https://sardonyx.glitch.me/api/validate')
+    fetch('https://sardonyx.app/api/validate')
       .then(response => {
         if (response.status === 401) {
           /* 
