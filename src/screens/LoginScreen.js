@@ -54,15 +54,25 @@ class LoginForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  toggleButton(bool = false) {
+    this.setState({
+      disabled: bool
+    });
+  }
+
   handleSubmit() {
     this.validateForm().then(response => {
       if (response) return;
       else {
-        this.setState({
-        //  disabled: true //disabled temporarily
-        });
+        //disable button while sending network requests
+        this.toggleButton(true);
 
-        this.sendForm();
+        //construct form data to send to ManageBac
+        const formData = new FormData();
+        formData.append('login', this.state.username);
+        formData.append('password', this.state.password);
+        formData.append('remember_me', '1');
+        this.sendForm(formData);
       }
     });
   }
@@ -85,12 +95,7 @@ class LoginForm extends React.Component {
     });
   }
 
-  sendForm() {
-    const formData = new FormData();
-    formData.append('login', this.state.username);
-    formData.append('password', this.state.password);
-    formData.append('remember_me', '1');
-
+  sendForm(formData) {
     fetch('https://sardonyx.app/api/login', { 
       method: 'POST',
       headers: {
@@ -100,29 +105,35 @@ class LoginForm extends React.Component {
       mode: 'no-cors',
     }).then(response => {
       if (response.status === 200) {
+        //store response tokens
         const token = JSON.parse(response.headers.map['login-token']);
         Promise.all([
           SecureStore.setItemAsync('credentials', JSON.stringify(token.credentials)),
           SecureStore.setItemAsync('cfdiud', token.cfdiud),
           SecureStore.setItemAsync('managebacSession', token.managebacSession)
         ]).then(() => {
+          this.toggleButton();
           this.props.navigation.navigate('AppStack');
         }).catch(error => {
+          this.toggleButton();
           this.props.navigation.navigate('Login', {
             errorMessage: 'There was an error while validating. Please retry. ' + error
           });
         });
-      } 
-      else if (response.status === 401) this.props.navigation.navigate('Login', {
-        errorMessage: 'Your username and password did not match.'
-      });
-      else if (response.status === 404) this.props.navigation.navigate('Login', {
-        errorMessage: 'Validation failed due to a network error.'
-      });
-      else this.props.navigation.navigate('Login', {
-        errorMessage: 'Validation failed for an unknown error. Error code: ' + response.status
-      });
+      } else {
+        this.toggleButton();
+        if (response.status === 401) this.props.navigation.navigate('Login', {
+          errorMessage: 'Your username and password did not match.'
+        });
+        else if (response.status === 404) this.props.navigation.navigate('Login', {
+          errorMessage: 'Validation failed due to a network error.'
+        });
+        else this.props.navigation.navigate('Login', {
+          errorMessage: 'Validation failed due to an unknown error. Error code: ' + response.status
+        });
+      }
     }).catch(error => {
+      this.toggleButton();
       this.props.navigation.navigate('Login', {
         errorMessage: 'There was an error while validating. Please retry. ' + error
       });
