@@ -5,7 +5,7 @@ import {
   Text,
 } from 'react-native';
 
-import { RetrieveManagebacCredentials } from '../helpers';
+import { Storage } from '../helpers';
 
 import { styles } from '../styles';
 
@@ -17,7 +17,7 @@ export default class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
-    RetrieveManagebacCredentials().then(credentials => {
+    Storage.retrieveCredentials().then(credentials => {
       console.log(credentials);
     }).catch(err => {
       console.warn(err);
