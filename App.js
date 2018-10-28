@@ -3,6 +3,7 @@ import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 import HomeScreen from './src/screens/HomeScreen';
 import LoginCheckScreen from './src/screens/LoginCheckScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import LogoutScreen from './src/screens/LogoutScreen';
 
 // The Main app navigation stack.
 // Screens made later on (individual message screens, feed, or whatever) will be added here
@@ -28,7 +29,8 @@ const AppStack = createStackNavigator(
 // navigation stack using a switchNavigator
 const LoginStack = createStackNavigator(
   {
-    Login: LoginScreen
+    Login: LoginScreen,
+    Logout: LogoutScreen
   },
   {
     navigationOptions: {
