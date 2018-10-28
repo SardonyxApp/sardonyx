@@ -15,7 +15,7 @@ import {
   Button
 } from 'react-native-elements';
 
-import { WriteManagebacCredentials} from '../helpers';
+import { Storage } from '../helpers';
 import { styles, colors, preset } from '../styles';
 
 export default class Login extends React.Component {
@@ -106,7 +106,7 @@ class LoginForm extends React.Component {
       if (response.status === 200) {
         //store response tokens
         const credentials = JSON.parse(response.headers.map['login-token'] || '{}');
-        WriteManagebacCredentials(credentials).then(() => {
+        Storage.writeCredentials(credentials).then(() => {
           this.toggleButton();
           this.props.navigation.navigate('AppStack');
         }).catch(error => {

@@ -8,13 +8,13 @@ import {
   Image
 } from 'react-native';
 
-import { RetrieveManagebacCredentials, WriteManagebacCredentials } from '../helpers';
+import { Storage } from '../helpers';
 import { styles } from '../styles';
 
 export default class LoginCheckScreen extends React.Component {
   constructor(props) {
     super(props);
-    RetrieveManagebacCredentials().then(credentials => {
+    Storage.retrieveCredentials().then(credentials => {
       this.check(credentials);
     }).catch(err => {
       console.warn(err);
@@ -47,7 +47,7 @@ export default class LoginCheckScreen extends React.Component {
         else if (response.status === 200) {
           //validation succeeded
           const credentials = JSON.parse(response.headers.map['login-token'] || '{}');
-          WriteManagebacCredentials(credentials).then(() => {
+          Storage.writeCredentials(credentials).then(() => {
             this.props.navigation.navigate('AppStack');
           });
         }
