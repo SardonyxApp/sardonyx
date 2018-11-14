@@ -182,8 +182,9 @@ class LoginForm extends React.Component {
           checked={this.state.agree}
           checkedColor={colors.black}
           uncheckedColor={colors.black}
-          checkedIcon="check-square"
-          uncheckedIcon="square-o"
+          iconType="material-community"
+          checkedIcon="checkbox-marked"
+          uncheckedIcon="checkbox-blank-outline"
           containerStyle={[styles.transparentBackground, {paddingBottom: 0}]}
           onPress={() => this.setState({
             agree: !this.state.agree
