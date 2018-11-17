@@ -7,6 +7,8 @@ import {
 import { Icon } from 'react-native-elements';
 import HeaderIcon from '../components/HeaderIcon';
 
+import { colors } from '../styles';
+
 export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -16,16 +18,16 @@ export default class ProfileScreen extends React.Component {
     return {
       headerTitle: 'Profile',
       headerStyle: {
-        backgroundColor: '#fff'
+        backgroundColor: colors.white
       },
-      headerTintColor: '#d17b46',
+      headerTintColor: colors.primary,
       headerTitleStyle: {
         fontWeight: 'normal'
       },
       headerRight: (
       <HeaderIcon onPress={() => {navigation.navigate('Settings')}}><Icon
         name="settings"
-        color={"#d17b46"}
+        color={colors.primary}
         /></HeaderIcon>)
     }
   }

@@ -10,10 +10,9 @@ import {
 } from 'react-native-elements';
 
 import { Storage } from '../helpers';
-
 import { styles, colors } from '../styles';
 
-export default class HomeScreen extends React.Component {
+export default class ManagebacScreen extends React.Component {
   constructor(props) {
     super(props);
 
@@ -22,7 +21,7 @@ export default class HomeScreen extends React.Component {
 
   static navigationOptions({ navigation }) {
     return {
-      title: 'Home'
+      title: 'Managebac'
     };
   }
 
