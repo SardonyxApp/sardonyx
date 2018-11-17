@@ -17,6 +17,6 @@ export default class ChatScreen extends React.Component {
   }
 
   render() {
-    return (<View></View>)
+    return (<View></View>);
   }
 }

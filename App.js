@@ -18,12 +18,12 @@ import { colors } from './src/styles';
 // Screens made later on (individual message screens, feed, or whatever) will be added here
 const AppStack = createMaterialBottomTabNavigator(
   {
-    Managebac: ManagebacStack,
-    Chat: ChatStack,
-    Profile: ProfileStack
+    ManagebacTabs: ManagebacStack,
+    ChatTabs: ChatStack,
+    ProfileTabs: ProfileStack
   },
   {
-    initialRouteName: 'Chat',
+    initialRouteName: 'ChatTabs',
     shifting: true,
     activeColor: colors.primary,
     inactiveColor: colors.inactive,
