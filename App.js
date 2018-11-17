@@ -1,26 +1,31 @@
-import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
+import {
+  createSwitchNavigator,
+  createStackNavigator,
+} from "react-navigation";
 
-import HomeScreen from './src/screens/HomeScreen';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+
+import HomeTabStack from './src/HomeTabStack';
+import ChatTabStack from './src/ChatTabStack';
+import ProfileTabStack from './src/ProfileTabStack';
 import LoginCheckScreen from './src/screens/LoginCheckScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import LogoutScreen from './src/screens/LogoutScreen';
 
 // The Main app navigation stack.
 // Screens made later on (individual message screens, feed, or whatever) will be added here
-const AppStack = createStackNavigator(
+const AppBottomTabsStack = createMaterialBottomTabNavigator(
   {
-    Home: HomeScreen
+    HomeTab: HomeTabStack,
+    ChatTab: ChatTabStack,
+    ProfileTab: ProfileTabStack
   },
   {
-    navigationOptions: {
-      headerStyle: {
-        backgroundColor: '#d17b46'
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'normal'
-      }
-    }
+    initialRouteName: 'ChatTab',
+    shifting: true,
+    activeColor: '#d17b46',
+    inactiveColor: '#c2c2c2',
+    barStyle: { backgroundColor: '#fff' }
   }
 );
 
@@ -34,7 +39,7 @@ const LoginStack = createStackNavigator(
   },
   {
     navigationOptions: {
-      header: null // Hide the default empty header bar
+      header: null // Hide the default empty header bar for all child elements
     }
   }
 );
@@ -47,7 +52,7 @@ export default createSwitchNavigator(
     // Make sure no names for screens overlap (e.g. LoginStack and Login), since they are unique
     //  identifiers that can be navigated to from anywhere in the app
     LoginCheck: LoginCheckScreen,
-    AppStack: AppStack, // navigators can contain navigators
+    AppStack: AppBottomTabsStack, // navigators can contain navigators
     LoginStack: LoginStack
   },
   {
