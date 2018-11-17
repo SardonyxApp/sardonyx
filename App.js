@@ -12,9 +12,11 @@ import LoginCheckScreen from './src/screens/LoginCheckScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import LogoutScreen from './src/screens/LogoutScreen';
 
-// The Main app navigation stack.
+import { colors } from './src/styles';
+
+// The main app navigation stack.
 // Screens made later on (individual message screens, feed, or whatever) will be added here
-const AppBottomTabsStack = createMaterialBottomTabNavigator(
+const AppStack = createMaterialBottomTabNavigator(
   {
     HomeTab: HomeTabStack,
     ChatTab: ChatTabStack,
@@ -23,9 +25,9 @@ const AppBottomTabsStack = createMaterialBottomTabNavigator(
   {
     initialRouteName: 'ChatTab',
     shifting: true,
-    activeColor: '#d17b46',
-    inactiveColor: '#c2c2c2',
-    barStyle: { backgroundColor: '#fff' }
+    activeColor: colors.primary,
+    inactiveColor: colors.gray3,
+    barStyle: { backgroundColor: colors.white }
   }
 );
 
@@ -52,7 +54,7 @@ export default createSwitchNavigator(
     // Make sure no names for screens overlap (e.g. LoginStack and Login), since they are unique
     //  identifiers that can be navigated to from anywhere in the app
     LoginCheck: LoginCheckScreen,
-    AppStack: AppBottomTabsStack, // navigators can contain navigators
+    AppStack: AppStack, // navigators can contain navigators
     LoginStack: LoginStack
   },
   {

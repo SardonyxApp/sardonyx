@@ -17,7 +17,7 @@ const colors = {
   'lightBackground': '#eee',
   'white': '#fff',
   'error': '#f44138',
-
+  'inactive': '#c2c2c2',
   'lightPrimary': '#eda67b'
 };
 
