@@ -63,24 +63,23 @@ class LoginForm extends React.Component {
     this.validateForm().then(response => {
       if (response) return;
       else {
-        //disable button while sending network requests
+        // disable button while sending network requests
         this.toggleButton(true);
 
-        //construct form data to send to ManageBac
+        // construct form data to send to ManageBac
         const formData = new FormData();
         formData.append('login', this.state.username);
         formData.append('password', this.state.password);
-        formData.append('remember_me', '1');
         this.sendForm(formData);
       }
     });
   }
 
   validateForm() {
-    //regex to match email address
+    // regex to match email address
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
-    //returning a promise because setState does not get immediately reflected
+    // returning a promise because setState does not get immediately reflected
     return new Promise(resolve => {
       //raise error if username is not a valid email address, or if one of the fields are empty
       this.setState({
@@ -88,7 +87,7 @@ class LoginForm extends React.Component {
         passwordError: this.state.password.length < 1,
         agreeError: !this.state.agree
       }, () => {
-        //if there is either error, return false to reject request
+        // if there is either error, return false to reject request
         resolve(this.state.usernameError || this.state.passwordError || this.state.agreeError);
       });
     });
@@ -104,10 +103,10 @@ class LoginForm extends React.Component {
       mode: 'no-cors',
     }).then(response => {
       if (response.status === 200) {
-        //store response tokens
+        // store response tokens
         const credentials = JSON.parse(response.headers.map['login-token'] || '{}');
         Storage.writeCredentials(credentials).then(() => {
-          this.toggleButton();
+          this.toggleButton(); // Make button available again
           this.props.navigation.navigate('AppStack');
         }).catch(error => {
           this.toggleButton();
@@ -182,8 +181,9 @@ class LoginForm extends React.Component {
           checked={this.state.agree}
           checkedColor={colors.black}
           uncheckedColor={colors.black}
-          checkedIcon="check-square"
-          uncheckedIcon="square-o"
+          iconType="material-community"
+          checkedIcon="checkbox-marked"
+          uncheckedIcon="checkbox-blank-outline"
           containerStyle={[styles.transparentBackground, {paddingBottom: 0}]}
           onPress={() => this.setState({
             agree: !this.state.agree

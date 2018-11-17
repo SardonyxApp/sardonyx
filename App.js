@@ -1,26 +1,33 @@
-import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
+import {
+  createSwitchNavigator,
+  createStackNavigator,
+} from "react-navigation";
 
-import HomeScreen from './src/screens/HomeScreen';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+
+import ManagebacStack from './src/ManagebacStack';
+import ChatStack from './src/ChatStack';
+import ProfileStack from './src/ProfileStack';
 import LoginCheckScreen from './src/screens/LoginCheckScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import LogoutScreen from './src/screens/LogoutScreen';
 
-// The Main app navigation stack.
+import { colors } from './src/styles';
+
+// The main app navigation stack.
 // Screens made later on (individual message screens, feed, or whatever) will be added here
-const AppStack = createStackNavigator(
+const AppStack = createMaterialBottomTabNavigator(
   {
-    Home: HomeScreen
+    ManagebacTabs: ManagebacStack,
+    ChatTabs: ChatStack,
+    ProfileTabs: ProfileStack
   },
   {
-    navigationOptions: {
-      headerStyle: {
-        backgroundColor: '#d17b46'
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'normal'
-      }
-    }
+    initialRouteName: 'ChatTabs',
+    shifting: true,
+    activeColor: colors.primary,
+    inactiveColor: colors.inactive,
+    barStyle: { backgroundColor: colors.white }
   }
 );
 
@@ -34,7 +41,7 @@ const LoginStack = createStackNavigator(
   },
   {
     navigationOptions: {
-      header: null // Hide the default empty header bar
+      header: null // Hide the default empty header bar for all child elements
     }
   }
 );
