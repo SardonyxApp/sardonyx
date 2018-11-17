@@ -13,12 +13,13 @@ const colors = {
   'black': '#332927',
   'gray1': '#d8d8e0',
   'gray2': '#babbc2',
-  'darkBackground': '#8c8c8b',
-  'lightBackground': '#eee',
   'white': '#fff',
+  'blue': '#2977b6',
   'error': '#f44138',
-
-  'lightPrimary': '#eda67b'
+  'inactive': '#c2c2c2',
+  'lightPrimary': '#eda67b',
+  'darkBackground': '#8c8c8b',
+  'lightBackground': '#eee'
 };
 
 /*modularized styles*/
