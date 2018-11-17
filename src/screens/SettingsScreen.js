@@ -4,6 +4,8 @@ import {
   View
 } from 'react-native';
 
+import { colors } from '../styles';
+
 export default class SettingsScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -13,9 +15,9 @@ export default class SettingsScreen extends React.Component {
     return {
       headerTitle: 'Settings',
       headerStyle: {
-        backgroundColor: '#d17b46'
+        backgroundColor: colors.primary
       },
-      headerTintColor: '#fff',
+      headerTintColor: colors.white,
       headerTitleStyle: {
         fontWeight: 'normal'
       }

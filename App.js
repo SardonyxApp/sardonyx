@@ -5,9 +5,9 @@ import {
 
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
-import HomeTabStack from './src/HomeTabStack';
-import ChatTabStack from './src/ChatTabStack';
-import ProfileTabStack from './src/ProfileTabStack';
+import ManagebacStack from './src/ManagebacStack';
+import ChatStack from './src/ChatStack';
+import ProfileStack from './src/ProfileStack';
 import LoginCheckScreen from './src/screens/LoginCheckScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import LogoutScreen from './src/screens/LogoutScreen';
@@ -18,15 +18,15 @@ import { colors } from './src/styles';
 // Screens made later on (individual message screens, feed, or whatever) will be added here
 const AppStack = createMaterialBottomTabNavigator(
   {
-    HomeTab: HomeTabStack,
-    ChatTab: ChatTabStack,
-    ProfileTab: ProfileTabStack
+    Managebac: ManagebacStack,
+    Chat: ChatStack,
+    Profile: ProfileStack
   },
   {
-    initialRouteName: 'ChatTab',
+    initialRouteName: 'Chat',
     shifting: true,
     activeColor: colors.primary,
-    inactiveColor: colors.gray3,
+    inactiveColor: colors.inactive,
     barStyle: { backgroundColor: colors.white }
   }
 );
