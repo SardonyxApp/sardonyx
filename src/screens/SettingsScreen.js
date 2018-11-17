@@ -4,7 +4,6 @@ import {
   View
 } from 'react-native';
 
-
 export default class SettingsScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -12,8 +11,15 @@ export default class SettingsScreen extends React.Component {
 
   static navigationOptions({ navigation }) {
     return {
-      title: 'Settings'
-    };
+      headerTitle: 'Settings',
+      headerStyle: {
+        backgroundColor: '#d17b46'
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'normal'
+      }
+    }
   }
 
   render() {

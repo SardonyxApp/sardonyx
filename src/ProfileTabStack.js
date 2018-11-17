@@ -14,17 +14,6 @@ const ProfileTabStack = createStackNavigator(
   {
     Profile: ProfileScreen,
     Settings: SettingsScreen
-  },
-  {
-    navigationOptions: {
-      headerStyle: {
-        backgroundColor: '#e4d565'
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'normal'
-      }
-    }
   }
   /*
   , {
@@ -37,7 +26,7 @@ const ProfileTabStack = createStackNavigator(
 );
 
 ProfileTabStack.navigationOptions = {
-  tabBarLabel: 'Chat',
+  tabBarLabel: 'Profile',
   tabBarIcon: ({ tintColor }) => (
     <Icon name="person" color={tintColor} /> 
   ),
