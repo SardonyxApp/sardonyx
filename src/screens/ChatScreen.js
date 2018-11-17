@@ -10,7 +10,7 @@ export default class ChatScreen extends React.Component {
     super(props);
   }
 
-  static navigationOptions({ navigation }) {
+  static navigationOptions = ({ navigation }) => {
     return {
       title: 'Chat'
     };
