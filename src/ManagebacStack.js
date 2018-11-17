@@ -13,7 +13,7 @@ import { colors } from './styles';
 // Navigation stack for the Managebac tab
 const ManagebacStack = createStackNavigator(
   {
-    Home: ManagebacScreen
+    Managebac: ManagebacScreen
   },
   {
     navigationOptions: {

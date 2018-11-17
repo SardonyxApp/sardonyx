@@ -9,32 +9,17 @@ import {
   Button
 } from 'react-native-elements';
 
-import { Storage } from '../helpers';
-import { styles, colors } from '../styles';
+import { styles } from '../styles';
 
 export default class ManagebacScreen extends React.Component {
   constructor(props) {
     super(props);
-
-    this.handlePress = this.handlePress.bind(this);
   }
 
-  static navigationOptions({ navigation }) {
+  static navigationOptions = ({ navigation }) => {
     return {
       title: 'Managebac'
     };
-  }
-
-  componentDidMount() {
-    Storage.retrieveCredentials().then(credentials => {
-      console.log(credentials);
-    }).catch(err => {
-      console.warn(err);
-    });
-  }
-
-  handlePress() {
-    this.props.navigation.navigate('Logout');
   }
 
   render() {
@@ -42,12 +27,6 @@ export default class ManagebacScreen extends React.Component {
       <View style={styles.containerAlignChildrenCenter} >
         <Text style={styles.h1}>This is the app!!</Text>
         <Text style={styles.p}>Check console to see your stored credentials.</Text>
-        <Button 
-          title='Log out' 
-          onPress={this.handlePress}
-          backgroundColor={colors.primary} 
-          containerViewStyle={styles.padding10}
-        />
       </View>
     );
   }
