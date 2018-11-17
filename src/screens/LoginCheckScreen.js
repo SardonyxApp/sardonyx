@@ -8,22 +8,29 @@ import {
   Image
 } from 'react-native';
 
+import { Storage } from '../helpers';
 import { styles } from '../styles';
 
 export default class LoginCheckScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.check();
+    Storage.retrieveCredentials().then(credentials => {
+      this.check(credentials);
+    }).catch(err => {
+      console.warn(err);
+      this.check();
+    });
   }
 
-  check() {
-    /*
-    Check for existing session
-    NOT for authenticating creditials for the first time.
-    */
-
-    fetch('https://sardonyx.glitch.me/api/validate')
-      .then(response => {
+  check(credentials = '{}') {
+    //check for existing session
+    fetch('https://sardonyx.app/api/validate', {
+      method: 'GET',
+      headers: {
+        'Login-Token': credentials
+      },
+      mode: 'no-cors'
+    }).then(response => {
         if (response.status === 401) {
           /* 
           Validation failed: unauthorized
@@ -38,21 +45,31 @@ export default class LoginCheckScreen extends React.Component {
         }
 
         else if (response.status === 200) {
-          // validation succeeded
-          this.props.navigation.navigate('AppStack');
+          //validation succeeded
+          const credentials = JSON.parse(response.headers.map['login-token'] || '{}');
+          Storage.writeCredentials(credentials).then(() => {
+            this.props.navigation.navigate('AppStack');
+          });
+        }
+
+        else if (response.status === 404) {
+          //network error
+          this.props.navigation.navigate('Login', {
+            errorMessage: 'Validation failed due to a network error.'
+          });
         }
 
         else {
-          // other error code
+          //other error code
           this.props.navigation.navigate('Login', {
-            errorMessage: 'Validation failed due to a network error.'
+            errorMessage: 'Validation failed due to an unkown error. Error code: ' + response.status
           });
         }
       })
       .catch(error => {
         // promise rejected
         this.props.navigation.navigate('Login', {
-          errorMessage: 'There was an error while validating. Please retry. ' + error
+          errorMessage: 'There was an error while validating.' + error
         });
       });
   }

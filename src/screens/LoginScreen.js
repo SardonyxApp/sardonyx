@@ -15,6 +15,7 @@ import {
   Button
 } from 'react-native-elements';
 
+import { Storage } from '../helpers';
 import { styles, colors, preset } from '../styles';
 
 export default class Login extends React.Component {
@@ -52,15 +53,25 @@ class LoginForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  toggleButton(bool = false) {
+    this.setState({
+      disabled: bool
+    });
+  }
+
   handleSubmit() {
     this.validateForm().then(response => {
       if (response) return;
       else {
-        this.setState({
-        //  disabled: true //disabled temporarily
-        });
+        //disable button while sending network requests
+        this.toggleButton(true);
 
-        this.sendForm();
+        //construct form data to send to ManageBac
+        const formData = new FormData();
+        formData.append('login', this.state.username);
+        formData.append('password', this.state.password);
+        formData.append('remember_me', '1');
+        this.sendForm(formData);
       }
     });
   }
@@ -71,49 +82,55 @@ class LoginForm extends React.Component {
 
     //returning a promise because setState does not get immediately reflected
     return new Promise(resolve => {
-      //raise error if username is not a valid email address
-      //raise error if password is empty
-      //raise error if checkbox is empty
+      //raise error if username is not a valid email address, or if one of the fields are empty
       this.setState({
         usernameError: !emailRegex.test(this.state.username),
         passwordError: this.state.password.length < 1,
         agreeError: !this.state.agree
       }, () => {
         //if there is either error, return false to reject request
-        //if there are no errors, return true to accept request
         resolve(this.state.usernameError || this.state.passwordError || this.state.agreeError);
       });
     });
   }
 
-  sendForm() {
-    fetch('https://sardonyx.glitch.me/api/random', { //url is glitch for now
+  sendForm(formData) {
+    fetch('https://sardonyx.app/api/login', { 
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'applicataion/json'
+        'Content-Type': 'multipart/form-data'
       },
-      body: JSON.stringify({
-        'session_login': this.state.username,
-        'session_password': this.state.password
-      }), // this body cannot be read yet...
+      body: formData,
       mode: 'no-cors',
-      cache: 'no-store' //do not cache new login requests...
     }).then(response => {
-      console.log(response);
-      if (response.status === 200) this.props.navigation.navigate('AppStack');
-      else if (response.status === 401) this.props.navigation.navigate('Login', {
-        errorMessage: 'Your username and password did not match.'
-      });
-      else if (response.status === 404) this.props.navigation.navigate('Login', {
-        errorMessage: 'Validation failed due to a network error.'
-      });
-      else this.props.navigation.navigate('Login', {
-        errorMessage: 'Validation failed for an unknown error. Error code: ' + response.status
-      });
+      if (response.status === 200) {
+        //store response tokens
+        const credentials = JSON.parse(response.headers.map['login-token'] || '{}');
+        Storage.writeCredentials(credentials).then(() => {
+          this.toggleButton();
+          this.props.navigation.navigate('AppStack');
+        }).catch(error => {
+          this.toggleButton();
+          this.props.navigation.navigate('Login', {
+            errorMessage: 'There was an error while storing login. ' + error
+          });
+        });
+      } else {
+        this.toggleButton();
+        if (response.status === 401) this.props.navigation.navigate('Login', {
+          errorMessage: 'Your username and password did not match. Please retry.'
+        });
+        else if (response.status === 404) this.props.navigation.navigate('Login', {
+          errorMessage: 'Validation failed due to a network error.'
+        });
+        else this.props.navigation.navigate('Login', {
+          errorMessage: 'Validation failed due to an unknown error. Error code: ' + response.status
+        });
+      }
     }).catch(error => {
+      this.toggleButton();
       this.props.navigation.navigate('Login', {
-        errorMessage: 'There was an error while validating. Please retry. ' + error
+        errorMessage: 'There was an error while processing your login. Please retry. ' + error
       });
     });
   }
@@ -128,9 +145,13 @@ class LoginForm extends React.Component {
           style={preset.inputLine}
           textContentType="username"
           keyboardType="email-address"
+          returnKeyType="next"
+          autoCapitalize="none"
           onChangeText={text => this.setState({
             username: text
           })}
+          onSubmitEditing={() => this.passwordInput.focus()}
+          blurOnSubmit={false}
         />
         <Text style={[styles.error, styles.alignCenter, this.state.usernameError ? {} : styles.hidden]}>
           Please enter a valid email address.
@@ -138,10 +159,15 @@ class LoginForm extends React.Component {
 
         <TextInput
           placeholder="Password"
+          ref={input => {
+            this.passwordInput = input;
+          }}
           value={this.state.password}
           style={preset.inputLine}
           textContentType="password"
           keyboardType="default"
+          returnKeyType="done"
+          autoCapitalize="none"
           secureTextEntry={true}
           onChangeText={text => this.setState({
             password: text 
