@@ -39,6 +39,7 @@ export default class HeaderIcon extends React.Component {
             }}
           >
             <TouchableNativeFeedback
+              delayPressIn={0}
               onPress={this.props.onPress}
               background={TouchableNativeFeedback.Ripple(
                 "rgba(0, 0, 0, 0.32)",
