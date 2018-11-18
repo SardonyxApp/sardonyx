@@ -19,6 +19,7 @@
   * [Production](#production-1)
     * [Front End](#front-end-1)
     * [Full Stack](#full-stack-1)
+  * [Deployment](#deployment)
 - [Guidelines](#guidelines)
   * [Style](#style)
   * [Logo](#logo)
@@ -137,19 +138,19 @@ Compile files using Webpack.
 $ npm run webpack
 ```
 
-### Full Stack (Production)
+### Full Stack
 Compile front end files using Webpack and start the Express server that serves the compiled files.
 ```
 $npm run build
 ```
 Navigate to `localhost:PORT` as defined in `.env`
 
-## Deployment (GCP)
+## Deployment
 Do not deploy broken builds. Deploy with extra care. Code can be tested with console on [Glitch](https://glitch.com).
 
 Login to [Google Cloud Platform](https://console.cloud.google.com).
 
-Navigate to `App Services` and open the shell.
+Navigate to `App Engine` and open the shell.
 
 Execute
 ```
