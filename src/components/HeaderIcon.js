@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
 import {
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
   View
-} from "react-native";
+} from 'react-native';
 
 export default class HeaderIcon extends React.Component {
   constructor(props) {
