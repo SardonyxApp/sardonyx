@@ -18,6 +18,7 @@
     * [Full Stack](#full-stack)
   * [Production](#production-1)
     * [Front End](#front-end-1)
+    * [Back End](#back-end-1)
     * [Full Stack](#full-stack-1)
   * [Deployment](#deployment)
 - [Guidelines](#guidelines)
@@ -107,7 +108,7 @@ $ vi .env
 ```
 Define `PORT` as appropriate.
 ```
-PORT=8080
+PORT=3000
 ```
 Check the server.js file and define any other variables necessary. Variables in `.env` are referred to as `process.env.VARIABLE_NAME`.
 
@@ -115,33 +116,39 @@ Check the server.js file and define any other variables necessary. Variables in 
 ### Front End 
 Start the Webpack Dev Server. 
 ```
-$ npm run dev
+$ npm run client-dev
 ```
 Navigate to `localhost:8080`.
 
 ### Back End
-Start the Express server. Server will be started at `localhost:PORT` as defined in `.env`.
+Start the Express server using nodemon. Server will be started at `localhost:PORT` as defined in `.env`.
 ```
-$ npm run server
+$ npm run server-dev
 ```
 
 ### Full Stack
 Start both the Webpack Dev Server and the Express server.
 ```
-$ npm start
+$ npm run dev
 ```
 
 ## Production
 ### Front End
 Compile files using Webpack.
 ```
-$ npm run webpack
+$ npm run client
+```
+
+### Back End
+Start the Express server. Server will be started at `localhost:PORT` as defined in `.env`.
+```
+$ npm start
 ```
 
 ### Full Stack
 Compile front end files using Webpack and start the Express server that serves the compiled files.
 ```
-$npm run build
+$ npm run build
 ```
 Navigate to `localhost:PORT` as defined in `.env`
 
@@ -152,9 +159,11 @@ Login to [Google Cloud Platform](https://console.cloud.google.com).
 
 Navigate to `App Engine` and open the shell.
 
-Execute
+Execute the following:
 ```
 $ cd sardonyx-server
+$ npm install 
+$ npm run client
 $ gcloud app deploy
 ```
 
