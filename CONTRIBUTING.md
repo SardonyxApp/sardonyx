@@ -13,6 +13,12 @@
 - [The server (backend)](#the-server-backend)
   * [Installation](#installation-1)
   * [Development](#development-1)
+    * [Front End](#front-end)
+    * [Back End](#back-end)
+    * [Full Stack](#full-stack)
+  * [Production](#production-1)
+    * [Front End](#front-end-1)
+    * [Full Stack](#full-stack-1)
 - [Guidelines](#guidelines)
   * [Style](#style)
   * [Logo](#logo)
@@ -39,6 +45,8 @@ Install dependencies.
 ```
 $ npm install
 ```
+
+Do NOT run `npm run audit` or change the React Native version. 
 
 ## Development
 Run development mode.
@@ -103,12 +111,51 @@ PORT=8080
 Check the server.js file and define any other variables necessary. Variables in `.env` are referred to as `process.env.VARIABLE_NAME`.
 
 ## Development
-Start the server. Server will start on the `PORT` defined in `.env`.
+### Front End 
+Start the Webpack Dev Server. 
 ```
-$ node server
+$ npm run dev
+```
+Navigate to `localhost:8080`.
+
+### Back End
+Start the Express server. Server will be started at `localhost:PORT` as defined in `.env`.
+```
+$ npm run server
 ```
 
-There is no production mode.
+### Full Stack
+Start both the Webpack Dev Server and the Express server.
+```
+$ npm start
+```
+
+## Production
+### Front End
+Compile files using Webpack.
+```
+$ npm run webpack
+```
+
+### Full Stack (Production)
+Compile front end files using Webpack and start the Express server that serves the compiled files.
+```
+$npm run build
+```
+Navigate to `localhost:PORT` as defined in `.env`
+
+## Deployment (GCP)
+Do not deploy broken builds. Deploy with extra care. Code can be tested with console on [Glitch](https://glitch.com).
+
+Login to [Google Cloud Platform](https://console.cloud.google.com).
+
+Navigate to `App Services` and open the shell.
+
+Execute
+```
+$ cd sardonyx-server
+$ gcloud app deploy
+```
 
 # Guidelines
 ## Style
@@ -120,6 +167,8 @@ The following colors are primarily used:
 * Gray 2: `#babbc2`
 * White: `#fff`
 * Background Gray: `#8c8c8b`
+
+See `sardonyx/src/styles.js` for more colors.
 
 ## Logo
 Prefer SVG and transparent background.
