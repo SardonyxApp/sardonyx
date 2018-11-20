@@ -16,6 +16,7 @@
     * [Front End](#front-end)
     * [Back End](#back-end)
     * [Full Stack](#full-stack)
+  * [Testing](#testing-1)
   * [Production](#production-1)
     * [Front End](#front-end-1)
     * [Back End](#back-end-1)
@@ -63,7 +64,7 @@ When ready, do one of the following:
 ## Testing
 Jest is included with Expo for testing.
 ```
-$ npm run test
+$ npm test
 ```
 
 ## Production
@@ -130,6 +131,12 @@ $ npm run server-dev
 Start both the Webpack Dev Server and the Express server.
 ```
 $ npm run dev
+```
+
+## Testing
+Jest tests can be used to test the Express server.
+```
+$ npm test
 ```
 
 ## Production
