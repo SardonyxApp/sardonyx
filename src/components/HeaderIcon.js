@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
 import {
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
   View
-} from "react-native";
+} from 'react-native';
 
 export default class HeaderIcon extends React.Component {
   constructor(props) {
@@ -39,6 +39,7 @@ export default class HeaderIcon extends React.Component {
             }}
           >
             <TouchableNativeFeedback
+              delayPressIn={0}
               onPress={this.props.onPress}
               background={TouchableNativeFeedback.Ripple(
                 "rgba(0, 0, 0, 0.32)",
