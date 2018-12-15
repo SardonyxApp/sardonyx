@@ -139,6 +139,19 @@ Jest tests can be used to test the Express server.
 $ npm test
 ```
 
+To run a specific test suite, append the name of the test.
+```
+$ npm test api
+```
+
+You may need to store personal information in the `.env` file. 
+```
+LOGIN="foo@bar.com"
+PASSWORD="foobar1234"
+```
+
+To run a custom test, create a `tmp.test.js` file under `__tests__`. 
+
 ## Production
 ### Front End
 Compile files using Webpack.
