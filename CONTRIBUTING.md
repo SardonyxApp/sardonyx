@@ -108,7 +108,7 @@ $ touch .env
 $ vi .env
 ```
 Define `PORT` as appropriate.
-```
+```sh
 PORT=3000
 ```
 Check the server.js file and define any other variables necessary. Variables in `.env` are referred to as `process.env.VARIABLE_NAME`.
@@ -145,9 +145,17 @@ $ npm test api
 ```
 
 You may need to store personal information in the `.env` file. 
-```
+```sh
+# Managebac cedentials
 LOGIN="foo@bar.com"
 PASSWORD="foobar1234"
+
+# Managebac cookies 
+CFDUID="cfduid=foobar"
+MANAGEBAC_SESSION="_managebac_session=foobar"
+
+# A random class page that you want to test 
+CLASS_ID="123456"
 ```
 
 To run a custom test, create a `tmp.test.js` file under `__tests__`. 
