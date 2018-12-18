@@ -154,11 +154,12 @@ PASSWORD="foobar1234"
 CFDUID="cfduid=foobar"
 MANAGEBAC_SESSION="_managebac_session=foobar"
 
-# A random class page that you want to test 
+# Pages that you want to test 
 CLASS_ID="123456"
 GROUP_ID="123456"
-ASSIGNMENT_ID="123456"
-DISUCSSION_ID="123456"
+CLASS_ASSIGNMENT_ID="123456"
+CLASS_MESSAGE_ID="123456"
+GROUP_MESSAGE_ID="123456"
 NOTIFICATION_ID="123456"
 ```
 
