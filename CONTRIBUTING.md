@@ -156,6 +156,10 @@ MANAGEBAC_SESSION="_managebac_session=foobar"
 
 # A random class page that you want to test 
 CLASS_ID="123456"
+GROUP_ID="123456"
+ASSIGNMENT_ID="123456"
+DISUCSSION_ID="123456"
+NOTIFICATION_ID="123456"
 ```
 
 To run a custom test, create a `tmp.test.js` file under `__tests__`. 
