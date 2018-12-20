@@ -21,12 +21,12 @@ class StorageClass extends React.Component {
    */
   async retrieveTokens() {
     const arr = await Promise.all([
-      SecureStore.getItemAsync('cfdiud'),
+      SecureStore.getItemAsync('cfduid'),
       SecureStore.getItemAsync('managebacSession')
     ]);
     if (arr[0] && arr[1]) {
       return JSON.stringify({
-        cfdiud: arr[0],
+        cfduid: arr[0],
         managebacSession: arr[1]
       });
     }
@@ -41,14 +41,14 @@ class StorageClass extends React.Component {
    */
   async retrieveCredentials() {
     return Promise.all([
-      SecureStore.getItemAsync('cfdiud'),
+      SecureStore.getItemAsync('cfduid'),
       SecureStore.getItemAsync('managebacSession'),
       SecureStore.getItemAsync('login'),
       SecureStore.getItemAsync('password')
     ]).then(arr => {
       if (arr[0] && arr[1] && arr[2] && arr[3]) {
         return JSON.stringify({
-          cfdiud: arr[0],
+          cfduid: arr[0],
           managebacSession: arr[1],
           login: arr[2],
           password: arr[3]
@@ -79,7 +79,7 @@ class StorageClass extends React.Component {
   async writeTokens(tokens) {
     if (tokens.login && tokens.password) {
       return Promise.all([
-        SecureStore.setItemAsync('cfdiud', tokens.cfdiud),
+        SecureStore.setItemAsync('cfduid', tokens.cfduid),
         SecureStore.setItemAsync('managebacSession', tokens.managebacSession)
       ]);
     }
@@ -96,9 +96,9 @@ class StorageClass extends React.Component {
    * Musst catch error in the case of invalid credentials
    */
   async writeCredentials(credentials) {
-    if (credentials.cfdiud && credentials.managebacSession && credentials.login && credentials.password) {
+    if (credentials.cfduid && credentials.managebacSession && credentials.login && credentials.password) {
       return Promise.all([
-        SecureStore.setItemAsync('cfdiud', credentials.cfdiud),
+        SecureStore.setItemAsync('cfduid', credentials.cfduid),
         SecureStore.setItemAsync('managebacSession', credentials.managebacSession),
         SecureStore.setItemAsync('login', credentials.login),
         SecureStore.setItemAsync('password', credentials.password)
@@ -128,7 +128,7 @@ class StorageClass extends React.Component {
    */
   async deleteCredentials() {
     return Promise.all([
-      SecureStore.deleteItemAsync('cfdiud'),
+      SecureStore.deleteItemAsync('cfduid'),
       SecureStore.deleteItemAsync('managebacSession'),
       SecureStore.deleteItemAsync('login'),
       SecureStore.deleteItemAsync('password')
@@ -142,7 +142,7 @@ class StorageClass extends React.Component {
    */
   async deleteTokens() {
     return Promise.all([
-      SecureStore.deleteItemAsync('cfdiud'),
+      SecureStore.deleteItemAsync('cfduid'),
       SecureStore.deleteItemAsync('managebacSession')
     ]);
   }
