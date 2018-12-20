@@ -17,6 +17,12 @@ const ChatStack = createStackNavigator(
   },
   {
     navigationOptions: {
+      tabBarLabel: 'Chat',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="chat" color={tintColor} />
+      )
+    },
+    defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: colors.primary
       },
@@ -27,14 +33,5 @@ const ChatStack = createStackNavigator(
     }
   }
 );
-
-// Applied after definition to prevent it from affecting children
-ChatStack.navigationOptions = {
-  tabBarLabel: 'Chat',
-  tabBarIcon: ({ tintColor }) => (
-    <Icon name="chat" color={tintColor} /> 
-  ),
-  tabBarColor: colors.white
-};
 
 export default ChatStack;

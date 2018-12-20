@@ -1,7 +1,9 @@
+import React from 'react';
 import {
   createSwitchNavigator,
   createStackNavigator,
-} from "react-navigation";
+  createAppContainer
+} from 'react-navigation';
 
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
@@ -27,7 +29,9 @@ const AppStack = createMaterialBottomTabNavigator(
     shifting: true,
     activeColor: colors.primary,
     inactiveColor: colors.inactive,
-    barStyle: { backgroundColor: colors.white }
+    barStyle: {
+      backgroundColor: colors.white
+    }
   }
 );
 
@@ -49,8 +53,8 @@ const LoginStack = createStackNavigator(
 // https://reactnavigation.org/docs/en/auth-flow.html
 // Switch navigators make sure the app nav stack and auth nav stack are two different things
 // and that you can't back-button into one another
-export default createSwitchNavigator(
-  {
+const AppContainer = createAppContainer(
+  createSwitchNavigator({
     // Make sure no names for screens overlap (e.g. LoginStack and Login), since they are unique
     //  identifiers that can be navigated to from anywhere in the app
     LoginCheck: LoginCheckScreen,
@@ -59,5 +63,13 @@ export default createSwitchNavigator(
   },
   {
     initialRouteName: 'LoginCheck'
-  }
+  })
 );
+
+export default class Root extends React.Component {
+  // I'm sure we're going to have to use state managers like Redux, and when that happens,
+  // wrap this AppContainer in a Store Provider.
+  render() {
+    return (<AppContainer />);
+  }
+}

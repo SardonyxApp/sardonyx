@@ -16,16 +16,14 @@ const ProfileStack = createStackNavigator(
   {
     Profile: ProfileScreen,
     Settings: SettingsScreen
+  }, {
+    navigationOptions: {
+      tabBarLabel: 'Profile',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="person" color={tintColor} />
+      )
+    }
   }
 );
-
-// Applied after definition to prevent it from affecting children
-ProfileStack.navigationOptions = {
-  tabBarLabel: 'Profile',
-  tabBarIcon: ({ tintColor }) => (
-    <Icon name="person" color={tintColor} /> 
-  ),
-  tabBarColor: colors.white
-};
 
 export default ProfileStack;
