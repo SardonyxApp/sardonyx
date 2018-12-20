@@ -23,7 +23,7 @@ export default class LoginCheckScreen extends React.Component {
   }
 
   check(credentials = '{}') {
-    //check for existing session
+    // Check for existing session
     fetch('https://sardonyx.app/api/validate', {
       method: 'GET',
       headers: {
@@ -31,47 +31,49 @@ export default class LoginCheckScreen extends React.Component {
       },
       mode: 'no-cors'
     }).then(response => {
-        if (response.status === 401) {
-          /* 
-          Validation failed: unauthorized
-          Produce no error message because this is initial login
-          Navigate directly to LoginScreen instead of LoginStack, because
-          1. User should be led to LoginPage instead of default page of LoginStack
-          2. errorMessage doesn't propagate through stacks
-          */
-          this.props.navigation.navigate('Login', {
-            errorMessage: null
-          });
-        }
-
-        else if (response.status === 200) {
-          //validation succeeded
-          const credentials = JSON.parse(response.headers.map['login-token'] || '{}');
-          Storage.writeCredentials(credentials).then(() => {
-            this.props.navigation.navigate('AppStack');
-          });
-        }
-
-        else if (response.status === 404) {
-          //network error
-          this.props.navigation.navigate('Login', {
-            errorMessage: 'Validation failed due to a network error.'
-          });
-        }
-
-        else {
-          //other error code
-          this.props.navigation.navigate('Login', {
-            errorMessage: 'Validation failed due to an unkown error. Error code: ' + response.status
-          });
-        }
-      })
-      .catch(error => {
-        // promise rejected
-        this.props.navigation.navigate('Login', {
-          errorMessage: 'There was an error while validating.' + error
+      if (response.status === 200) {
+        // Validation succeeded
+        const credentials = JSON.parse(response.headers.map['login-token'] || '{}');
+        Storage.writeCredentials(credentials).then(() => {
+          this.props.navigation.navigate('AppStack');
         });
+        return;
+      }
+
+      if (response.status === 401) {
+        /* 
+        Validation failed: unauthorized
+        Produce no error message because this is initial login
+        Navigate directly to LoginScreen instead of LoginStack, because
+        1. User should be led to LoginPage instead of default page of LoginStack
+        2. errorMessage doesn't propagate through stacks
+        */
+        this.props.navigation.navigate('Login', {
+          errorMessage: null
+        });
+        return;
+      }
+
+      if (response.status === 404) {
+        // Network error
+        this.props.navigation.navigate('Login', {
+          errorMessage: 'Validation failed due to a network error.'
+        });
+        return;
+      }
+
+      // Other error code
+      this.props.navigation.navigate('Login', {
+        errorMessage: 'Validation failed due to an unkown error. Error code: ' + response.status
       });
+    })
+    .catch(error => {
+      // promise rejected
+      this.props.navigation.navigate('Login', {
+        errorMessage: 'There was an error while validating.' + error
+      });
+      return;
+    });
   }
 
   render() {
