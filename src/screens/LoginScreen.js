@@ -15,6 +15,8 @@ import {
   Button
 } from 'react-native-elements';
 
+import { BASE_URL } from 'react-native-dotenv';
+
 import { Storage } from '../helpers';
 import { styles, colors, preset } from '../styles';
 
@@ -94,7 +96,7 @@ class LoginForm extends React.Component {
   }
 
   sendForm(formData) {
-    fetch('https://sardonyx.app/api/login', { 
+    fetch(BASE_URL + '/api/login', { 
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data'
