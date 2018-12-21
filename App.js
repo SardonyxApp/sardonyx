@@ -44,7 +44,7 @@ const LoginStack = createStackNavigator(
     Logout: LogoutScreen
   },
   {
-    navigationOptions: {
+    defaultNavigationOptions: {
       header: null // Hide the default empty header bar for all child elements
     }
   }
