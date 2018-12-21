@@ -8,6 +8,8 @@ import {
   Image
 } from 'react-native';
 
+import { BASE_URL } from 'react-native-dotenv';
+
 import { Storage } from '../helpers';
 import { styles } from '../styles';
 
@@ -24,7 +26,7 @@ export default class LoginCheckScreen extends React.Component {
 
   check(credentials = '{}') {
     // Check for existing session
-    fetch('https://sardonyx.app/api/validate', {
+    fetch(BASE_URL + '/api/validate', {
       method: 'GET',
       headers: {
         'Login-Token': credentials
@@ -35,7 +37,9 @@ export default class LoginCheckScreen extends React.Component {
         // Validation succeeded
         const credentials = JSON.parse(response.headers.map['login-token'] || '{}');
         Storage.writeCredentials(credentials).then(() => {
-          this.props.navigation.navigate('AppStack');
+          Storage.writeValue('managebacOverview', response.headers.map['managebac-data']).then(() => {
+            this.props.navigation.navigate('AppStack');
+          });
         });
         return;
       }
@@ -70,7 +74,7 @@ export default class LoginCheckScreen extends React.Component {
     .catch(error => {
       // promise rejected
       this.props.navigation.navigate('Login', {
-        errorMessage: 'There was an error while validating.' + error
+        errorMessage: 'There was an error while validating. ' + error
       });
       return;
     });
