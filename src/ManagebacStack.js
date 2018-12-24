@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Dimensions } from 'react-native';
+
 import {
   createStackNavigator,
   createMaterialTopTabNavigator
@@ -28,6 +30,10 @@ const ManagebacTabs = createMaterialTopTabNavigator(
   {
     navigationOptions: {
       title: 'ManageBac'
+    },
+    initialLayout: {
+      height: 0,
+      width: Dimensions.get('window').width
     },
     tabBarOptions: {
       scrollEnabled: true,
