@@ -153,6 +153,7 @@ PASSWORD="foobar1234"
 # Managebac cookies 
 CFDUID="cfduid=foobar"
 MANAGEBAC_SESSION="_managebac_session=foobar"
+CSRF_TOKEN="foobar"
 
 # Pages that you want to test 
 CLASS_ID="123456"
@@ -201,6 +202,15 @@ Execute the following:
 $ cd sardonyx-server
 $ npm install 
 $ npm run client
+```
+
+Make sure that the server starts properly:
+```
+$ npm start
+```
+
+Then, deploy.
+```
 $ gcloud app deploy
 ```
 
