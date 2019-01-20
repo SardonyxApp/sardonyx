@@ -153,11 +153,14 @@ PASSWORD="foobar1234"
 # Managebac cookies 
 CFDUID="cfduid=foobar"
 MANAGEBAC_SESSION="_managebac_session=foobar"
+CSRF_TOKEN="foobar"
 
 # Pages that you want to test 
 CLASS_ID="123456"
 GROUP_ID="123456"
 CLASS_ASSIGNMENT_ID="123456"
+EVENT_ID="123456"
+GROUP_EVENT_ID= "123456" # class events are not tested 
 CLASS_MESSAGE_ID="123456"
 CLASS_MESSAGE_PAGE_ID="2"
 GROUP_MESSAGE_ID="123456"
@@ -201,6 +204,15 @@ Execute the following:
 $ cd sardonyx-server
 $ npm install 
 $ npm run client
+```
+
+Make sure that the server starts properly:
+```
+$ npm start
+```
+
+Then, deploy.
+```
 $ gcloud app deploy
 ```
 
