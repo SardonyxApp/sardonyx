@@ -10,11 +10,11 @@ import {
 import { Icon } from 'react-native-elements';
 
 import ManagebacOverviewScreen from './screens/ManagebacOverviewScreen';
+import ManagebacCASScreen from './screens/ManagebacCASScreen';
 // Dummy screens
 import ManagebacCalendarScreen from './screens/ManagebacScreen';
 import ManagebacClassesScreen from './screens/ManagebacScreen';
 import ManagebacGroupsScreen from './screens/ManagebacScreen';
-import ManagebacCASScreen from './screens/ManagebacScreen';
 import MessagesScreen from './screens/SettingsScreen';
 
 import { colors } from './styles';
@@ -22,10 +22,10 @@ import { colors } from './styles';
 const ManagebacTabs = createMaterialTopTabNavigator(
   {
     Overview: ManagebacOverviewScreen,
+    CAS: ManagebacCASScreen,
     Calendar: ManagebacCalendarScreen,
     Groups: ManagebacClassesScreen,
-    Groups: ManagebacGroupsScreen,
-    CAS: ManagebacCASScreen
+    Groups: ManagebacGroupsScreen
   },
   {
     navigationOptions: {
