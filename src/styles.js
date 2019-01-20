@@ -105,4 +105,58 @@ const preset = {
   inputLine: [styles.padding10]
 };
 
-export { styles, colors, preset };
+const labelColors = (name) => {
+  let color;
+  switch (name) {
+    case 'Homework':
+      color = '#2175c6';
+      break;
+    case 'Quiz':
+      color = '#f16522';
+      break;
+    case 'Essay':
+      color = '#3333cc';
+      break;
+    case 'Deadline':
+      color = '#91181b';
+      break;
+    case 'Math IA':
+      color = '#0072bc';
+      break;
+    case 'Assignment':
+      color = '#0072bc';
+      break;
+    case 'Event':
+      color = '#009900';
+      break;
+    case 'Workshop':
+      color = '#528c00';
+      break;
+    case 'Take Home Assignment':
+      color = '#2f3192';
+      break;
+    case 'Discussion':
+      color = '#ed008c';
+      break;
+    case 'ToK':
+      color = '#3333cc';
+      break;
+    case 'Paper':
+      color = '#a2c400';
+      break;
+    case 'Summative':
+      color = '#478cfe';
+      break;
+    case 'Formative':
+      color = '#1aaf5d';
+      break;
+    case 'Extended Essay':
+      color = '#cc3333';
+      break;
+    default:
+      return;
+  }
+  return color;
+}
+
+export { styles, colors, preset, labelColors };
