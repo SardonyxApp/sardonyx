@@ -6,20 +6,20 @@ import {
   Icon
 } from 'react-native-elements';
 
-import ChatScreen from './screens/ChatScreen';
+import TasksScreen from './screens/TasksScreen';
 
 import { colors } from './styles';
 
 // Navigation stack for the Chat tab
-const ChatStack = createStackNavigator(
+const TasksStack = createStackNavigator(
   {
-    Chat: ChatScreen
+    Tasks: TasksScreen
   },
   {
     navigationOptions: {
-      tabBarLabel: 'Chat',
+      tabBarLabel: 'Tasks',
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="chat" color={tintColor} />
+        <Icon name="list" color={tintColor} />
       )
     },
     defaultNavigationOptions: {
@@ -34,4 +34,4 @@ const ChatStack = createStackNavigator(
   }
 );
 
-export default ChatStack;
+export default TasksStack;
