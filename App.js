@@ -8,7 +8,7 @@ import {
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
 import ManagebacStack from './src/ManagebacStack';
-import ChatStack from './src/ChatStack';
+import TasksStack from './src/TasksStack';
 import ProfileStack from './src/ProfileStack';
 import LoginCheckScreen from './src/screens/LoginCheckScreen';
 import LoginScreen from './src/screens/LoginScreen';
@@ -21,11 +21,11 @@ import { colors } from './src/styles';
 const AppStack = createMaterialBottomTabNavigator(
   {
     ManagebacTabs: ManagebacStack,
-    ChatTabs: ChatStack,
+    TasksTabs: TasksStack,
     ProfileTabs: ProfileStack
   },
   {
-    initialRouteName: 'ChatTabs',
+    initialRouteName: 'ManagebacTabs',
     shifting: true,
     activeColor: colors.primary,
     inactiveColor: colors.inactive,

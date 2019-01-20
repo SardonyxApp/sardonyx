@@ -5,14 +5,14 @@ import {
 } from 'react-native';
 
 
-export default class ChatScreen extends React.Component {
+export default class TasksScreen extends React.Component {
   constructor(props) {
     super(props);
   }
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Chat'
+      title: 'Tasks'
     };
   }
 
