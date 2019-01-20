@@ -68,7 +68,7 @@ export default class LoginCheckScreen extends React.Component {
 
       // Other error code
       this.props.navigation.navigate('Login', {
-        errorMessage: 'Validation failed due to an unkown error. Error code: ' + response.status
+        errorMessage: 'Validation failed due to an unknown error. Error code: ' + response.status
       });
     })
     .catch(error => {
