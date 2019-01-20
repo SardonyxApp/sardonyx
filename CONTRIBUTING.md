@@ -32,7 +32,7 @@
 # The app (mobile client)
 Tools needed:
 * Git
-* Node / NPM
+* Node 10.x or later / NPM
 * Android Studio (optional)
 * Expo Mobile App (optional)
 
@@ -48,8 +48,6 @@ Install dependencies.
 ```
 $ npm install
 ```
-
-Do NOT run `npm run audit` or change the React Native version. 
 
 ## Development
 Run development mode.
@@ -68,7 +66,7 @@ $ npm test
 ```
 
 ## Production
-This is not necessary except when releasing a new version.
+See Expo documentation. 
 
 Produce Android app.
 ```
@@ -90,7 +88,7 @@ Ejection is only necessary when native code is needed.
 # The server (backend)
 Tools needed:
 * Git
-* Node / NPM
+* Node (8.x) / NPM 
 
 ## Installation
 Clone this repository and navigate to it.
@@ -202,8 +200,8 @@ Navigate to `App Engine` and open the shell.
 Execute the following:
 ```
 $ cd sardonyx-server
-$ npm install 
-$ npm run client
+$ npm ci
+$ npm run client 
 ```
 
 Make sure that the server starts properly:
