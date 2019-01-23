@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Dimensions } from 'react-native';
+import { Dimensions, Text } from 'react-native';
 
 import {
   createStackNavigator,
@@ -17,7 +17,7 @@ import ManagebacClassesScreen from './screens/ManagebacScreen';
 import ManagebacGroupsScreen from './screens/ManagebacScreen';
 import MessagesScreen from './screens/SettingsScreen';
 
-import { colors } from './styles';
+import { colors, fonts } from './styles';
 
 const ManagebacTabs = createMaterialTopTabNavigator(
   {
@@ -42,6 +42,9 @@ const ManagebacTabs = createMaterialTopTabNavigator(
       },
       indicatorStyle: {
         backgroundColor: colors.white
+      },
+      labelStyle: {
+        ...fonts.jost400
       }
     }
   }
@@ -54,7 +57,7 @@ const ManagebacStack = createStackNavigator(
   },
   {
     navigationOptions: {
-      tabBarLabel: 'ManageBac',
+      tabBarLabel: <Text style={fonts.jost400}>ManageBac</Text>,
       tabBarIcon: ({ tintColor }) => (
         <Icon name="globe" type={'feather'} color={tintColor} />
       )
@@ -66,7 +69,8 @@ const ManagebacStack = createStackNavigator(
       },
       headerTintColor: colors.white,
       headerTitleStyle: {
-        fontWeight: 'normal'
+        fontWeight: 'normal',
+        ...fonts.jost400
       }
     }
   }

@@ -1,14 +1,14 @@
 import React from 'react';
 
+import { Text } from 'react-native';
+
 import { createStackNavigator } from 'react-navigation';
 
-import {
-  Icon
-} from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 
 import TasksScreen from './screens/TasksScreen';
 
-import { colors } from './styles';
+import { colors, fonts } from './styles';
 
 // Navigation stack for the Chat tab
 const TasksStack = createStackNavigator(
@@ -17,10 +17,8 @@ const TasksStack = createStackNavigator(
   },
   {
     navigationOptions: {
-      tabBarLabel: 'Tasks',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="list" color={tintColor} />
-      )
+      tabBarLabel: <Text style={fonts.jost400}>Tasks</Text>,
+      tabBarIcon: ({ tintColor }) => <Icon name="dashboard" color={tintColor} />
     },
     defaultNavigationOptions: {
       headerStyle: {
@@ -28,7 +26,8 @@ const TasksStack = createStackNavigator(
       },
       headerTintColor: colors.white,
       headerTitleStyle: {
-        fontWeight: 'normal'
+        fontWeight: 'normal',
+        ...fonts.jost400
       }
     }
   }

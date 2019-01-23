@@ -8,19 +8,34 @@
 import { StyleSheet } from 'react-native';
 
 const colors = {
-  'primary': '#d17b46',
-  'secondary': '#6e4d12',
-  'black': '#332927',
-  'gray1': '#d8d8e0',
-  'gray2': '#babbc2',
-  'white': '#fff',
-  'blue': '#2977b6',
-  'error': '#f44138',
-  'inactive': '#c2c2c2',
-  'lightPrimary': '#eda67b',
-  'darkBackground': '#8c8c8b',
-  'lightBackground': '#eee'
+  primary: '#d17b46',
+  secondary: '#6e4d12',
+  black: '#332927',
+  gray1: '#d8d8e0',
+  gray2: '#babbc2',
+  white: '#fff',
+  blue: '#2977b6',
+  error: '#f44138',
+  inactive: '#c2c2c2',
+  lightPrimary: '#eda67b',
+  darkBackground: '#8c8c8b',
+  lightBackground: '#eee'
 };
+
+const fonts = StyleSheet.create({
+  jost200: {
+    fontFamily: 'Jost-200'
+  },
+  jost300: {
+    fontFamily: 'Jost-300'
+  },
+  jost400: {
+    fontFamily: 'Jost-400'
+  },
+  jost500: {
+    fontFamily: 'Jost-500'
+  }
+});
 
 /*modularized styles*/
 const styles = StyleSheet.create({
@@ -32,7 +47,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   padding20: {
-    padding:20
+    padding: 20
   },
   hidden: {
     display: 'none'
@@ -101,11 +116,17 @@ const styles = StyleSheet.create({
 
 /*useful abstractions*/
 const preset = {
-  loginBox: [styles.alignChildrenCenter, styles.lightBackground, styles.padding20, styles.width90Percent, styles.roundCorners],
+  loginBox: [
+    styles.alignChildrenCenter,
+    styles.lightBackground,
+    styles.padding20,
+    styles.width90Percent,
+    styles.roundCorners
+  ],
   inputLine: [styles.padding10]
 };
 
-const labelColors = (name) => {
+const labelColors = name => {
   let color;
   switch (name) {
     case 'Homework':
@@ -157,6 +178,6 @@ const labelColors = (name) => {
       return;
   }
   return color;
-}
+};
 
-export { styles, colors, preset, labelColors };
+export { styles, colors, preset, labelColors, fonts };

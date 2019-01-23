@@ -12,7 +12,7 @@ import {
 import { BASE_URL } from 'react-native-dotenv';
 
 import { Storage } from '../helpers';
-import { colors, labelColors } from '../styles';
+import { colors, labelColors, fonts } from '../styles';
 import { TouchableRipple } from 'react-native-paper';
 import ExtendedDeadline from '../components/ExtendedDeadline';
 
@@ -111,7 +111,7 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
   }
 
   /**
-   * Put raw deadline data into a sorted array to be used in SectionList
+   * Put raw deadline data into a array sorted by date to be used in SectionList
    * @param {Array} deadlines
    */
   _sortDeadlineArray(deadlines) {
@@ -172,10 +172,10 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           let weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
           return (
             <View style={deadlineListStyles.section}>
-              <Text style={deadlineListStyles.sectionWeekdayLabel}>
+              <Text style={[deadlineListStyles.sectionWeekdayLabel, fonts.jost400]}>
                 {weekdays[sectionTitle.getDay()]}
               </Text>
-              <Text style={deadlineListStyles.sectionDateLabel}>
+              <Text style={[deadlineListStyles.sectionDateLabel, fonts.jost400]}>
                 {sectionTitle.getDate()}
               </Text>
             </View>
@@ -213,15 +213,15 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
                   >
                     <View style={deadlineListStyles.innerBodyView}>
                       <View style={deadlineListStyles.text}>
-                        <Text style={deadlineListStyles.title}>
+                        <Text style={[deadlineListStyles.title, fonts.jost400]}>
                           {decodeURI(item.title)}
                         </Text>
-                        <Text style={deadlineListStyles.subject}>
+                        <Text style={[deadlineListStyles.subject, fonts.jost400]}>
                           {this._getGroupClassName(item.link)}
                         </Text>
                       </View>
                       <View style={deadlineListStyles.bottomInfo}>
-                        <Text style={deadlineListStyles.dueTime}>
+                        <Text style={[deadlineListStyles.dueTime, fonts.jost400]}>
                           {item.due}
                         </Text>
                         <View style={deadlineListStyles.avatars}>
