@@ -11,7 +11,7 @@ import {
 import { BASE_URL } from 'react-native-dotenv';
 
 import { Storage } from '../helpers';
-import { styles, colors } from '../styles';
+import { styles, colors, fonts } from '../styles';
 
 export default class LoginCheckScreen extends React.Component {
   constructor(props) {
@@ -84,7 +84,7 @@ export default class LoginCheckScreen extends React.Component {
     return (
       <View style={[styles.alignChildrenCenter, styles.fullScreen]}>
         <Image source={require('../logos/Icon.png')} style={styles.logoIcon} />
-        <Text>Recovering session if it exists...</Text>
+        <Text style={fonts.jost400}>Recovering session if it exists...</Text>
         <ActivityIndicator color={colors.primary}/>
         <StatusBar hidden={true} />
       </View>

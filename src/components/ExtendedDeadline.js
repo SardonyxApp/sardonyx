@@ -11,7 +11,7 @@ import {
 import { BASE_URL } from 'react-native-dotenv';
 
 import { Storage } from '../helpers';
-import { labelColors, colors } from '../styles';
+import { labelColors, colors, fonts } from '../styles';
 import HTMLView from 'react-native-htmlview';
 
 export default class ExtendedDeadline extends React.Component {
@@ -67,7 +67,7 @@ export default class ExtendedDeadline extends React.Component {
         key={index}
         style={{ ...extendedDeadlineStyles.label, backgroundColor: color }}
       >
-        <Text style={extendedDeadlineStyles.labelText}>{name.toUpperCase()}</Text>
+        <Text style={[extendedDeadlineStyles.labelText, fonts.jost400]}>{name.toUpperCase()}</Text>
       </View>
     );
   }
@@ -76,7 +76,7 @@ export default class ExtendedDeadline extends React.Component {
     return (
       <View {...this.props}>
         {this.state.refreshing && (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color={colors.blue} />
         )}
         {!this.state.refreshing && (
           <View>
@@ -84,7 +84,7 @@ export default class ExtendedDeadline extends React.Component {
               {this.state.detail.labels.map(this._renderLabel)}
             </View>
             <HTMLView
-              value={this.state.detail.details}
+              value={this.state.detail.details || ''}
               stylesheet={htmlStyles}
             />
           </View>
@@ -112,6 +112,7 @@ const extendedDeadlineStyles = StyleSheet.create({
 
 const htmlStyles = StyleSheet.create({
   p: {
-    fontSize: 12
+    fontSize: 14,
+    ...fonts.jost400
   }
 });

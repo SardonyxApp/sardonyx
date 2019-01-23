@@ -7,6 +7,8 @@ import {
 
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
+import { Font } from 'expo';
+
 import ManagebacStack from './src/ManagebacStack';
 import TasksStack from './src/TasksStack';
 import ProfileStack from './src/ProfileStack';
@@ -54,22 +56,46 @@ const LoginStack = createStackNavigator(
 // Switch navigators make sure the app nav stack and auth nav stack are two different things
 // and that you can't back-button into one another
 const AppContainer = createAppContainer(
-  createSwitchNavigator({
-    // Make sure no names for screens overlap (e.g. LoginStack and Login), since they are unique
-    //  identifiers that can be navigated to from anywhere in the app
-    LoginCheck: LoginCheckScreen,
-    AppStack: AppStack, // navigators can contain navigators
-    LoginStack: LoginStack
-  },
-  {
-    initialRouteName: 'LoginCheck'
-  })
+  createSwitchNavigator(
+    {
+      // Make sure no names for screens overlap (e.g. LoginStack and Login), since they are unique
+      //  identifiers that can be navigated to from anywhere in the app
+      LoginCheck: LoginCheckScreen,
+      AppStack: AppStack, // navigators can contain navigators
+      LoginStack: LoginStack
+    },
+    {
+      initialRouteName: 'LoginCheck'
+    }
+  )
 );
 
 export default class Root extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      fontLoaded: false
+    };
+  }
+
+  componentDidMount() {
+    Font.loadAsync({
+      'Jost-200': require('./src/assets/Jost-200-Thin.otf'),
+      'Jost-300': require('./src/assets/Jost-300-Light.otf'),
+      'Jost-400': require('./src/assets/Jost-400-Book.otf'),
+      'Jost-500': require('./src/assets/Jost-500-Medium.otf')
+    }).then(() => {
+      this.setState({
+        fontLoaded: true
+      });
+    });
+  }
   // I'm sure we're going to have to use state managers like Redux, and when that happens,
   // wrap this AppContainer in a Store Provider.
   render() {
-    return (<AppContainer />);
+    return this.state.fontLoaded && <AppContainer />;
   }
 }
+
+Expo.registerRootComponent(Root);

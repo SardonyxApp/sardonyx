@@ -1,14 +1,10 @@
 import React from 'react';
 
-import {
-  View,
-} from 'react-native';
+import { View } from 'react-native';
 
-import { 
-  Button
-} from 'react-native-elements';
+import { Button } from 'react-native-elements';
 
-import { colors, styles } from '../styles';
+import { colors, styles, fonts } from '../styles';
 
 export default class SettingsScreen extends React.Component {
   constructor(props) {
@@ -25,10 +21,11 @@ export default class SettingsScreen extends React.Component {
       },
       headerTintColor: colors.white,
       headerTitleStyle: {
-        fontWeight: 'normal'
+        fontWeight: 'normal',
+        ...fonts.jost400
       }
-    }
-  }
+    };
+  };
 
   handleLogout() {
     this.props.navigation.navigate('Logout');
@@ -37,10 +34,10 @@ export default class SettingsScreen extends React.Component {
   render() {
     return (
       <View>
-        <Button 
-          title='Log out' 
+        <Button
+          title="Log out"
           onPress={this.handleLogout}
-          backgroundColor={colors.primary} 
+          backgroundColor={colors.primary}
           containerViewStyle={styles.padding10}
         />
       </View>
