@@ -19,7 +19,7 @@ const colors = {
   inactive: '#c2c2c2',
   lightPrimary: '#eda67b',
   darkBackground: '#8c8c8b',
-  lightBackground: '#eee'
+  lightBackground: '#f8f8fa'
 };
 
 const fonts = StyleSheet.create({
