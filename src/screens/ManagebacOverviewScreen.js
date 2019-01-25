@@ -12,7 +12,7 @@ import {
 import { BASE_URL } from 'react-native-dotenv';
 
 import { Storage } from '../helpers';
-import { colors, labelColors, fonts } from '../styles';
+import { colors, labelColors, fonts, styles } from '../styles';
 import { TouchableRipple } from 'react-native-paper';
 import ExtendedDeadline from '../components/ExtendedDeadline';
 
@@ -94,8 +94,7 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
               this.setState({
                 refreshing: false
               });
-            })
-            .catch(() => {});
+            });
           return;
         }
       });
@@ -159,7 +158,9 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
 
     return (
       <SectionList
-        contentContainerStyle={deadlineListStyles.list}
+        contentContainerStyle={
+          [deadlineListStyles.list, styles.lightBackground]
+        }
         sections={this.state.deadlines}
         refreshControl={
           <RefreshControl
@@ -172,10 +173,14 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           let weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
           return (
             <View style={deadlineListStyles.section}>
-              <Text style={[deadlineListStyles.sectionWeekdayLabel, fonts.jost400]}>
+              <Text
+                style={[deadlineListStyles.sectionWeekdayLabel, fonts.jost400]}
+              >
                 {weekdays[sectionTitle.getDay()]}
               </Text>
-              <Text style={[deadlineListStyles.sectionDateLabel, fonts.jost400]}>
+              <Text
+                style={[deadlineListStyles.sectionDateLabel, fonts.jost400]}
+              >
                 {sectionTitle.getDate()}
               </Text>
             </View>
@@ -216,12 +221,16 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
                         <Text style={[deadlineListStyles.title, fonts.jost400]}>
                           {decodeURI(item.title)}
                         </Text>
-                        <Text style={[deadlineListStyles.subject, fonts.jost400]}>
+                        <Text
+                          style={[deadlineListStyles.subject, fonts.jost400]}
+                        >
                           {this._getGroupClassName(item.link)}
                         </Text>
                       </View>
                       <View style={deadlineListStyles.bottomInfo}>
-                        <Text style={[deadlineListStyles.dueTime, fonts.jost400]}>
+                        <Text
+                          style={[deadlineListStyles.dueTime, fonts.jost400]}
+                        >
                           {item.due}
                         </Text>
                         <View style={deadlineListStyles.avatars}>
@@ -254,7 +263,6 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
 
 const deadlineListStyles = StyleSheet.create({
   list: {
-    backgroundColor: '#f8f8fa',
     paddingBottom: 24,
     minHeight: '100%'
   },
