@@ -37,7 +37,6 @@ export default class UpcomingExpandableCard extends ExpandableCard {
    * @param {String} link 
    */
   _getGroupClassName(link) {
-    console.log(link);
     let groupClass = this.props.allGroupsAndClasses.find(item => {
       return link.includes(item.link.slice(0, -9)); // Remove the /overview bit
     });
