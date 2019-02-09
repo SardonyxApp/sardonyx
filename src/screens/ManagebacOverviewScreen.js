@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {
-  View,
   ScrollView,
   RefreshControl
 } from 'react-native';
@@ -9,9 +8,8 @@ import {
 import { BASE_URL } from 'react-native-dotenv';
 
 import { Storage } from '../helpers';
-import { colors, labelColors, fonts, styles } from '../styles';
 import UpcomingExpandableCard from '../components/UpcomingExpandableCard';
-import CASExpandableCard from '../components/UpcomingExpandableCard';
+import CASExpandableCard from '../components/CASExpandableCard';
 import ClassesExpandableCard from '../components/UpcomingExpandableCard';
 import GroupsExpandableCard from '../components/UpcomingExpandableCard';
 
@@ -37,7 +35,6 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
   componentDidMount() {
     this._getOverviewData().then(data => {
       console.log(data);
-      sortedDeadlines = this._sortDeadlineArray(data.deadlines);
       this.setState({
         refreshing: false,
         upcomingEvents: data.deadlines,
@@ -108,28 +105,6 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
     return sorted;
   }
 
-  /**
-   * Return a <View /> styled with the name as an identifier, and set index as its index in list
-   * @param {String} name
-   * @param {Integer} index
-   */
-  _renderLabel(name, index) {
-    let color = labelColors(name);
-    return (
-      <View
-        key={index}
-        style={{ ...deadlineListStyles.label, backgroundColor: color }}
-      />
-    );
-  }
-
-  _getGroupClassName(link) {
-    let groupClass = this.state.allGroupsClasses.find(item => {
-      return link.includes(item.link);
-    });
-    return groupClass ? decodeURI(groupClass.title) : '';
-  }
-
   render() {
     return (
       <ScrollView
@@ -140,7 +115,7 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
         }
       >
         <UpcomingExpandableCard upcomingEvents={this.state.upcomingEvents} allGroupsAndClasses={[...this.state.classList, ...this.state.groupList]} title="UPCOMING" />
-        <CASExpandableCard />
+        <CASExpandableCard title="CAS EXPERIENCES" />
         <ClassesExpandableCard classList={this.state.classList} />
         <GroupsExpandableCard groupList={this.state.groupList} />
       </ScrollView>
