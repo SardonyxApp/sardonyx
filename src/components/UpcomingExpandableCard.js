@@ -3,8 +3,6 @@ import React from 'react';
 import { FlatList } from 'react-native';
 
 import { List } from 'react-native-paper';
-import { fonts } from '../styles';
-
 import ExpandableCard from './ExpandableCard';
 
 export default class UpcomingExpandableCard extends ExpandableCard {
@@ -52,8 +50,7 @@ export default class UpcomingExpandableCard extends ExpandableCard {
           <List.Item 
             left={props => <List.Icon {...props} icon="event"/>}
             title={decodeURI(item.title)}
-            description={'due in ' + this._calculateTimeTo(Date.parse(item.due), Date.now()) + ' • ' + this._getGroupClassName(item.link)}
-            style={fonts.jost400}/>
+            description={'due in ' + this._calculateTimeTo(Date.parse(item.due), Date.now()) + ' • ' + this._getGroupClassName(item.link)} />
         )}/>
     );
   }
