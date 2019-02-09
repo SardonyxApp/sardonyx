@@ -10,6 +10,9 @@ import ExpandableCard from './ExpandableCard';
 export default class UpcomingExpandableCard extends ExpandableCard {
   constructor(props) {
     super(props);
+    this.state = {
+      expanded: true
+    }
     this._getGroupClassName = this._getGroupClassName.bind(this);
   }
 
