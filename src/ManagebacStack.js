@@ -3,59 +3,32 @@ import React from 'react';
 import { Dimensions, Text } from 'react-native';
 
 import {
-  createStackNavigator,
-  createMaterialTopTabNavigator
+  createStackNavigator
 } from 'react-navigation';
 
 import { Icon } from 'react-native-elements';
 
+import ManagebacAlertsScreen from './screens/ManagebacAlertsScreen';
 import ManagebacOverviewScreen from './screens/ManagebacOverviewScreen';
+import ManagebacEventScreen from './screens/ManagebacEventScreen';
 import ManagebacCASScreen from './screens/ManagebacCASScreen';
-// Dummy screens
-import ManagebacCalendarScreen from './screens/ManagebacScreen';
-import ManagebacClassesScreen from './screens/ManagebacScreen';
-import ManagebacGroupsScreen from './screens/ManagebacScreen';
-import MessagesScreen from './screens/SettingsScreen';
+import ManagebacClassScreen from './screens/ManagebacClassScreen';
+import ManagebacGroupScreen from './screens/ManagebacGroupScreen';
 
 import { colors, fonts } from './styles';
 
-const ManagebacTabs = createMaterialTopTabNavigator(
-  {
-    Overview: ManagebacOverviewScreen,
-    CAS: ManagebacCASScreen,
-    Calendar: ManagebacCalendarScreen,
-    Groups: ManagebacClassesScreen,
-    Groups: ManagebacGroupsScreen
-  },
-  {
-    navigationOptions: {
-      title: 'ManageBac'
-    },
-    initialLayout: {
-      height: 0,
-      width: Dimensions.get('window').width
-    },
-    tabBarOptions: {
-      scrollEnabled: true,
-      style: {
-        backgroundColor: colors.blue
-      },
-      indicatorStyle: {
-        backgroundColor: colors.white
-      },
-      labelStyle: {
-        ...fonts.jost400
-      }
-    }
-  }
-);
 // Navigation stack for the Managebac tab
 const ManagebacStack = createStackNavigator(
   {
-    Managebac: ManagebacTabs,
-    Messages: MessagesScreen
+    Messages: ManagebacAlertsScreen,
+    Overview: ManagebacOverviewScreen,
+    UpcomingEventItem: ManagebacEventScreen,
+    CASItem: ManagebacCASScreen,
+    ClassItem: ManagebacClassScreen,
+    GroupItem: ManagebacGroupScreen
   },
   {
+    initialRouteName: 'Overview',
     navigationOptions: {
       tabBarLabel: <Text style={fonts.jost400}>ManageBac</Text>,
       tabBarIcon: ({ tintColor }) => (
@@ -64,8 +37,7 @@ const ManagebacStack = createStackNavigator(
     },
     defaultNavigationOptions: {
       headerStyle: {
-        backgroundColor: colors.blue,
-        elevation: 0
+        backgroundColor: colors.blue
       },
       headerTintColor: colors.white,
       headerTitleStyle: {
