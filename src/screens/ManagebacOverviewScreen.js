@@ -114,8 +114,16 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
             onRefresh={this._onRefresh} />
         }
       >
-        <UpcomingExpandableCard upcomingEvents={this.state.upcomingEvents} allGroupsAndClasses={[...this.state.classList, ...this.state.groupList]} title="UPCOMING" />
-        <CASExpandableCard title="CAS EXPERIENCES" />
+        <UpcomingExpandableCard
+          upcomingEvents={this.state.upcomingEvents}
+          allGroupsAndClasses={[...this.state.classList, ...this.state.groupList]}
+          title="UPCOMING"
+          navigation={this.props.navigation}
+          />
+        <CASExpandableCard
+          title="CAS EXPERIENCES"
+          navigation={this.props.navigation}
+          />
         <ClassesExpandableCard classList={this.state.classList} />
         <GroupsExpandableCard groupList={this.state.groupList} />
       </ScrollView>
