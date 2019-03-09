@@ -5,7 +5,7 @@ import { FlatList } from 'react-native';
 import { BASE_URL } from 'react-native-dotenv';
 
 import { Storage } from '../helpers';
-import { List } from 'react-native-paper';
+import { List, TouchableRipple } from 'react-native-paper';
 import ExpandableCard from './ExpandableCard';
 
 export default class CASExpandableCard extends ExpandableCard {
@@ -14,6 +14,7 @@ export default class CASExpandableCard extends ExpandableCard {
     this.state = {
       casExperiences: []
     }
+    this._navigateToCASScreen = this._navigateToCASScreen.bind(this);
   }
 
   componentDidMount() {
@@ -50,16 +51,27 @@ export default class CASExpandableCard extends ExpandableCard {
     }
   }
 
+  _navigateToCASScreen(link, title) {
+    this.props.navigation.navigate('CASItem', {
+      apiLink: link,
+      title
+    });
+  }
+
   _renderList() {
     return (
       <FlatList
         data={this.state.casExperiences.cas}
         keyExtractor={(item) => item.link}
         renderItem={({item}) => (
-          <List.Item
-            left={props => <List.Icon {...props} icon={this._getIconName(item.status)} />}
-            title={decodeURI(item.title)}
-            description={item.reflectionCount + (item.project ? ' • PROJECT' : '')}/>
+          <TouchableRipple 
+            onPress={() => this._navigateToCASScreen(item.link, decodeURI(item.title))}
+            rippleColor="rgba(0, 0, 0, .16)">
+            <List.Item
+              left={props => <List.Icon {...props} icon={this._getIconName(item.status)} />}
+              title={decodeURI(item.title)}
+              description={item.reflectionCount + (item.project ? ' • PROJECT' : '')}/>
+          </TouchableRipple>
         )} />
     );
   }
