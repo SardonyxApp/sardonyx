@@ -89,6 +89,11 @@ Ejection is only necessary when native code is needed.
 Tools needed:
 * Git
 * Node (8.x) / NPM 
+* MySQL (5.x)
+
+Node 10.x is known to have testing problems. 
+
+If you are using MySQL 8.x, make sure that it can authorize using `mysql_native_password`.
 
 ## Installation
 Clone this repository and navigate to it.
@@ -96,20 +101,39 @@ Clone this repository and navigate to it.
 $ git clone https://github.com/SardonyxApp/sardonyx-server.git
 $ cd sardonyx-server
 ```
+
 Install dependencies.
 ```
 $ npm install
 ```
-Make and edit a .env file. (`touch` and `vi` command only available on Bash: on windows, just use a text editor)
+
+Open the mysql prompt (steps may differ), and create the database.
+```
+$ mysql -h localhost -u root -p
+mysql > CREATE DATABASE sardonyx;
+mysql > USE sardonyx;
+mysql > source /path/to/setup.sql
+```
+
+Navigate to the `sardonyx-server` directory, create and edit a .env file. (`touch` and `vi` command only available on Bash: on windows, just use a text editor)
 ```
 $ touch .env
 $ vi .env
 ```
-Define `PORT` as appropriate.
+
+Define environment variables as appropriate.
 ```sh
 PORT=3000
+PRIVATE_KEY="abcdef" # Used to encode JWTs
+MODE="development" # Options: development or production 
+
+DB_HOST="localhost"
+DB_LOGIN="root" # Or however you have set the database up in your machine
+DB_PASSWORD="root" 
+DB_DATABASE="sardonyx" # Name of the database 
 ```
-Check the server.js file and define any other variables necessary. Variables in `.env` are referred to as `process.env.VARIABLE_NAME`.
+
+Check the server files and define any other variables necessary. Variables in `.env` are referred to as `process.env.VARIABLE_NAME`.
 
 ## Development
 ### Front End 
@@ -151,7 +175,7 @@ PASSWORD="foobar1234"
 # Managebac cookies 
 CFDUID="cfduid=foobar"
 MANAGEBAC_SESSION="_managebac_session=foobar"
-CSRF_TOKEN="foobar"
+AUTHENTICITY_TOKEN="foobar"
 
 # Pages that you want to test 
 CLASS_ID="123456"
@@ -197,6 +221,8 @@ Do not deploy broken builds. Deploy with extra care. Code can be tested with con
 Login to [Google Cloud Platform](https://console.cloud.google.com).
 
 Navigate to `App Engine` and open the shell.
+
+Make sure the `.env` file is defined properly, as listed in the Installation and Testing sections above.
 
 Execute the following:
 ```
