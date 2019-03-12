@@ -2,9 +2,7 @@ import React from 'react';
 
 import { Dimensions, Text } from 'react-native';
 
-import {
-  createStackNavigator
-} from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 
 import { Icon } from 'react-native-elements';
 
@@ -29,11 +27,24 @@ const ManagebacStack = createStackNavigator(
   },
   {
     initialRouteName: 'Overview',
-    navigationOptions: {
-      tabBarLabel: <Text style={fonts.jost400}>ManageBac</Text>,
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="globe" type={'feather'} color={tintColor} />
-      )
+    navigationOptions: ({ navigation }) => {
+      let tabBarVisible;
+      if (navigation.state.routes.length > 1) {
+        navigation.state.routes.map(route => {
+          if (route.routeName === 'UpcomingEventItem') {
+            tabBarVisible = false;
+          } else {
+            tabBarVisible = true;
+          }
+        });
+      }
+      return {
+        tabBarLabel: <Text style={fonts.jost400}>ManageBac</Text>,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="globe" type={'feather'} color={tintColor} />
+        ),
+        tabBarVisible
+      };
     },
     defaultNavigationOptions: {
       headerStyle: {
