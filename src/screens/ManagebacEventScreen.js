@@ -1,19 +1,172 @@
 import React from 'react';
 
-import { View } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  RefreshControl,
+  Alert,
+  ScrollView,
+  FlatList
+} from 'react-native';
+
+import { BASE_URL } from 'react-native-dotenv';
+
+import HTML from 'react-native-render-html';
+import { Storage } from '../helpers';
+import { styles, fonts, colors } from '../styles';
+import CalendarDate from '../components/CalendarDate';
 
 export default class ManagebacEventScreen extends React.Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
+    this.state = {
+      refreshing: true,
+      upcomingEventData: {}
+    };
+    this._onRefresh = this._onRefresh.bind(this);
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+    this._onRefresh();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Event'
+      title: `${navigation.state.params.groupClassName}`
     };
   };
 
+  _onRefresh() {
+    this.setState(
+      {
+        refreshing: true
+      },
+      () => {
+        Storage.retrieveCredentials().then(credentials => {
+          fetch(BASE_URL + this.props.navigation.getParam('link', '/404'), {
+            method: 'GET',
+            headers: {
+              'Login-Token': credentials
+            },
+            mode: 'no-cors'
+          }).then(response => {
+            if (!this._isMounted) return;
+            if (response.status === 200) {
+              this.setState({
+                refreshing: false,
+                upcomingEventData: JSON.parse(
+                  response.headers.map['managebac-data']
+                ).assignment
+              });
+              return;
+            } else if (response.status === 404) {
+              Alert.alert('Not Found', 'Your Event could not be found.', []);
+              this.props.navigation.goBack();
+              return;
+            }
+          });
+        });
+      }
+    );
+  }
+
+  _renderLabels({ item }) {
+    return <Text style={eventStyles.label}>{item}</Text>;
+  }
+
   render() {
-    return <View />;
+    return (
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          />
+        }
+      >
+        <View style={eventStyles.basicInfo}>
+          <CalendarDate
+            date={
+              'due' in this.state.upcomingEventData
+                ? new Date(Date.parse(this.state.upcomingEventData.due))
+                : new Date(
+                    Date.parse(this.props.navigation.getParam('due', ''))
+                  )
+            }
+          />
+          <View style={eventStyles.textInfo}>
+            <View style={eventStyles.eventTitle}>
+              <Text numberOfLines={1} style={eventStyles.titleText}>
+                {'title' in this.state.upcomingEventData
+                  ? decodeURI(this.state.upcomingEventData.title)
+                  : this.props.navigation.getParam('title', '')}
+              </Text>
+            </View>
+            <View>
+              <FlatList
+                data={this.state.upcomingEventData.labels}
+                renderItem={this._renderLabels}
+                contentContainerStyle={eventStyles.labelContainer}
+                keyExtractor={item => {
+                  return item;
+                }}
+              />
+              <View />
+            </View>
+          </View>
+        </View>
+        <View style={eventStyles.detailsContainer}>
+          <HTML
+            style={eventStyles.details}
+            html={
+              'details' in this.state.upcomingEventData
+                ? this.state.upcomingEventData.details
+                : '<p />'
+            }
+          />
+        </View>
+      </ScrollView>
+    );
   }
 }
+
+const eventStyles = StyleSheet.create({
+  basicInfo: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  textInfo: {
+    flex: 1,
+    flexDirection: 'column',
+    paddingVertical: 16,
+    marginRight: 16
+  },
+  eventTitle: {
+    height: 36,
+    justifyContent: 'center'
+  },
+  titleText: {
+    fontSize: 18
+  },
+  labelContainer: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  label: {
+    backgroundColor: colors.lightPrimary,
+    paddingVertical: 2,
+    paddingHorizontal: 8
+  },
+  detailsContainer: {
+    marginHorizontal: 16
+  },
+  details: {}
+});
