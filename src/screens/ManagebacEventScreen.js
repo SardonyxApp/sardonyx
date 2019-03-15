@@ -16,6 +16,7 @@ import HTML from 'react-native-render-html';
 import { Storage } from '../helpers';
 import { styles, fonts, colors } from '../styles';
 import CalendarDate from '../components/CalendarDate';
+import NearDeadlineWarning from '../components/NearDeadlineWarning';
 
 export default class ManagebacEventScreen extends React.Component {
   _isMounted = false;
@@ -44,6 +45,9 @@ export default class ManagebacEventScreen extends React.Component {
     };
   };
 
+  /**
+   * Called on load, and on pull-to-refresh. Asynchronously sets the state using newest event data.
+   */
   _onRefresh() {
     this.setState(
       {
@@ -78,8 +82,43 @@ export default class ManagebacEventScreen extends React.Component {
     );
   }
 
+  /**
+   * Returns a component that forms a single label. The color depends on the subject.
+   * This functions is called in renderItem={}.
+   * @param {{String}} {item} 
+   * @return {React.Component}
+   */
   _renderLabels({ item }) {
-    return <Text style={eventStyles.label}>{item}</Text>;
+    return (
+      <View
+        style={[
+          eventStyles.label,
+          {
+            backgroundColor: colors.lightPrimary //temporary color
+          }
+        ]}
+      >
+        <Text style={eventStyles.labelText}>{item}</Text>
+      </View>
+    );
+  }
+
+  /**
+   * Return the string 'HH:mm' in 24-hour format using the 'due' key from the event data in the
+   * state or the navigation parameter.
+   * @return {String}
+   */
+  _getDueTime() {
+    let parsedDate;
+    if ('due' in this.state.upcomingEventData) {
+      parsedDate = new Date(Date.parse(this.state.upcomingEventData.due));
+    } else {
+      parsedDate = new Date(
+        Date.parse(this.props.navigation.getParam('due', ''))
+      );
+    }
+    if (!parsedDate) return 'All-day';
+    return ('0' + parsedDate.getHours()).slice(-2) + ':' + ('0' + parsedDate.getMinutes()).slice(-2);
   }
 
   render() {
@@ -110,7 +149,8 @@ export default class ManagebacEventScreen extends React.Component {
                   : this.props.navigation.getParam('title', '')}
               </Text>
             </View>
-            <View>
+            <View style={eventStyles.timeAndLabels}>
+              <Text style={eventStyles.dueTime}>{this._getDueTime()}</Text>
               <FlatList
                 data={this.state.upcomingEventData.labels}
                 renderItem={this._renderLabels}
@@ -122,6 +162,16 @@ export default class ManagebacEventScreen extends React.Component {
               <View />
             </View>
           </View>
+        </View>
+        <View style={eventStyles.warnings}>
+          <NearDeadlineWarning date={
+            'due' in this.state.upcomingEventData
+              ? new Date(Date.parse(this.state.upcomingEventData.due))
+              : new Date(
+                Date.parse(this.props.navigation.getParam('due', ''))
+              )
+          }
+          />
         </View>
         <View style={eventStyles.detailsContainer}>
           <HTML
@@ -156,14 +206,27 @@ const eventStyles = StyleSheet.create({
   titleText: {
     fontSize: 18
   },
+  timeAndLabels: {
+    flexDirection: 'row'
+  },
+  dueTime: {
+    paddingVertical: 2,
+    marginRight: 8
+  },
   labelContainer: {
     flex: 1,
     flexDirection: 'row'
   },
   label: {
-    backgroundColor: colors.lightPrimary,
     paddingVertical: 2,
-    paddingHorizontal: 8
+    paddingHorizontal: 8,
+    marginRight: 4
+  },
+  labelText: {
+    ...fonts.jost400
+  },
+  warnings: {
+    flexDirection: 'column'
   },
   detailsContainer: {
     marginHorizontal: 16
