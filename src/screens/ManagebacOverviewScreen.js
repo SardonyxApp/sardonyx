@@ -75,6 +75,10 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
     });
   }
 
+  /**
+   * Asynchronous function that returns a Promise for getting overview data.
+   * @return {Promise}
+   */
   _getOverviewData() {
     return new Promise(resolve => {
       Storage.retrieveValue('managebacOverview').then(data => {
