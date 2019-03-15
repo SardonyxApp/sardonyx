@@ -18,6 +18,7 @@ const colors = {
   error: '#f44138',
   inactive: '#c2c2c2',
   lightPrimary: '#eda67b',
+  lightPrimary2: '#f1e3db',
   darkBackground: '#8c8c8b',
   lightBackground: '#f8f8fa'
 };
