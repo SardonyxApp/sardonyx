@@ -36,6 +36,10 @@ export default class CASExpandableCard extends ExpandableCard {
     });
   }
 
+  /**
+   * Returns MaterialIcons icon names depending on experience status.
+   * @param {String} status
+   */
   _getIconName(status) {
     switch (status) {
       case 'complete':
@@ -48,6 +52,29 @@ export default class CASExpandableCard extends ExpandableCard {
         return 'access-time';
       default:
         return 'help-outline';
+    }
+  }
+
+  /**
+   * Returns hex color codes for icons depending on experience status. These are taken from
+   * the SVG data on the CAS list page.
+   * Returns an object instead of a string because there cannot be an empty string for the 
+   * 'default' color - and we have to get rid of the color key entirely.
+   * @param {String} status
+   * @return {Object}
+   */
+  _getIconColor(status) {
+    switch (status) {
+      case 'complete':
+        return { color: '#1ECD6E'};
+      case 'approved':
+        return { color: '#478CFE'};
+      case 'rejected':
+        return { color: '#e94b35'};
+      case 'needs_approval':
+        return { color: '#f59d00'};
+      default:
+        return {};
     }
   }
 
@@ -72,11 +99,17 @@ export default class CASExpandableCard extends ExpandableCard {
           >
             <List.Item
               left={props => (
-                <List.Icon {...props} icon={this._getIconName(item.status)} />
+                <List.Icon
+                  {...props}
+                  icon={this._getIconName(item.status)}
+                  {...this._getIconColor(item.status)}
+                />
               )}
               title={decodeURI(item.title)}
               description={
-                (item.reflectionCount ? item.reflectionCount : '0 reflections') + (item.project ? ' • PROJECT' : '')
+                (item.reflectionCount
+                  ? item.reflectionCount
+                  : '0 reflections') + (item.project ? ' • PROJECT' : '')
               }
             />
           </TouchableRipple>
