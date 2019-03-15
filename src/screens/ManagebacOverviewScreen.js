@@ -10,7 +10,7 @@ import { BASE_URL } from 'react-native-dotenv';
 import { Storage } from '../helpers';
 import UpcomingExpandableCard from '../components/UpcomingExpandableCard';
 import CASExpandableCard from '../components/CASExpandableCard';
-import ClassesExpandableCard from '../components/UpcomingExpandableCard';
+import ClassesExpandableCard from '../components/ClassesExpandableCard';
 import GroupsExpandableCard from '../components/UpcomingExpandableCard';
 
 export default class ManagebacOverviewScreen extends React.PureComponent {
@@ -128,7 +128,11 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           title="CAS EXPERIENCES"
           navigation={this.props.navigation}
           />
-        <ClassesExpandableCard classList={this.state.classList} />
+        <ClassesExpandableCard 
+          title="CLASSES"
+          classList={this.state.classList}
+          navigation={this.props.navigation}
+          />
         <GroupsExpandableCard groupList={this.state.groupList} />
       </ScrollView>
     );
