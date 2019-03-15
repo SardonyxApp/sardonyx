@@ -13,7 +13,7 @@ export default class CASExpandableCard extends ExpandableCard {
     super(props);
     this.state = {
       casExperiences: []
-    }
+    };
     this._navigateToCASScreen = this._navigateToCASScreen.bind(this);
   }
 
@@ -37,17 +37,17 @@ export default class CASExpandableCard extends ExpandableCard {
   }
 
   _getIconName(status) {
-    switch(status) {
+    switch (status) {
       case 'complete':
         return 'check';
       case 'approved':
         return 'thumb-up';
       case 'rejected':
         return 'cancel';
-      case 'needs approval':
-        return 'clock-outline';
+      case 'needs_approval':
+        return 'access-time';
       default:
-        return 'help-circle';
+        return 'help-outline';
     }
   }
 
@@ -62,17 +62,26 @@ export default class CASExpandableCard extends ExpandableCard {
     return (
       <FlatList
         data={this.state.casExperiences.cas}
-        keyExtractor={(item) => item.link}
-        renderItem={({item}) => (
-          <TouchableRipple 
-            onPress={() => this._navigateToCASScreen(item.link, decodeURI(item.title))}
-            rippleColor="rgba(0, 0, 0, .16)">
+        keyExtractor={item => item.link}
+        renderItem={({ item }) => (
+          <TouchableRipple
+            onPress={() =>
+              this._navigateToCASScreen(item.link, decodeURI(item.title))
+            }
+            rippleColor="rgba(0, 0, 0, .16)"
+          >
             <List.Item
-              left={props => <List.Icon {...props} icon={this._getIconName(item.status)} />}
+              left={props => (
+                <List.Icon {...props} icon={this._getIconName(item.status)} />
+              )}
               title={decodeURI(item.title)}
-              description={item.reflectionCount + (item.project ? ' • PROJECT' : '')}/>
+              description={
+                (item.reflectionCount ? item.reflectionCount : '0 reflections') + (item.project ? ' • PROJECT' : '')
+              }
+            />
           </TouchableRipple>
-        )} />
+        )}
+      />
     );
   }
 }
