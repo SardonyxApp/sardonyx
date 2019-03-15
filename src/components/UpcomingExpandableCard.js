@@ -4,6 +4,7 @@ import { FlatList } from 'react-native';
 
 import { List, TouchableRipple } from 'react-native-paper';
 import ExpandableCard from './ExpandableCard';
+import { colors } from '../styles';
 
 export default class UpcomingExpandableCard extends ExpandableCard {
   constructor(props) {
@@ -52,6 +53,16 @@ export default class UpcomingExpandableCard extends ExpandableCard {
     });
   }
 
+  /**
+   * Returns a red color in object form if the due date is within a day. Otherwise remove the
+   * color parameter altogether from List.Icon.
+   * @param {String} due 
+   */
+  _iconColor(due) {
+    if (Date.parse(due) - Date.now() < 24 * 60 * 60 * 1000) return { color: colors.error};
+    return {};
+  }
+
   _renderList() {
     return (
       <FlatList
@@ -63,7 +74,7 @@ export default class UpcomingExpandableCard extends ExpandableCard {
             rippleColor="rgba(0, 0, 0, .16)"
           >
             <List.Item
-              left={props => <List.Icon {...props} icon="event" />}
+              left={props => <List.Icon {...props} icon="event" {...this._iconColor(item.due)}/>}
               title={decodeURI(item.title)}
               description={
                 'due in ' +
