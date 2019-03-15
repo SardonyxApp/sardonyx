@@ -74,7 +74,7 @@ const cardStyles = StyleSheet.create({
   },
   titleText: {
     flex: 1,
-    ...fonts.jost300,
+    ...fonts.jost400,
     fontSize: 14
   },
   titleIcon: {
