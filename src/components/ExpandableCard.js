@@ -37,7 +37,7 @@ export default class ExpandableCard extends React.PureComponent {
           <View style={cardStyles.title}>
             <Text style={cardStyles.titleText}>{this.props.title}</Text>
             <Icon style={cardStyles.titleIcon} name={
-              this.state.expanded ? "expand-less" : "expand-more"
+              this.state.expanded ? 'expand-less' : 'expand-more'
              } color={colors.blue} onPress={this._toggleCard}/>
           </View>
         </TouchableRipple>
@@ -61,9 +61,6 @@ const cardStyles = StyleSheet.create({
   },
   hidden: {
     height: 0
-  },
-  shown: {
-
   },
   title: {
     marginHorizontal: 24,
