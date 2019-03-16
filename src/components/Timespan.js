@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
-import { fonts, colors } from '../styles';
+import { colors } from '../styles';
 import CalendarDate from './CalendarDate';
 
 export default class Timespan extends React.PureComponent {

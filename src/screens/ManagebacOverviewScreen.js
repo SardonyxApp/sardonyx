@@ -34,7 +34,6 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
 
   componentDidMount() {
     this._getOverviewData().then(data => {
-      console.log(data);
       this.setState({
         refreshing: false,
         upcomingEvents: data.deadlines,

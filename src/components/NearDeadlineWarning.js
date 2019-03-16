@@ -2,7 +2,7 @@ import React from 'react';
 
 import { View, Text, StyleSheet } from 'react-native';
 
-import { fonts, colors } from '../styles';
+import { colors } from '../styles';
 
 export default class NearDeadlineWarning extends React.PureComponent {
   constructor(props) {
