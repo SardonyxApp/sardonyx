@@ -12,9 +12,9 @@ import {
 
 import { BASE_URL } from 'react-native-dotenv';
 
-import HTML from 'react-native-render-html';
+import HTMLView from 'react-native-htmlview';
 import { Storage } from '../helpers';
-import { styles, fonts, colors } from '../styles';
+import { fonts, colors } from '../styles';
 import CalendarDate from '../components/CalendarDate';
 import NearDeadlineWarning from '../components/NearDeadlineWarning';
 
@@ -85,7 +85,7 @@ export default class ManagebacEventScreen extends React.Component {
   /**
    * Returns a component that forms a single label. The color depends on the subject.
    * This functions is called in renderItem={}.
-   * @param {{String}} {item} 
+   * @param {{String}} {item}
    * @return {React.Component}
    */
   _renderLabels({ item }) {
@@ -118,7 +118,11 @@ export default class ManagebacEventScreen extends React.Component {
       );
     }
     if (!parsedDate) return 'All-day';
-    return ('0' + parsedDate.getHours()).slice(-2) + ':' + ('0' + parsedDate.getMinutes()).slice(-2);
+    return (
+      ('0' + parsedDate.getHours()).slice(-2) +
+      ':' +
+      ('0' + parsedDate.getMinutes()).slice(-2)
+    );
   }
 
   render() {
@@ -164,23 +168,24 @@ export default class ManagebacEventScreen extends React.Component {
           </View>
         </View>
         <View style={eventStyles.warnings}>
-          <NearDeadlineWarning date={
-            'due' in this.state.upcomingEventData
-              ? new Date(Date.parse(this.state.upcomingEventData.due))
-              : new Date(
-                Date.parse(this.props.navigation.getParam('due', ''))
-              )
-          }
+          <NearDeadlineWarning
+            date={
+              'due' in this.state.upcomingEventData
+                ? new Date(Date.parse(this.state.upcomingEventData.due))
+                : new Date(
+                    Date.parse(this.props.navigation.getParam('due', ''))
+                  )
+            }
           />
         </View>
         <View style={eventStyles.detailsContainer}>
-          <HTML
-            style={eventStyles.details}
-            html={
+          <HTMLView
+            value={
               'details' in this.state.upcomingEventData
                 ? this.state.upcomingEventData.details
                 : '<p />'
             }
+            stylesheet={htmlStyles}
           />
         </View>
       </ScrollView>
@@ -230,6 +235,15 @@ const eventStyles = StyleSheet.create({
   },
   detailsContainer: {
     marginHorizontal: 16
+  }
+});
+
+const htmlStyles = StyleSheet.create({
+  p: {
+    fontSize: 14,
+    ...fonts.jost400
   },
-  details: {}
+  li: {
+    ...fonts.jost400
+  }
 });

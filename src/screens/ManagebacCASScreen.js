@@ -4,7 +4,6 @@ import {
   ScrollView,
   View,
   Text,
-  FlatList,
   StyleSheet,
   RefreshControl,
   Alert

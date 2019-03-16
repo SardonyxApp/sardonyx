@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Dimensions, Text } from 'react-native';
+import { Text } from 'react-native';
 
 import { createStackNavigator } from 'react-navigation';
 
