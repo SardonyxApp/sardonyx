@@ -51,36 +51,49 @@ export default class ManagebacCASScreen extends React.Component {
         refreshing: true
       },
       () => {
-        Storage.retrieveCredentials().then(credentials => {
-          fetch(BASE_URL + this.props.navigation.getParam('apiLink', '/404'), {
-            method: 'GET',
-            headers: {
-              'Login-Token': credentials
-            },
-            mode: 'no-cors'
-          }).then(response => {
-            if (!this._isMounted) return;
-            if (response.status === 200) {
-              this.setState({
-                refreshing: false,
-                casExperienceData: JSON.parse(
-                  response.headers.map['managebac-data']
-                ).cas
-              });
+        Storage.retrieveCredentials()
+          .then(credentials => {
+            fetch(
+              BASE_URL + this.props.navigation.getParam('apiLink', '/404'),
+              {
+                method: 'GET',
+                headers: {
+                  'Login-Token': credentials
+                },
+                mode: 'no-cors'
+              }
+            ).then(response => {
+              if (!this._isMounted) return;
+              if (response.status === 200) {
+                this.setState({
+                  refreshing: false,
+                  casExperienceData: JSON.parse(
+                    response.headers.map['managebac-data']
+                  ).cas
+                });
+                return;
+              } else if (response.status === 404) {
+                Alert.alert(
+                  'Not Found',
+                  'Your CAS experience could not be found.',
+                  []
+                );
+                this.props.navigation.goBack();
+                return;
+              }
+            }).catch(error => {
+              console.warn(error);
               return;
-            } else if (response.status === 404) {
-              Alert.alert(
-                'Not Found',
-                'Your CAS experience could not be found.',
-                []
-              );
-              this.props.navigation.goBack();
-              return;
-            }
+            });;
+          })
+          .catch(err => {
+            console.warn(err);
           });
-        });
       }
-    );
+    ).catch(error => {
+      console.warn(error);
+      return;
+    });
   }
 
   render() {
@@ -108,12 +121,15 @@ export default class ManagebacCASScreen extends React.Component {
             </View>
             <View style={casStyles.detailsSeparator} />
             <View style={casStyles.detailsContainer}>
-              <Text style={casStyles.detailsHeading}>Meeting Learning Outcomes</Text>
-              <Text>{decodeURI(this.state.casExperienceData.learningOutcomes)}</Text>
+              <Text style={casStyles.detailsHeading}>
+                Meeting Learning Outcomes
+              </Text>
+              <Text>
+                {decodeURI(this.state.casExperienceData.learningOutcomes)}
+              </Text>
             </View>
-          </View>)
-          : null
-        }
+          </View>
+        ) : null}
       </ScrollView>
     );
   }
@@ -132,6 +148,6 @@ const casStyles = StyleSheet.create({
   detailsSeparator: {
     marginVertical: 12,
     height: 1,
-    backgroundColor: colors.gray1,
+    backgroundColor: colors.gray1
   }
 });

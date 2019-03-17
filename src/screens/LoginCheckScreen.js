@@ -5,7 +5,8 @@ import {
   Text,
   StatusBar,
   ActivityIndicator,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 
 import { BASE_URL } from 'react-native-dotenv';
@@ -39,7 +40,11 @@ export default class LoginCheckScreen extends React.Component {
         Storage.writeCredentials(credentials).then(() => {
           Storage.writeValue('managebacOverview', response.headers.map['managebac-data']).then(() => {
             this.props.navigation.navigate('AppStack');
+          }).catch(err => {
+            console.warn(err);
           });
+        }).catch(err => {
+          console.warn(err);
         });
         return;
       }
