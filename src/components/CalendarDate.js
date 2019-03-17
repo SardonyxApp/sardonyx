@@ -8,14 +8,29 @@ export default class CalendarDate extends React.PureComponent {
   constructor(props) {
     super(props);
   }
-  
+
+  shortMonthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+
   render() {
     return (
       <View style={calendarStyles.container}>
         <View style={calendarStyles.calendar}>
           <View style={calendarStyles.month}>
             <Text style={calendarStyles.monthText}>
-              {new Intl.DateTimeFormat('en-US', { month: 'short'}).format(this.props.date)}
+              {this.shortMonthNames[this.props.date.getMonth()]}
             </Text>
           </View>
           <View style={calendarStyles.date}>
