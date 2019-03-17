@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FlatList } from 'react-native';
+import { FlatList, Alert } from 'react-native';
 
 import { BASE_URL } from 'react-native-dotenv';
 
@@ -32,7 +32,12 @@ export default class CASExpandableCard extends ExpandableCard {
           });
           return;
         }
+      }).catch(error => {
+        console.warn(error);
+        return;
       });
+    }).catch(err => {
+      console.warn(err);
     });
   }
 

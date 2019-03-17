@@ -1,7 +1,7 @@
 /**
  * @fileoverview Helper modules to import
  * @author SardonyxApp
- * @license MIT 
+ * @license MIT
  * @example import * from './src/helpers.js'
  */
 
@@ -43,15 +43,17 @@ class StorageClass extends React.Component {
     return Promise.all([
       SecureStore.getItemAsync('cfduid'),
       SecureStore.getItemAsync('managebacSession'),
+      SecureStore.getItemAsync('authenticityToken'),
       SecureStore.getItemAsync('login'),
       SecureStore.getItemAsync('password')
     ]).then(arr => {
-      if (arr[0] && arr[1] && arr[2] && arr[3]) {
+      if (arr[0] && arr[1] && arr[2] && arr[3] && arr[4]) {
         return JSON.stringify({
           cfduid: arr[0],
           managebacSession: arr[1],
-          login: arr[2],
-          password: arr[3]
+          authenticityToken: arr[2],
+          login: arr[3],
+          password: arr[4]
         });
       }
       //return null if the token is invalid
@@ -70,8 +72,8 @@ class StorageClass extends React.Component {
   }
 
   /**
-   * @description Write Managebac login and password to SecureStore 
-   * @param {Object} tokens 
+   * @description Write Managebac login and password to SecureStore
+   * @param {Object} tokens
    * @returns {Promise}
    * @example WriteTokens().then(() => console.log('done')).catch(err => console.error(err));
    * Must catch error in the case of invalid tokens
@@ -96,10 +98,11 @@ class StorageClass extends React.Component {
    * Musst catch error in the case of invalid credentials
    */
   async writeCredentials(credentials) {
-    if (credentials.cfduid && credentials.managebacSession && credentials.login && credentials.password) {
+    if (credentials.cfduid && credentials.managebacSession && credentials.authenticityToken && credentials.login && credentials.password) {
       return Promise.all([
         SecureStore.setItemAsync('cfduid', credentials.cfduid),
         SecureStore.setItemAsync('managebacSession', credentials.managebacSession),
+        SecureStore.setItemAsync('authenticityToken', credentials.authenticityToken),
         SecureStore.setItemAsync('login', credentials.login),
         SecureStore.setItemAsync('password', credentials.password)
       ]);
@@ -110,9 +113,9 @@ class StorageClass extends React.Component {
   }
 
   /**
-   * @description Write requested key value 
-   * @param {String} key 
-   * @param {String} value 
+   * @description Write requested key value
+   * @param {String} key
+   * @param {String} value
    * @returns {Promise}
    * @example WriteValue().then(() => console.log('done')).catch(err => console.error(err));
    * Musts catch error in the case of invalid key or value
@@ -130,20 +133,22 @@ class StorageClass extends React.Component {
     return Promise.all([
       SecureStore.deleteItemAsync('cfduid'),
       SecureStore.deleteItemAsync('managebacSession'),
+      SecureStore.deleteItemAsync('authenticityToken'),
       SecureStore.deleteItemAsync('login'),
       SecureStore.deleteItemAsync('password')
     ]);
   }
 
   /**
-   * @description Delete Managebac tokens 
+   * @description Delete Managebac tokens
    * @returns {Promise}
    * @example DeleteTokens().then(() => console.log('done')).catch(err => console.error(err));
    */
   async deleteTokens() {
     return Promise.all([
       SecureStore.deleteItemAsync('cfduid'),
-      SecureStore.deleteItemAsync('managebacSession')
+      SecureStore.deleteItemAsync('managebacSession'),
+      SecureStore.deleteItemAsync('authenticityToken')
     ]);
   }
 
@@ -155,7 +160,7 @@ class StorageClass extends React.Component {
    */
   async deleteValue(key) {
     return SecureStore.deleteItemAsync(key);
-  };
+  }
 }
 
 const Storage = new StorageClass(); //instantiate class

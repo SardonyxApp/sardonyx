@@ -1,9 +1,6 @@
 import React from 'react';
 
-import {
-  ScrollView,
-  RefreshControl
-} from 'react-native';
+import { ScrollView, RefreshControl } from 'react-native';
 
 import { BASE_URL } from 'react-native-dotenv';
 
@@ -19,9 +16,9 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
 
     this.state = {
       refreshing: true,
-      upcomingEvents: [], // These three are taken from the dashboard data. 
-      classList: [],      // CAS data is done in the CAS expandable card component
-      groupList: []      
+      upcomingEvents: [], // These three are taken from the dashboard data.
+      classList: [], // CAS data is done in the CAS expandable card component
+      groupList: []
     };
     this._onRefresh = this._onRefresh.bind(this);
   }
@@ -50,28 +47,33 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
     this.setState({
       refreshing: true
     });
-    Storage.retrieveCredentials().then(credentials => {
-      fetch(BASE_URL + '/api/dashboard', {
-        method: 'GET',
-        headers: {
-          'Login-Token': credentials
-        },
-        mode: 'no-cors'
-      }).then(response => {
-        if (response.status === 200) {
-          Storage.writeValue(
-            'managebacOverview',
-            response.headers.map['managebac-data']
-          )
-            .then(() => {
+    Storage.retrieveCredentials()
+      .then(credentials => {
+        fetch(BASE_URL + '/api/dashboard', {
+          method: 'GET',
+          headers: {
+            'Login-Token': credentials
+          },
+          mode: 'no-cors'
+        }).then(response => {
+          if (response.status === 200) {
+            Storage.writeValue(
+              'managebacOverview',
+              response.headers.map['managebac-data']
+            ).then(() => {
               this.setState({
                 refreshing: false
               });
+            }).catch(err => {
+              console.warn(err);
             });
-          return;
-        }
-      }); // TODO: Data is loaded but screen is never reloaded fix it
-    });
+            return;
+          }
+        }); // TODO: Data is loaded but screen is never reloaded fix it
+      })
+      .catch(err => {
+        console.warn(err);
+      });
   }
 
   /**
@@ -82,6 +84,8 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
     return new Promise(resolve => {
       Storage.retrieveValue('managebacOverview').then(data => {
         resolve(JSON.parse(data));
+      }).catch(err => {
+        console.warn(err);
       });
     });
   }
@@ -114,24 +118,28 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh} />
+            onRefresh={this._onRefresh}
+          />
         }
       >
         <UpcomingExpandableCard
           upcomingEvents={this.state.upcomingEvents}
-          allGroupsAndClasses={[...this.state.classList, ...this.state.groupList]}
+          allGroupsAndClasses={[
+            ...this.state.classList,
+            ...this.state.groupList
+          ]}
           title="UPCOMING"
           navigation={this.props.navigation}
-          />
+        />
         <CASExpandableCard
           title="CAS EXPERIENCES"
           navigation={this.props.navigation}
-          />
-        <ClassesExpandableCard 
+        />
+        <ClassesExpandableCard
           title="CLASSES"
           classList={this.state.classList}
           navigation={this.props.navigation}
-          />
+        />
         <GroupsExpandableCard groupList={this.state.groupList} />
       </ScrollView>
     );
