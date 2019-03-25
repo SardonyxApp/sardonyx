@@ -9,7 +9,7 @@ import {
   Alert
 } from 'react-native';
 
-import { BASE_URL } from 'react-native-dotenv';
+import { BASE_URL } from '../../env.json';
 
 import { Storage } from '../helpers';
 import { styles, colors, fonts } from '../styles';

@@ -10,7 +10,7 @@ import {
   FlatList
 } from 'react-native';
 
-import { BASE_URL } from 'react-native-dotenv';
+import { BASE_URL } from '../../env';
 
 import HTMLView from 'react-native-htmlview';
 import { Storage } from '../helpers';

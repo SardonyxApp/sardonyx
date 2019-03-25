@@ -15,7 +15,7 @@ import {
   Button
 } from 'react-native-elements';
 
-import { BASE_URL } from 'react-native-dotenv';
+import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
 import { styles, colors, preset, fonts } from '../styles';

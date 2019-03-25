@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ScrollView, RefreshControl } from 'react-native';
 
-import { BASE_URL } from 'react-native-dotenv';
+import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
 import UpcomingExpandableCard from '../components/UpcomingExpandableCard';
