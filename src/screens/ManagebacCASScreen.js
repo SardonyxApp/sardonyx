@@ -51,49 +51,45 @@ export default class ManagebacCASScreen extends React.Component {
         refreshing: true
       },
       () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            fetch(
-              BASE_URL + this.props.navigation.getParam('apiLink', '/404'),
-              {
-                method: 'GET',
-                headers: {
-                  'Login-Token': credentials
-                },
-                mode: 'no-cors'
-              }
-            ).then(response => {
-              if (!this._isMounted) return;
-              if (response.status === 200) {
-                this.setState({
-                  refreshing: false,
-                  casExperienceData: JSON.parse(
-                    response.headers.map['managebac-data']
-                  ).cas
-                });
-                return;
-              } else if (response.status === 404) {
-                Alert.alert(
-                  'Not Found',
-                  'Your CAS experience could not be found.',
-                  []
-                );
-                this.props.navigation.goBack();
-                return;
-              }
-            }).catch(error => {
-              console.warn(error);
+        Storage.retrieveCredentials().then(credentials => {
+          fetch(
+            BASE_URL + this.props.navigation.getParam('apiLink', '/404'),
+            {
+              method: 'GET',
+              headers: {
+                'Login-Token': credentials
+              },
+              mode: 'no-cors'
+            }
+          ).then(response => {
+            if (!this._isMounted) return;
+            if (response.status === 200) {
+              this.setState({
+                refreshing: false,
+                casExperienceData: JSON.parse(
+                  response.headers.map['managebac-data']
+                ).cas
+              });
               return;
-            });;
-          })
-          .catch(err => {
-            console.warn(err);
-          });
+            } else if (response.status === 404) {
+              Alert.alert(
+                'Not Found',
+                'Your CAS experience could not be found.',
+                []
+              );
+              this.props.navigation.goBack();
+              return;
+            }
+          }).catch(error => {
+            console.warn(error);
+            return;
+          });;
+        })
+        .catch(err => {
+          console.warn(err);
+        });
       }
-    ).catch(error => {
-      console.warn(error);
-      return;
-    });
+    );
   }
 
   render() {

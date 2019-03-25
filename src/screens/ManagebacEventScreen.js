@@ -79,7 +79,7 @@ export default class ManagebacEventScreen extends React.Component {
           });
         }).catch(err => {
           console.warn(err);
-        });;
+        });
       }
     );
   }

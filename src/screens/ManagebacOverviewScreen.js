@@ -44,36 +44,39 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
    * Set the refreshing controller as visible, and make a request to /dashboard to refresh data.
    */
   _onRefresh() {
-    this.setState({
-      refreshing: true
-    });
-    Storage.retrieveCredentials()
-      .then(credentials => {
-        fetch(BASE_URL + '/api/dashboard', {
-          method: 'GET',
-          headers: {
-            'Login-Token': credentials
-          },
-          mode: 'no-cors'
-        }).then(response => {
-          if (response.status === 200) {
-            Storage.writeValue(
-              'managebacOverview',
-              response.headers.map['managebac-data']
-            ).then(() => {
-              this.setState({
-                refreshing: false
+    this.setState(
+      {
+        refreshing: true
+      },
+      () => {
+        Storage.retrieveCredentials().then(credentials => {
+          fetch(BASE_URL + '/api/dashboard', {
+            method: 'GET',
+            headers: {
+              'Login-Token': credentials
+            },
+            mode: 'no-cors'
+          }).then(response => {
+            if (response.status === 200) {
+              Storage.writeValue(
+                'managebacOverview',
+                response.headers.map['managebac-data']
+              ).then(() => {
+                this.setState({
+                  refreshing: false
+                });
+              }).catch(err => {
+                console.warn(err);
               });
-            }).catch(err => {
-              console.warn(err);
-            });
-            return;
-          }
-        }); // TODO: Data is loaded but screen is never reloaded fix it
-      })
-      .catch(err => {
-        console.warn(err);
-      });
+              return;
+            }
+          }); // TODO: Data is loaded but screen is never reloaded fix it
+        })
+        .catch(err => {
+          console.warn(err);
+        });
+      }
+    );
   }
 
   /**
