@@ -5,7 +5,8 @@
     "name": "Sardonyx",
     "description": "A mobile client for Sardonyx",
     "slug": "sardonyx",
-    "sdkVersion": "27.0.0",
+    "privacy": "unlisted",
+    "sdkVersion": "32.0.0",
     "version": "0.1.0",
     "platforms": ["ios", "android"],
     "githubUrl": "https://github.com/SardonyxApp/sardonyx",
@@ -16,6 +17,9 @@
       "backgroundColor": "#eeeeee",
       "resizeMode": "contain",
       "image": "./src/logos/splash.png"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
     }
   }
 }

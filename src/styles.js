@@ -8,19 +8,35 @@
 import { StyleSheet } from 'react-native';
 
 const colors = {
-  'primary': '#d17b46',
-  'secondary': '#6e4d12',
-  'black': '#332927',
-  'gray1': '#d8d8e0',
-  'gray2': '#babbc2',
-  'white': '#fff',
-  'blue': '#2977b6',
-  'error': '#f44138',
-  'inactive': '#c2c2c2',
-  'lightPrimary': '#eda67b',
-  'darkBackground': '#8c8c8b',
-  'lightBackground': '#eee'
+  primary: '#d17b46',
+  secondary: '#6e4d12',
+  black: '#332927',
+  gray1: '#d8d8e0',
+  gray2: '#babbc2',
+  white: '#fff',
+  blue: '#2977b6',
+  error: '#f44138',
+  inactive: '#c2c2c2',
+  lightPrimary: '#eda67b',
+  lightPrimary2: '#f1e3db',
+  darkBackground: '#8c8c8b',
+  lightBackground: '#f8f8fa'
 };
+
+const fonts = StyleSheet.create({
+  jost200: {
+    fontFamily: 'Jost-200'
+  },
+  jost300: {
+    fontFamily: 'Jost-300'
+  },
+  jost400: {
+    fontFamily: 'Jost-400'
+  },
+  jost500: {
+    fontFamily: 'Jost-500'
+  }
+});
 
 /*modularized styles*/
 const styles = StyleSheet.create({
@@ -32,7 +48,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   padding20: {
-    padding:20
+    padding: 20
   },
   hidden: {
     display: 'none'
@@ -101,8 +117,68 @@ const styles = StyleSheet.create({
 
 /*useful abstractions*/
 const preset = {
-  loginBox: [styles.alignChildrenCenter, styles.lightBackground, styles.padding20, styles.width90Percent, styles.roundCorners],
+  loginBox: [
+    styles.alignChildrenCenter,
+    styles.lightBackground,
+    styles.padding20,
+    styles.width90Percent,
+    styles.roundCorners
+  ],
   inputLine: [styles.padding10]
 };
 
-export { styles, colors, preset };
+const labelColors = name => {
+  let color;
+  switch (name) {
+    case 'Homework':
+      color = '#2175c6';
+      break;
+    case 'Quiz':
+      color = '#f16522';
+      break;
+    case 'Essay':
+      color = '#3333cc';
+      break;
+    case 'Deadline':
+      color = '#91181b';
+      break;
+    case 'Math IA':
+      color = '#0072bc';
+      break;
+    case 'Assignment':
+      color = '#0072bc';
+      break;
+    case 'Event':
+      color = '#009900';
+      break;
+    case 'Workshop':
+      color = '#528c00';
+      break;
+    case 'Take Home Assignment':
+      color = '#2f3192';
+      break;
+    case 'Discussion':
+      color = '#ed008c';
+      break;
+    case 'ToK':
+      color = '#3333cc';
+      break;
+    case 'Paper':
+      color = '#a2c400';
+      break;
+    case 'Summative':
+      color = '#478cfe';
+      break;
+    case 'Formative':
+      color = '#1aaf5d';
+      break;
+    case 'Extended Essay':
+      color = '#cc3333';
+      break;
+    default:
+      return;
+  }
+  return color;
+};
+
+export { styles, colors, preset, labelColors, fonts };
