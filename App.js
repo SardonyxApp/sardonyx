@@ -1,12 +1,16 @@
+import React from 'react';
 import {
   createSwitchNavigator,
   createStackNavigator,
-} from "react-navigation";
+  createAppContainer
+} from 'react-navigation';
 
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
+import { Font } from 'expo';
+
 import ManagebacStack from './src/ManagebacStack';
-import ChatStack from './src/ChatStack';
+import TasksStack from './src/TasksStack';
 import ProfileStack from './src/ProfileStack';
 import LoginCheckScreen from './src/screens/LoginCheckScreen';
 import LoginScreen from './src/screens/LoginScreen';
@@ -19,15 +23,17 @@ import { colors } from './src/styles';
 const AppStack = createMaterialBottomTabNavigator(
   {
     ManagebacTabs: ManagebacStack,
-    ChatTabs: ChatStack,
+    TasksTabs: TasksStack,
     ProfileTabs: ProfileStack
   },
   {
-    initialRouteName: 'ChatTabs',
+    initialRouteName: 'ManagebacTabs',
     shifting: true,
     activeColor: colors.primary,
     inactiveColor: colors.inactive,
-    barStyle: { backgroundColor: colors.white }
+    barStyle: {
+      backgroundColor: colors.white
+    }
   }
 );
 
@@ -40,7 +46,7 @@ const LoginStack = createStackNavigator(
     Logout: LogoutScreen
   },
   {
-    navigationOptions: {
+    defaultNavigationOptions: {
       header: null // Hide the default empty header bar for all child elements
     }
   }
@@ -49,15 +55,47 @@ const LoginStack = createStackNavigator(
 // https://reactnavigation.org/docs/en/auth-flow.html
 // Switch navigators make sure the app nav stack and auth nav stack are two different things
 // and that you can't back-button into one another
-export default createSwitchNavigator(
-  {
-    // Make sure no names for screens overlap (e.g. LoginStack and Login), since they are unique
-    //  identifiers that can be navigated to from anywhere in the app
-    LoginCheck: LoginCheckScreen,
-    AppStack: AppStack, // navigators can contain navigators
-    LoginStack: LoginStack
-  },
-  {
-    initialRouteName: 'LoginCheck'
-  }
+const AppContainer = createAppContainer(
+  createSwitchNavigator(
+    {
+      // Make sure no names for screens overlap (e.g. LoginStack and Login), since they are unique
+      //  identifiers that can be navigated to from anywhere in the app
+      LoginCheck: LoginCheckScreen,
+      AppStack: AppStack, // navigators can contain navigators
+      LoginStack: LoginStack
+    },
+    {
+      initialRouteName: 'LoginCheck'
+    }
+  )
 );
+
+export default class Root extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      fontLoaded: false
+    };
+  }
+
+  componentDidMount() {
+    Font.loadAsync({
+      'Jost-200': require('./src/assets/Jost-200-Thin.otf'),
+      'Jost-300': require('./src/assets/Jost-300-Light.otf'),
+      'Jost-400': require('./src/assets/Jost-400-Book.otf'),
+      'Jost-500': require('./src/assets/Jost-500-Medium.otf')
+    }).then(() => {
+      this.setState({
+        fontLoaded: true
+      });
+    });
+  }
+  // I'm sure we're going to have to use state managers like Redux, and when that happens,
+  // wrap this AppContainer in a Store Provider.
+  render() {
+    return this.state.fontLoaded && <AppContainer />;
+  }
+}
+
+Expo.registerRootComponent(Root);

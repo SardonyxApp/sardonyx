@@ -32,7 +32,7 @@
 # The app (mobile client)
 Tools needed:
 * Git
-* Node / NPM
+* Node 10.x or later / NPM
 * Android Studio (optional)
 * Expo Mobile App (optional)
 
@@ -48,8 +48,6 @@ Install dependencies.
 ```
 $ npm install
 ```
-
-Do NOT run `npm run audit` or change the React Native version. 
 
 ## Development
 Run development mode.
@@ -68,7 +66,7 @@ $ npm test
 ```
 
 ## Production
-This is not necessary except when releasing a new version.
+See Expo documentation. 
 
 Produce Android app.
 ```
@@ -90,7 +88,12 @@ Ejection is only necessary when native code is needed.
 # The server (backend)
 Tools needed:
 * Git
-* Node / NPM
+* Node (8.x) / NPM 
+* MySQL (5.x)
+
+Node 10.x is known to have testing problems. 
+
+If you are using MySQL 8.x, make sure that it can authorize using `mysql_native_password`.
 
 ## Installation
 Clone this repository and navigate to it.
@@ -98,20 +101,39 @@ Clone this repository and navigate to it.
 $ git clone https://github.com/SardonyxApp/sardonyx-server.git
 $ cd sardonyx-server
 ```
+
 Install dependencies.
 ```
 $ npm install
 ```
-Make and edit a .env file. (`touch` and `vi` command only available on Bash: on windows, just use a text editor)
+
+Open the mysql prompt (steps may differ), and create the database.
+```
+$ mysql -h localhost -u root -p
+mysql > CREATE DATABASE sardonyx;
+mysql > USE sardonyx;
+mysql > source /path/to/setup.sql
+```
+
+Navigate to the `sardonyx-server` directory, create and edit a .env file. (`touch` and `vi` command only available on Bash: on windows, just use a text editor)
 ```
 $ touch .env
 $ vi .env
 ```
-Define `PORT` as appropriate.
-```
+
+Define environment variables as appropriate.
+```sh
 PORT=3000
+PRIVATE_KEY="abcdef" # Used to encode JWTs
+MODE="development" # Options: development or production 
+
+DB_HOST="localhost"
+DB_LOGIN="root" # Or however you have set the database up in your machine
+DB_PASSWORD="root" 
+DB_DATABASE="sardonyx" # Name of the database 
 ```
-Check the server.js file and define any other variables necessary. Variables in `.env` are referred to as `process.env.VARIABLE_NAME`.
+
+Check the server files and define any other variables necessary. Variables in `.env` are referred to as `process.env.VARIABLE_NAME`.
 
 ## Development
 ### Front End 
@@ -138,6 +160,40 @@ Jest tests can be used to test the Express server.
 ```
 $ npm test
 ```
+
+To run a specific test suite, append the name of the test.
+```
+$ npm test api
+```
+
+You may need to store personal information in the `.env` file. 
+```sh
+# Managebac cedentials
+LOGIN="foo@bar.com"
+PASSWORD="foobar1234"
+
+# Managebac cookies 
+CFDUID="cfduid=foobar"
+MANAGEBAC_SESSION="_managebac_session=foobar"
+AUTHENTICITY_TOKEN="foobar"
+
+# Pages that you want to test 
+CLASS_ID="123456"
+GROUP_ID="123456"
+CLASS_ASSIGNMENT_ID="123456"
+EVENT_ID="123456"
+GROUP_EVENT_ID= "123456" # class events are not tested 
+CLASS_MESSAGE_ID="123456"
+CLASS_MESSAGE_PAGE_ID="2"
+GROUP_MESSAGE_ID="123456"
+GROUP_MESSAGE_PAGE_ID="2"
+GROUP_MESSAGE_REPLY_OF_REPLY_ID="123456"
+NOTIFICATION_ID="123456"
+NOTIFICATION_PAGE_ID="2"
+CAS_ID="123456" 
+```
+
+To run a custom test, create a `tmp.test.js` file under `__tests__`. 
 
 ## Production
 ### Front End
@@ -166,11 +222,22 @@ Login to [Google Cloud Platform](https://console.cloud.google.com).
 
 Navigate to `App Engine` and open the shell.
 
+Make sure the `.env` file is defined properly, as listed in the Installation and Testing sections above.
+
 Execute the following:
 ```
 $ cd sardonyx-server
-$ npm install 
-$ npm run client
+$ npm ci
+$ npm run client 
+```
+
+Make sure that the server starts properly:
+```
+$ npm start
+```
+
+Then, deploy.
+```
 $ gcloud app deploy
 ```
 

@@ -1,40 +1,62 @@
 import React from 'react';
 
+import { Text } from 'react-native';
+
 import { createStackNavigator } from 'react-navigation';
 
-import {
-  Icon
-} from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 
-import ManagebacScreen from './screens/ManagebacScreen';
+import ManagebacAlertsScreen from './screens/ManagebacAlertsScreen';
+import ManagebacOverviewScreen from './screens/ManagebacOverviewScreen';
+import ManagebacEventScreen from './screens/ManagebacEventScreen';
+import ManagebacCASScreen from './screens/ManagebacCASScreen';
+import ManagebacClassScreen from './screens/ManagebacClassScreen';
+import ManagebacGroupScreen from './screens/ManagebacGroupScreen';
 
-import { colors } from './styles';
+import { colors, fonts } from './styles';
 
 // Navigation stack for the Managebac tab
 const ManagebacStack = createStackNavigator(
   {
-    Managebac: ManagebacScreen
+    Messages: ManagebacAlertsScreen,
+    Overview: ManagebacOverviewScreen,
+    UpcomingEventItem: ManagebacEventScreen,
+    CASItem: ManagebacCASScreen,
+    ClassItem: ManagebacClassScreen,
+    GroupItem: ManagebacGroupScreen
   },
   {
-    navigationOptions: {
+    initialRouteName: 'Overview',
+    navigationOptions: ({ navigation }) => {
+      let tabBarVisible;
+      if (navigation.state.routes.length > 1) {
+        navigation.state.routes.map(route => {
+          if (route.routeName === 'UpcomingEventItem') {
+            tabBarVisible = false;
+          } else {
+            tabBarVisible = true;
+          }
+        });
+      }
+      return {
+        tabBarLabel: <Text style={fonts.jost400}>ManageBac</Text>,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="globe" type={'feather'} color={tintColor} />
+        ),
+        tabBarVisible
+      };
+    },
+    defaultNavigationOptions: {
       headerStyle: {
-        backgroundColor: colors.blue,
+        backgroundColor: colors.blue
       },
       headerTintColor: colors.white,
       headerTitleStyle: {
-        fontWeight: 'normal'
+        fontWeight: 'normal',
+        ...fonts.jost400
       }
     }
   }
 );
-
-// Applied after definition to prevent it from affecting children
-ManagebacStack.navigationOptions = {
-  tabBarLabel: 'Managebac',
-  tabBarIcon: ({ tintColor }) => (
-    <Icon name="globe" type={"feather"} color={tintColor} />
-  ),
-  tabBarColor: colors.white
-};
 
 export default ManagebacStack;

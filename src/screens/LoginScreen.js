@@ -15,8 +15,10 @@ import {
   Button
 } from 'react-native-elements';
 
+import { BASE_URL } from '../../env';
+
 import { Storage } from '../helpers';
-import { styles, colors, preset } from '../styles';
+import { styles, colors, preset, fonts } from '../styles';
 
 export default class Login extends React.Component {
   render() {
@@ -25,8 +27,8 @@ export default class Login extends React.Component {
         <KeyboardAvoidingView style={[styles.alignChildrenCenter, styles.fullScreen]}>
           <View style={preset.loginBox}>
             <Image source={require('../logos/Icon.png')} style={styles.logoIcon} />
-            <Text style={[styles.h1, styles.alignCenter]}>Sardonyx</Text>
-            <Text style={[styles.p, styles.alignCenter]}>Login with ManageBac</Text>
+            <Text style={[styles.h1, styles.alignCenter, fonts.jost300]}>Sardonyx</Text>
+            <Text style={[styles.p, styles.alignCenter, fonts.jost400]}>Login with ManageBac</Text>
             <LoginForm navigation={this.props.navigation} />
             <ErrorMessage error={this.props.navigation.getParam('errorMessage', null)} />
           </View>
@@ -94,7 +96,7 @@ class LoginForm extends React.Component {
   }
 
   sendForm(formData) {
-    fetch('https://sardonyx.app/api/login', { 
+    fetch(BASE_URL + '/api/login', { 
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -152,7 +154,7 @@ class LoginForm extends React.Component {
           onSubmitEditing={() => this.passwordInput.focus()}
           blurOnSubmit={false}
         />
-        <Text style={[styles.error, styles.alignCenter, this.state.usernameError ? {} : styles.hidden]}>
+        <Text style={[styles.error, styles.alignCenter, fonts.jost400, this.state.usernameError ? {} : styles.hidden]}>
           Please enter a valid email address.
         </Text>
 
@@ -172,7 +174,7 @@ class LoginForm extends React.Component {
             password: text 
           })}
         />
-        <Text style={[styles.error, styles.alignCenter, this.state.passwordError ? {} : styles.hidden]}>
+        <Text style={[styles.error, styles.alignCenter, fonts.jost400, this.state.passwordError ? {} : styles.hidden]}>
           Please enter a password.
         </Text>
 
@@ -190,7 +192,7 @@ class LoginForm extends React.Component {
           })}
           textstyle={/*[styles.regular, styles.p]*/ styles.link}
         />
-        <Text style={[styles.error, styles.alignCenter, this.state.agreeError ? {} : styles.hidden]}>
+        <Text style={[styles.error, styles.alignCenter, fonts.jost400, this.state.agreeError ? {} : styles.hidden]}>
           Please agree to the Conditions.
         </Text>
 
@@ -210,7 +212,7 @@ class LoginForm extends React.Component {
 
 function DisclaimerMessage() {
   return (
-    <Text style={[styles.small, styles.alignCenter, styles.padding5]}>
+    <Text style={[styles.small, styles.alignCenter, styles.padding5, fonts.jost300]}>
       Sardonyx is not affiliated, associated, authorized, endorsed by, or in any way officially connected with ManageBac, or any of its subsidiaries or its affiliates.
     </Text>
   );
@@ -218,7 +220,7 @@ function DisclaimerMessage() {
 
 function ErrorMessage(props) {
   if (props.error) {
-    return <Text style={[styles.p, styles.alignCenter, styles.error]}>{props.error}</Text>;
+    return <Text style={[styles.p, styles.alignCenter, styles.error, fonts.jost400]}>{props.error}</Text>;
   }
   return null;
 }
