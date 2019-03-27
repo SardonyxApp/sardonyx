@@ -13,9 +13,7 @@ export default class UpcomingExpandableCard extends ExpandableCard {
       expanded: true
     };
     this._getGroupClassName = this._getGroupClassName.bind(this);
-    this._navigateToUpcomingEventScreen = this._navigateToUpcomingEventScreen.bind(
-      this
-    );
+    this._navigateToUpcomingEventScreen = this._navigateToUpcomingEventScreen.bind(this);
   }
 
   /**
