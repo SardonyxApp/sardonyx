@@ -44,11 +44,18 @@ Clone this repository and navigate to it.
 $ git clone https://github.com/SardonyxApp/sardonyx.git
 $ cd sardonyx
 ```
+
 Install dependencies.
 ```
 $ npm install
 ```
 
+In `evn.json`, set the `BASE_URL` environment variable to the url of the sardonyx-server.
+```json
+{
+  "BASE_URL": "http://192.168.x.x:3000" 
+}
+```
 ## Development
 Run development mode.
 ```
@@ -107,12 +114,33 @@ Install dependencies.
 $ npm install
 ```
 
+Configure MySQL to use utf8mb4.
+
+Modify (or create) `my.cnf`:
+```
+[mysqld]
+character-set-client=utf8mb4
+character-set-connection=utf8mb4
+character-set-database=utf8mb4
+character-set-results=utf8mb4
+
+[client]
+default-character-set=utf8mb4
+```
+
+Start MySQL.
+
 Open the mysql prompt (steps may differ), and create the database.
 ```
 $ mysql -h localhost -u root -p
 mysql > CREATE DATABASE sardonyx;
 mysql > USE sardonyx;
 mysql > source /path/to/setup.sql
+```
+
+Check character set variables. The names set in `my.cnf` should be correct.
+```
+mysql > SHOW VARIABLES LIKE 'char%';
 ```
 
 Navigate to the `sardonyx-server` directory, create and edit a .env file. (`touch` and `vi` command only available on Bash: on windows, just use a text editor)
@@ -137,20 +165,20 @@ Check the server files and define any other variables necessary. Variables in `.
 
 ## Development
 ### Front End 
-Start the Webpack Dev Server. 
+Start Webpack watch. 
 ```
 $ npm run client-dev
 ```
 Navigate to `localhost:8080`.
 
 ### Back End
-Start the Express server using nodemon. Server will be started at `localhost:PORT` as defined in `.env`.
+Start the Express server using nodemon. Server will be started at `HOST:PORT` as defined in `.env`.
 ```
 $ npm run server-dev
 ```
 
 ### Full Stack
-Start both the Webpack Dev Server and the Express server.
+Start both Webpack watch and the Express server.
 ```
 $ npm run dev
 ```
