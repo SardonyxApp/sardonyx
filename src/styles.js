@@ -9,16 +9,17 @@ import { StyleSheet } from 'react-native';
 
 const colors = {
   primary: '#d17b46',
+  lightPrimary: '#eda67b',
+  lightPrimary2: '#f1e3db',
   secondary: '#6e4d12',
   black: '#332927',
   gray1: '#d8d8e0',
   gray2: '#babbc2',
   white: '#fff',
   blue: '#2977b6',
+  lightBlue: '#ecf7ff',
   error: '#f44138',
   inactive: '#c2c2c2',
-  lightPrimary: '#eda67b',
-  lightPrimary2: '#f1e3db',
   darkBackground: '#8c8c8b',
   lightBackground: '#f8f8fa'
 };
