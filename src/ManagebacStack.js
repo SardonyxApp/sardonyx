@@ -10,6 +10,7 @@ import ManagebacAlertsScreen from './screens/ManagebacAlertsScreen';
 import ManagebacOverviewScreen from './screens/ManagebacOverviewScreen';
 import ManagebacEventScreen from './screens/ManagebacEventScreen';
 import ManagebacCASScreen from './screens/ManagebacCASScreen';
+import ManagebacEditCASScreen from './screens/ManagebacEditCASScreen';
 import ManagebacClassScreen from './screens/ManagebacClassScreen';
 import ManagebacGroupScreen from './screens/ManagebacGroupScreen';
 
@@ -22,6 +23,7 @@ const ManagebacStack = createStackNavigator(
     Overview: ManagebacOverviewScreen,
     UpcomingEventItem: ManagebacEventScreen,
     CASItem: ManagebacCASScreen,
+    EditCASItem: ManagebacEditCASScreen,
     ClassItem: ManagebacClassScreen,
     GroupItem: ManagebacGroupScreen
   },
