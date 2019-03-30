@@ -9,11 +9,14 @@ import {
   Alert
 } from 'react-native';
 
+import { Icon } from 'react-native-elements';
 import { BASE_URL } from '../../env';
 
+import HeaderIcon from '../components/HeaderIcon';
+import Timespan from '../components/Timespan';
+import ExperienceUneditableWarning from '../components/ExperienceUneditableWarning';
 import { Storage } from '../helpers';
 import { styles, fonts, colors } from '../styles';
-import Timespan from '../components/Timespan';
 
 export default class ManagebacCASScreen extends React.Component {
   isMounted = false;
@@ -25,6 +28,7 @@ export default class ManagebacCASScreen extends React.Component {
       casExperienceData: {}
     };
     this._onRefresh = this._onRefresh.bind(this);
+    this._setEditableParam = this._setEditableParam.bind(this);
   }
 
   componentDidMount() {
@@ -38,9 +42,31 @@ export default class ManagebacCASScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: `${navigation.state.params.title}`
+      title: `${navigation.state.params.title}`,
+      headerRight: navigation.state.params.editable ? (
+        <HeaderIcon
+          onPress={() => {
+            navigation.navigate('EditCASItem', {
+              id: navigation.state.params.id
+            });
+          }}
+        >
+          <Icon name="edit" color={colors.white} />
+        </HeaderIcon>
+      ) : null
     };
   };
+
+  /**
+   * Set the "editable" property and "id" property for Navigation.
+   * The ID is only used if editable is true.
+   */
+  _setEditableParam() {
+    this.props.navigation.setParams({
+      editable: this.state.casExperienceData.status !== 'complete',
+      id: this.state.casExperienceData.link.split('/')[3]
+    });
+  }
 
   /**
    * Called on load, and on pull-to-refresh. Asynchronously sets the state using newest experience data.
@@ -51,43 +77,49 @@ export default class ManagebacCASScreen extends React.Component {
         refreshing: true
       },
       () => {
-        Storage.retrieveCredentials().then(credentials => {
-          fetch(
-            BASE_URL + this.props.navigation.getParam('apiLink', '/404'),
-            {
-              method: 'GET',
-              headers: {
-                'Login-Token': credentials
-              },
-              mode: 'no-cors'
-            }
-          ).then(response => {
-            if (!this._isMounted) return;
-            if (response.status === 200) {
-              this.setState({
-                refreshing: false,
-                casExperienceData: JSON.parse(
-                  response.headers.map['managebac-data']
-                ).cas
+        Storage.retrieveCredentials()
+          .then(credentials => {
+            fetch(
+              BASE_URL + this.props.navigation.getParam('apiLink', '/404'),
+              {
+                method: 'GET',
+                headers: {
+                  'Login-Token': credentials
+                },
+                mode: 'no-cors'
+              }
+            )
+              .then(response => {
+                if (!this._isMounted) return;
+                if (response.status === 200) {
+                  this.setState(
+                    {
+                      refreshing: false,
+                      casExperienceData: JSON.parse(
+                        response.headers.map['managebac-data']
+                      ).cas
+                    },
+                    this._setEditableParam
+                  );
+                  return;
+                } else if (response.status === 404) {
+                  Alert.alert(
+                    'Not Found',
+                    'Your CAS experience could not be found.',
+                    []
+                  );
+                  this.props.navigation.goBack();
+                  return;
+                }
+              })
+              .catch(error => {
+                console.warn(error);
+                return;
               });
-              return;
-            } else if (response.status === 404) {
-              Alert.alert(
-                'Not Found',
-                'Your CAS experience could not be found.',
-                []
-              );
-              this.props.navigation.goBack();
-              return;
-            }
-          }).catch(error => {
-            console.warn(error);
-            return;
-          });;
-        })
-        .catch(err => {
-          console.warn(err);
-        });
+          })
+          .catch(err => {
+            console.warn(err);
+          });
       }
     );
   }
@@ -111,6 +143,11 @@ export default class ManagebacCASScreen extends React.Component {
         />
         {'description' in this.state.casExperienceData ? (
           <View>
+            <View style={casStyles.warnings}>
+              <ExperienceUneditableWarning
+                status={this.state.casExperienceData.status}
+              />
+            </View>
             <View style={casStyles.detailsContainer}>
               <Text style={casStyles.detailsHeading}>Description</Text>
               <Text>{decodeURI(this.state.casExperienceData.description)}</Text>
@@ -132,6 +169,9 @@ export default class ManagebacCASScreen extends React.Component {
 }
 
 const casStyles = StyleSheet.create({
+  warnings: {
+    flexDirection: 'column'
+  },
   detailsContainer: {
     marginHorizontal: 16
   },
