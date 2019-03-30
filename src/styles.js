@@ -125,7 +125,11 @@ const preset = {
     styles.width90Percent,
     styles.roundCorners
   ],
-  inputLine: [styles.padding10]
+  inputLine: [styles.padding10, {
+    borderColor: colors.primary,
+    borderWidth: 1,
+    backgroundColor: colors.white
+  }]
 };
 
 const labelColors = name => {
