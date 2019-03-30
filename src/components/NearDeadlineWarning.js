@@ -17,7 +17,7 @@ export default class NearDeadlineWarning extends React.PureComponent {
    */
   _isWithinNextDay(dueDate, now) {
     let difference = dueDate - now;
-    if (difference <= (24 * 60 * 60 * 1000)) return true;
+    if (difference <= 24 * 60 * 60 * 1000) return true;
     return false;
   }
 
@@ -43,12 +43,13 @@ export default class NearDeadlineWarning extends React.PureComponent {
 
 const warningStyles = StyleSheet.create({
   container: {
-    paddingVertical: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.lightPrimary2
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: colors.lightPrimary2,
+    marginBottom: 16
   },
   text: {
+    textAlign: 'center',
     color: colors.primary
   }
 });
