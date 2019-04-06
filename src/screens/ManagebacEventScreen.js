@@ -244,10 +244,6 @@ const eventStyles = StyleSheet.create({
 
 const htmlStyles = StyleSheet.create({
   p: {
-    fontSize: 14,
-    ...fonts.jost400
-  },
-  li: {
-    ...fonts.jost400
+    fontSize: 14
   }
 });
