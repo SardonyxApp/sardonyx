@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ScrollView } from 'react-native';
+import { ScrollView, TextInput, View } from 'react-native';
 
 export default class ManagebacEditCASScreen extends React.Component {
   isMounted = false;
@@ -19,7 +19,7 @@ export default class ManagebacEditCASScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: `${navigation.state.params.id}`
+      title: `Editing CAS Item ${navigation.state.params.id}`
     };
   };
 
@@ -29,6 +29,10 @@ export default class ManagebacEditCASScreen extends React.Component {
   _onRefresh() { }
 
   render() {
-    return <ScrollView />;
+    return (
+      <View>
+        <Text>This page is still a work-in-progress. At this time, use the PC version of ManageBac to edit your CAS experiences.</Text>
+      </View>
+    );
   }
 }
