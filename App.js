@@ -94,7 +94,11 @@ export default class Root extends React.Component {
   // I'm sure we're going to have to use state managers like Redux, and when that happens,
   // wrap this AppContainer in a Store Provider.
   render() {
-    return this.state.fontLoaded && <AppContainer />;
+    return (
+      this.state.fontLoaded && (
+        <AppContainer persistenceKey={__DEV__ ? 'NavigationStateDEV' : null} />
+      )
+    );
   }
 }
 
