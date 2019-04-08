@@ -18,27 +18,33 @@ export default class CASExpandableCard extends ExpandableCard {
   }
 
   componentDidMount() {
-    Storage.retrieveCredentials().then(credentials => {
-      fetch(BASE_URL + '/api/cas', {
-        method: 'GET',
-        headers: {
-          'Login-Token': credentials
-        },
-        mode: 'no-cors'
-      }).then(response => {
-        if (response.status === 200) {
-          this.setState({
-            casExperiences: JSON.parse(response.headers.map['managebac-data'])
+    Storage.retrieveCredentials()
+      .then(credentials => {
+        fetch(BASE_URL + '/api/cas', {
+          method: 'GET',
+          headers: {
+            'Login-Token': credentials
+          },
+          mode: 'no-cors'
+        })
+          .then(response => {
+            if (response.status === 200) {
+              this.setState({
+                casExperiences: JSON.parse(
+                  response.headers.map['managebac-data']
+                )
+              });
+              return;
+            }
+          })
+          .catch(error => {
+            console.warn(error);
+            return;
           });
-          return;
-        }
-      }).catch(error => {
-        console.warn(error);
-        return;
+      })
+      .catch(err => {
+        console.warn(err);
       });
-    }).catch(err => {
-      console.warn(err);
-    });
   }
 
   /**
@@ -63,7 +69,7 @@ export default class CASExpandableCard extends ExpandableCard {
   /**
    * Returns hex color codes for icons depending on experience status. These are taken from
    * the SVG data on the CAS list page.
-   * Returns an object instead of a string because there cannot be an empty string for the 
+   * Returns an object instead of a string because there cannot be an empty string for the
    * 'default' color - and we have to get rid of the color key entirely.
    * @param {String} status
    * @return {Object}
@@ -71,21 +77,22 @@ export default class CASExpandableCard extends ExpandableCard {
   _getIconColor(status) {
     switch (status) {
       case 'complete':
-        return { color: '#1ECD6E'};
+        return { color: '#1ECD6E' };
       case 'approved':
-        return { color: '#478CFE'};
+        return { color: '#478CFE' };
       case 'rejected':
-        return { color: '#e94b35'};
+        return { color: '#e94b35' };
       case 'needs_approval':
-        return { color: '#f59d00'};
+        return { color: '#f59d00' };
       default:
         return {};
     }
   }
 
-  _navigateToCASScreen(link, title) {
+  _navigateToCASScreen(link, reflectionCount, title) {
     this.props.navigation.navigate('CASItem', {
       apiLink: link,
+      reflectionCount,
       title
     });
   }
@@ -98,7 +105,11 @@ export default class CASExpandableCard extends ExpandableCard {
         renderItem={({ item }) => (
           <TouchableRipple
             onPress={() =>
-              this._navigateToCASScreen(item.link, decodeURI(item.title))
+              this._navigateToCASScreen(
+                item.link,
+                item.reflectionCount, 
+                decodeURI(item.title)
+              )
             }
             rippleColor="rgba(0, 0, 0, .16)"
           >
