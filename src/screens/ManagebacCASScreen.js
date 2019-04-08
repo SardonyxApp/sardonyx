@@ -72,7 +72,7 @@ export default class ManagebacCASScreen extends React.Component {
   }
 
   _onCTAPressed() {
-    if (this.state.casExperienceData.reflectionCount === 0) {
+    if (this.props.navigation.getParam('reflectionCount', 0) === null) {
       this.props.navigation.navigate('AddCASReflection', {
         id: this.state.casExperienceData.id
       });
@@ -159,9 +159,9 @@ export default class ManagebacCASScreen extends React.Component {
           {'reflectionCount' in this.state.casExperienceData &&
           this.state.casExperienceData.status !== 'complete' ? (
             <CTAButton style={casStyles.ctaButton} onPress={this._onCTAPressed}>
-              {this.state.casExperienceData.reflectionCount !== null
-                ? 'VIEW REFLECTIONS'
-                : 'ADD REFLECTION'}
+              {this.props.navigation.getParam('reflectionCount', 0) === null
+                ? 'ADD REFLECTION'
+                : 'VIEW REFLECTIONS'}
             </CTAButton>
           ) : null}
         </View>
