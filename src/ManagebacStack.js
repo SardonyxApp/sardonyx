@@ -11,6 +11,8 @@ import ManagebacOverviewScreen from './screens/ManagebacOverviewScreen';
 import ManagebacEventScreen from './screens/ManagebacEventScreen';
 import ManagebacCASScreen from './screens/ManagebacCASScreen';
 import ManagebacEditCASScreen from './screens/ManagebacEditCASScreen';
+import ManagebacAddCASReflectionScreen from './screens/ManagebacAddCASReflectionScreen';
+import ManagebacViewCASReflectionsScreen from './screens/ManagebacViewCASReflectionsScreen';
 import ManagebacClassScreen from './screens/ManagebacClassScreen';
 import ManagebacGroupScreen from './screens/ManagebacGroupScreen';
 
@@ -24,6 +26,8 @@ const ManagebacStack = createStackNavigator(
     UpcomingEventItem: ManagebacEventScreen,
     CASItem: ManagebacCASScreen,
     EditCASItem: ManagebacEditCASScreen,
+    AddCASReflection: ManagebacAddCASReflectionScreen,
+    ViewCASReflections: ManagebacViewCASReflectionsScreen,
     ClassItem: ManagebacClassScreen,
     GroupItem: ManagebacGroupScreen
   },

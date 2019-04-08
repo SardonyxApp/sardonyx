@@ -17,6 +17,7 @@ import Timespan from '../components/Timespan';
 import ExperienceUneditableWarning from '../components/ExperienceUneditableWarning';
 import { Storage } from '../helpers';
 import { styles, fonts, colors } from '../styles';
+import CTAButton from '../components/CTAButton';
 
 export default class ManagebacCASScreen extends React.Component {
   isMounted = false;
@@ -27,8 +28,10 @@ export default class ManagebacCASScreen extends React.Component {
       refreshing: true,
       casExperienceData: {}
     };
-    this._onRefresh = this._onRefresh.bind(this);
     this._setEditableParam = this._setEditableParam.bind(this);
+    this._onCTAPressed = this._onCTAPressed.bind(this);
+    this._fetchExperienceData = this._fetchExperienceData.bind(this);
+    this._onRefresh = this._onRefresh.bind(this);
   }
 
   componentDidMount() {
@@ -68,6 +71,55 @@ export default class ManagebacCASScreen extends React.Component {
     });
   }
 
+  _onCTAPressed() {
+    if (this.state.casExperienceData.reflectionCount === 0) {
+      this.props.navigation.navigate('AddCASReflection', {
+        id: this.state.casExperienceData.id
+      });
+      return;
+    }
+    this.props.navigation.navigate('ViewCASReflections', {
+      id: this.state.casExperienceData.id
+    });
+  }
+
+  _fetchExperienceData(credentials) {
+    fetch(BASE_URL + this.props.navigation.getParam('apiLink', '/404'), {
+      method: 'GET',
+      headers: {
+        'Login-Token': credentials
+      },
+      mode: 'no-cors'
+    })
+      .then(response => {
+        if (!this._isMounted) return;
+        if (response.status === 200) {
+          this.setState(
+            {
+              refreshing: false,
+              casExperienceData: JSON.parse(
+                response.headers.map['managebac-data']
+              ).cas
+            },
+            this._setEditableParam
+          );
+          return;
+        } else if (response.status === 404) {
+          Alert.alert(
+            'Not Found',
+            'Your CAS experience could not be found.',
+            []
+          );
+          this.props.navigation.goBack();
+          return;
+        }
+      })
+      .catch(error => {
+        console.warn(error);
+        return;
+      });
+  }
+
   /**
    * Called on load, and on pull-to-refresh. Asynchronously sets the state using newest experience data.
    */
@@ -78,45 +130,7 @@ export default class ManagebacCASScreen extends React.Component {
       },
       () => {
         Storage.retrieveCredentials()
-          .then(credentials => {
-            fetch(
-              BASE_URL + this.props.navigation.getParam('apiLink', '/404'),
-              {
-                method: 'GET',
-                headers: {
-                  'Login-Token': credentials
-                },
-                mode: 'no-cors'
-              }
-            )
-              .then(response => {
-                if (!this._isMounted) return;
-                if (response.status === 200) {
-                  this.setState(
-                    {
-                      refreshing: false,
-                      casExperienceData: JSON.parse(
-                        response.headers.map['managebac-data']
-                      ).cas
-                    },
-                    this._setEditableParam
-                  );
-                  return;
-                } else if (response.status === 404) {
-                  Alert.alert(
-                    'Not Found',
-                    'Your CAS experience could not be found.',
-                    []
-                  );
-                  this.props.navigation.goBack();
-                  return;
-                }
-              })
-              .catch(error => {
-                console.warn(error);
-                return;
-              });
-          })
+          .then(this._fetchExperienceData)
           .catch(err => {
             console.warn(err);
           });
@@ -134,13 +148,23 @@ export default class ManagebacCASScreen extends React.Component {
           />
         }
       >
-        <Timespan
-          timespan={
-            'timespan' in this.state.casExperienceData
-              ? this.state.casExperienceData.timespan
-              : null
-          }
-        />
+        <View style={casStyles.topFlexbox}>
+          <Timespan
+            timespan={
+              'timespan' in this.state.casExperienceData
+                ? this.state.casExperienceData.timespan
+                : null
+            }
+          />
+          {'reflectionCount' in this.state.casExperienceData &&
+          this.state.casExperienceData.status !== 'complete' ? (
+            <CTAButton style={casStyles.ctaButton} onPress={this._onCTAPressed}>
+              {this.state.casExperienceData.reflectionCount !== null
+                ? 'VIEW REFLECTIONS'
+                : 'ADD REFLECTION'}
+            </CTAButton>
+          ) : null}
+        </View>
         {'description' in this.state.casExperienceData ? (
           <View>
             <View style={casStyles.warnings}>
@@ -169,6 +193,9 @@ export default class ManagebacCASScreen extends React.Component {
 }
 
 const casStyles = StyleSheet.create({
+  ctaButton: {
+    marginTop: -30
+  },
   warnings: {
     flexDirection: 'column'
   },
