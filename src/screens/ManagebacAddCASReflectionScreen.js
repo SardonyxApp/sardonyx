@@ -32,12 +32,13 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
             navigation.goBack();
           }}
         >
+          {/**TODO: Check if using a custom Icon component here affects iOS rendering */}
           <Icon name="clear" color={colors.white} />
         </HeaderIcon>
       ),
       headerRight: (
         <HeaderIcon onPress={navigation.state.params.sendReflection}>
-          {/** navigationOptions is static, so we have to use params to access the state */}
+          {/** navigationOptions is static, so we have to use params to access a method */}
           <Icon name="send" color={colors.white} />
         </HeaderIcon>
       )
@@ -81,6 +82,7 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
   }
 
   _onWillBlur() {
+    // Don't show the Save Draft dialog if the value is empty or has been sent already
     if (this.state.reflectionValue !== '' && this.state.sending === false) {
       Alert.alert(
         '',
@@ -143,10 +145,10 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
         Storage.retrieveCredentials()
           .then(credentials => {
             fetch(
-              BASE_URL +
-                '/api/cas/' +
-                this.props.navigation.getParam('id', null) +
-                '/reflections',
+              `${BASE_URL}/api/cas/${this.props.navigation.getParam(
+                'id',
+                null
+              )}/reflections`,
               {
                 method: 'POST',
                 headers: {
@@ -159,22 +161,8 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
               }
             )
               .then(response => {
-                // Remove the drafts if any
-                Storage.retrieveValue('reflectionDrafts')
-                  .then(drafts => {
-                    if (!drafts) return;
-                    drafts = JSON.parse(drafts);
-                    delete drafts[this.props.navigation.getParam('id', null)];
-                    Storage.writeValue(
-                      'reflectionDrafts',
-                      JSON.stringify(drafts)
-                    ).catch(err => {
-                      console.warn(err);
-                    });
-                  })
-                  .catch(err => {
-                    console.warn(err);
-                  });
+                // Remove the drafts if any exist
+                this._discardDraft();
                 this.props.navigation.goBack();
               })
               .catch(err => {
