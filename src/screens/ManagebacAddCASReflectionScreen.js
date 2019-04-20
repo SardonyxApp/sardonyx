@@ -2,6 +2,10 @@ import React from 'react';
 
 import { View, TextInput, StyleSheet, Alert } from 'react-native';
 
+import { Icon } from 'react-native-elements';
+import { BASE_URL } from '../../env';
+
+import HeaderIcon from '../components/HeaderIcon';
 import { Storage } from '../helpers';
 import { colors } from '../styles';
 
@@ -10,16 +14,33 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
     super(props);
     this.state = {
       reflectionValue: '',
-      editable: false
+      editable: false,
+      sending: false
     };
     this._onWillBlur = this._onWillBlur.bind(this);
     this._discardDraft = this._discardDraft.bind(this);
     this._saveDraft = this._saveDraft.bind(this);
+    this._sendReflection = this._sendReflection.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Write New Reflection'
+      title: 'Write New Reflection',
+      headerLeft: (
+        <HeaderIcon
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
+          <Icon name="clear" color={colors.white} />
+        </HeaderIcon>
+      ),
+      headerRight: (
+        <HeaderIcon onPress={navigation.state.params.sendReflection}>
+          {/** navigationOptions is static, so we have to use params to access the state */}
+          <Icon name="send" color={colors.white} />
+        </HeaderIcon>
+      )
     };
   };
 
@@ -60,7 +81,7 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
   }
 
   _onWillBlur() {
-    if (this.state.reflectionValue !== '') {
+    if (this.state.reflectionValue !== '' && this.state.sending === false) {
       Alert.alert(
         '',
         'Save Draft?',
@@ -82,6 +103,10 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
   }
 
   componentDidMount() {
+    // Register the sendReflection method so it can be called from static navigationOptions
+    this.props.navigation.setParams({ sendReflection: this._sendReflection });
+
+    // Retrieve the draft is any exists, and set the value.
     Storage.retrieveValue('reflectionDrafts')
       .then(drafts => {
         if (!drafts) return;
@@ -96,12 +121,71 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
       .catch(err => {
         console.warn(err);
       });
+
+    // Register the willBlur event so we can save the draft upon closing
     this.props.navigation.addListener('willBlur', this._onWillBlur);
+
+    // Set the textinput as editable (https://github.com/facebook/react-native/issues/20887)
     setTimeout(() => {
       this.setState({
         editable: true
       });
     }, 100);
+  }
+
+  _sendReflection() {
+    this.setState(
+      {
+        editable: false,
+        sending: true // Maybe use this for loading animation? Currently used to check if draft message should be shown
+      },
+      () => {
+        Storage.retrieveCredentials()
+          .then(credentials => {
+            fetch(
+              BASE_URL +
+                '/api/cas/' +
+                this.props.navigation.getParam('id', null) +
+                '/reflections',
+              {
+                method: 'POST',
+                headers: {
+                  'Login-Token': credentials,
+                  'Reflection-Data': JSON.stringify({
+                    body: encodeURI(this.state.reflectionValue)
+                  })
+                },
+                mode: 'no-cors'
+              }
+            )
+              .then(response => {
+                // Remove the drafts if any
+                Storage.retrieveValue('reflectionDrafts')
+                  .then(drafts => {
+                    if (!drafts) return;
+                    drafts = JSON.parse(drafts);
+                    delete drafts[this.props.navigation.getParam('id', null)];
+                    Storage.writeValue(
+                      'reflectionDrafts',
+                      JSON.stringify(drafts)
+                    ).catch(err => {
+                      console.warn(err);
+                    });
+                  })
+                  .catch(err => {
+                    console.warn(err);
+                  });
+                this.props.navigation.goBack();
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          })
+          .catch(err => {
+            console.warn(err);
+          });
+      }
+    );
   }
 
   render() {
