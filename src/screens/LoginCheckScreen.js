@@ -4,9 +4,7 @@ import {
   View,
   Text,
   StatusBar,
-  ActivityIndicator,
-  Image,
-  Alert
+  ActivityIndicator
 } from 'react-native';
 
 import { DangerZone } from 'expo';

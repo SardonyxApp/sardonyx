@@ -74,12 +74,12 @@ export default class ManagebacCASScreen extends React.Component {
   _onCTAPressed() {
     if (this.props.navigation.getParam('reflectionCount', 0) === null) {
       this.props.navigation.navigate('AddCASReflection', {
-        id: this.state.casExperienceData.id
+        id: this.state.casExperienceData.link.split('/')[3]
       });
       return;
     }
     this.props.navigation.navigate('ViewCASReflections', {
-      id: this.state.casExperienceData.id
+      id: this.state.casExperienceData.link.split('/')[3]
     });
   }
 

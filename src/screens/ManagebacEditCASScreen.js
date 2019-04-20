@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ScrollView, TextInput, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 export default class ManagebacEditCASScreen extends React.Component {
   isMounted = false;
