@@ -49,32 +49,41 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
         refreshing: true
       },
       () => {
-        Storage.retrieveCredentials().then(credentials => {
-          fetch(BASE_URL + '/api/dashboard', {
-            method: 'GET',
-            headers: {
-              'Login-Token': credentials
-            },
-            mode: 'no-cors'
-          }).then(response => {
-            if (response.status === 200) {
-              Storage.writeValue(
-                'managebacOverview',
-                response.headers.map['managebac-data']
-              ).then(() => {
-                this.setState({
-                  refreshing: false
-                });
-              }).catch(err => {
-                console.warn(err);
-              });
-              return;
-            }
-          }); // TODO: Data is loaded but screen is never reloaded fix it
-        })
-        .catch(err => {
-          console.warn(err);
-        });
+        Storage.retrieveCredentials()
+          .then(credentials => {
+            fetch(BASE_URL + '/api/dashboard', {
+              method: 'GET',
+              headers: {
+                'Login-Token': credentials
+              },
+              mode: 'no-cors'
+            }).then(response => {
+              if (response.status === 200) {
+                Storage.writeValue(
+                  'managebacOverview',
+                  response.headers.map['managebac-data']
+                )
+                  .then(() => {
+                    const data = JSON.parse(
+                      response.headers.map['managebac-data']
+                    );
+                    this.setState({
+                      refreshing: false,
+                      upcomingEvents: data.deadlines,
+                      classList: data.classes,
+                      groupList: data.groups
+                    });
+                  })
+                  .catch(err => {
+                    console.warn(err);
+                  });
+                return;
+              }
+            });
+          })
+          .catch(err => {
+            console.warn(err);
+          });
       }
     );
   }
@@ -85,11 +94,13 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
    */
   _getOverviewData() {
     return new Promise(resolve => {
-      Storage.retrieveValue('managebacOverview').then(data => {
-        resolve(JSON.parse(data));
-      }).catch(err => {
-        console.warn(err);
-      });
+      Storage.retrieveValue('managebacOverview')
+        .then(data => {
+          resolve(JSON.parse(data));
+        })
+        .catch(err => {
+          console.warn(err);
+        });
     });
   }
 
