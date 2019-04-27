@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-  Image,
+  ScrollView,
   TouchableOpacity,
   Dimensions,
   StyleSheet,
@@ -21,6 +21,7 @@ import HeaderIcon from '../components/HeaderIcon';
 import PreloadImage from '../components/PreloadImage';
 import { Storage } from '../helpers';
 import { fonts, colors } from '../styles';
+import ExperienceUneditableWarning from '../components/ExperienceUneditableWarning';
 
 export default class ManagebacViewCASReflectionsScreen extends React.Component {
   isMounted = false;
@@ -43,7 +44,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
     this._onRefresh();
     this.props.navigation.setParams({
       refreshPage: this._onRefresh
-    })
+    });
   }
 
   componentWillUnmount() {
@@ -53,7 +54,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Reflections and Evidence',
-      headerRight: (
+      headerRight: navigation.state.params.editable ? (
         <HeaderIcon
           onPress={() => {
             navigation.navigate('AddCASReflection', {
@@ -64,17 +65,19 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
         >
           <Icon name="add" color={colors.white} />
         </HeaderIcon>
-      )
+      ) : null
     };
   };
 
   /**
    * Requests /api/cas/:id for the list of reflections. Sets the state on success.
-   * @param {String} credentials 
+   * @param {String} credentials
    */
   _fetchReflectionsData(credentials) {
     fetch(
-      `${BASE_URL}/api/cas/${this.props.navigation.state.params.id}/reflections`,
+      `${BASE_URL}/api/cas/${
+        this.props.navigation.state.params.id
+      }/reflections`,
       {
         method: 'GET',
         headers: {
@@ -132,7 +135,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
 
   /**
    * Remove non-HTML newlines, and return the decoded HTML.
-   * @param {String} content 
+   * @param {String} content
    */
   _parseContent(content) {
     content = content.replace(/%0A/g, '');
@@ -141,7 +144,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
 
   /**
    * Toggles the value of state.numberOfLines[index] between 10 and null.
-   * @param {Integer} index 
+   * @param {Integer} index
    */
   _toggleExpand(index) {
     const newNumberOfLines = [...this.state.numberOfLines];
@@ -157,7 +160,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
 
   /**
    * Function to return a FlatList of learning outcome labels to be called for each reflection item.
-   * @param {Array} labels 
+   * @param {Array} labels
    */
   _renderLabels(labels) {
     return (
@@ -176,7 +179,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
 
   /**
    * Renders each reflection/evidence data. Has separate rendering functions for photo and reflection.
-   * @param {Object} 
+   * @param {Object}
    */
   _renderRow({ item, index }) {
     if (item.type === 'reflection') {
@@ -223,7 +226,9 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
           </View>
           <View style={reflectionListStyles.itemContentWrapper}>
             <View style={reflectionListStyles.itemContent}>
-              <Text style={reflectionListStyles.imageCaptionText}>{decodeURI(item.photos[0].title)}</Text>
+              <Text style={reflectionListStyles.imageCaptionText}>
+                {decodeURI(item.photos[0].title)}
+              </Text>
               <PreloadImage
                 style={reflectionListStyles.image}
                 sourceUri={item.photos[0].link}
@@ -237,7 +242,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
 
   render() {
     return (
-      <FlatList
+      <ScrollView
         refreshing={this.state.refreshing}
         refreshControl={
           <RefreshControl
@@ -245,11 +250,18 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
             onRefresh={this._onRefresh}
           />
         }
-        keyExtractor={(item, index) => index.toString()}
-        data={this.state.reflectionsData}
-        renderItem={this._renderRow}
-        extraData={this.state}
-      />
+      >
+        {/** Refreshing controls are in the parent because it should be above the Warning */}
+        <ExperienceUneditableWarning
+          status={this.props.navigation.state.params.editable ? '' : 'complete'}
+        />
+        <FlatList
+          keyExtractor={(item, index) => index.toString()}
+          data={this.state.reflectionsData}
+          renderItem={this._renderRow}
+          extraData={this.state}
+        />
+      </ScrollView>
     );
   }
 }
