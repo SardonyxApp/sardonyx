@@ -29,7 +29,8 @@ export default class UpcomingExpandableCard extends ExpandableCard {
       return Math.round(difference / (60 * 60 * 1000)) + ' hour(s)';
     } else if (difference < 30 * 24 * 60 * 60 * 1000) {
       return Math.round(difference / (24 * 60 * 60 * 1000)) + ' day(s)';
-    }
+    } 
+    return Math.round(difference / (30 * 24 * 60 * 60 * 1000)) + ' month(s)';
   }
 
   /**
