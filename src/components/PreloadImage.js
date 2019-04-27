@@ -5,6 +5,8 @@ import { View, Image, StyleSheet } from 'react-native';
 import { colors } from '../styles';
 
 export default class PreloadImage extends React.PureComponent {
+  isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -18,8 +20,16 @@ export default class PreloadImage extends React.PureComponent {
     this._requestSize();
   }
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
   componentDidUpdate() {
     this._requestSize();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   /**
@@ -29,6 +39,7 @@ export default class PreloadImage extends React.PureComponent {
     Image.getSize(
       this.props.sourceUri,
       (width, height) => {
+        if (!this._isMounted) return;
         if (this.props.style.width && this.props.style.height) {
           width = this.props.style.width;
           height = this.props.style.height;
