@@ -15,9 +15,9 @@ import { BASE_URL } from '../../env';
 import HeaderIcon from '../components/HeaderIcon';
 import Timespan from '../components/Timespan';
 import ExperienceUneditableWarning from '../components/ExperienceUneditableWarning';
+import CTAButton from '../components/CTAButton';
 import { Storage } from '../helpers';
 import { styles, fonts, colors } from '../styles';
-import CTAButton from '../components/CTAButton';
 
 export default class ManagebacCASScreen extends React.Component {
   isMounted = false;
