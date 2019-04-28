@@ -79,7 +79,7 @@ export default class ManagebacCASScreen extends React.Component {
       return;
     }
     this.props.navigation.navigate('ViewCASReflections', {
-      editable: this.state.casExperienceData.status !== 'complete',
+      editable: this.props.navigation.state.params.editable,
       id: this.state.casExperienceData.link.split('/')[3]
     });
   }
@@ -140,6 +140,7 @@ export default class ManagebacCASScreen extends React.Component {
   }
 
   render() {
+    console.log(this.state.casExperienceData.learningOutcomes);
     return (
       <ScrollView
         refreshControl={
@@ -159,7 +160,8 @@ export default class ManagebacCASScreen extends React.Component {
           />
           {'reflectionCount' in this.state.casExperienceData ? (
             <CTAButton style={casStyles.ctaButton} onPress={this._onCTAPressed}>
-              {this.props.navigation.getParam('reflectionCount', 0) === null && this.state.casExperienceData.status !== 'complete'
+              {this.props.navigation.getParam('reflectionCount', 0) === null &&
+              this.props.navigation.state.params.editable
                 ? 'ADD REFLECTION'
                 : 'VIEW REFLECTIONS'}
             </CTAButton>
