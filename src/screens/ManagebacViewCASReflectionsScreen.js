@@ -433,7 +433,8 @@ const reflectionListStyles = StyleSheet.create({
     marginTop: 8
   },
   itemDate: {
-    fontSize: 14
+    fontSize: 16,
+    ...fonts.jost400
   },
   labels: {
     marginBottom: 6
@@ -442,11 +443,12 @@ const reflectionListStyles = StyleSheet.create({
     backgroundColor: '#ccece7',
     paddingHorizontal: 4,
     marginRight: 4,
-    borderRadius: 2
+    borderRadius: 2,
+    ...fonts.jost400
   },
   labelText: {
     color: '#00a085',
-    fontSize: 11
+    fontSize: 12
   },
   itemContentWrapper: {
     elevation: 2,
