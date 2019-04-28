@@ -36,6 +36,9 @@ const fonts = StyleSheet.create({
   },
   jost500: {
     fontFamily: 'Jost-500'
+  },
+  jost800: {
+    fontFamily: 'Jost-800'
   }
 });
 
