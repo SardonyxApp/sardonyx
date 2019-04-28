@@ -6,6 +6,7 @@ import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
 import UpcomingExpandableCard from '../components/UpcomingExpandableCard';
+import UpcomingCarousel from '../components/UpcomingCarousel';
 import CASExpandableCard from '../components/CASExpandableCard';
 import ClassesExpandableCard from '../components/ClassesExpandableCard';
 import GroupsExpandableCard from '../components/UpcomingExpandableCard';
@@ -136,13 +137,12 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           />
         }
       >
-        <UpcomingExpandableCard
+        <UpcomingCarousel
           upcomingEvents={this.state.upcomingEvents}
           allGroupsAndClasses={[
             ...this.state.classList,
             ...this.state.groupList
           ]}
-          title="UPCOMING"
           navigation={this.props.navigation}
         />
         <CASExpandableCard
