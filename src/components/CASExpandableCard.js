@@ -9,6 +9,8 @@ import { List, TouchableRipple } from 'react-native-paper';
 import ExpandableCard from './ExpandableCard';
 
 export default class CASExpandableCard extends ExpandableCard {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -18,6 +20,8 @@ export default class CASExpandableCard extends ExpandableCard {
   }
 
   componentDidMount() {
+    _isMounted = true;
+
     Storage.retrieveCredentials()
       .then(credentials => {
         fetch(BASE_URL + '/api/cas', {
@@ -28,6 +32,7 @@ export default class CASExpandableCard extends ExpandableCard {
           mode: 'no-cors'
         })
           .then(response => {
+            if(!_isMounted) return;
             if (response.status === 200) {
               this.setState({
                 casExperiences: JSON.parse(
@@ -45,6 +50,10 @@ export default class CASExpandableCard extends ExpandableCard {
       .catch(err => {
         console.warn(err);
       });
+  }
+
+  componentWillUnmount() {
+    _isMounted = false;
   }
 
   /**
