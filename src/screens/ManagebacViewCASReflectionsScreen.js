@@ -261,6 +261,10 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
       });
   }
 
+  /**
+   * Navigates to EditCASReflection with current value, and refreshes on Back action.
+   * @param {Integer} id 
+   */
   _editItem(id) {
     this.props.navigation.navigate('EditCASReflection', {
       id: this.props.navigation.state.params.id,
@@ -271,12 +275,8 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
         })[0].content
       ),
       onGoBack: () => {
-        this.setState({
-          menuVisible: false,
-          menuFocusedOn: null
-        }, () => {
-          this._onRefresh()
-        })
+        this._hideMenu();
+        this._onRefresh();
       }
     });
   }
