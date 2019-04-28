@@ -186,7 +186,7 @@ export default class ManagebacEventScreen extends React.Component {
           <HTMLView
             value={
               'details' in this.state.upcomingEventData
-                ? this.state.upcomingEventData.details
+                ? (this.state.upcomingEventData.details ?? 'No details provided.')
                 : '<p />'
             }
             stylesheet={htmlStyles}
