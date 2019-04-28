@@ -66,7 +66,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
         <HeaderIcon
           onPress={() => {
             navigation.navigate('AddCASReflection', {
-              onGoBack: () => navigation.state.params.refreshPage(),
+              onGoBack: navigation.state.params.refreshPage,
               id: navigation.state.params.id
             });
           }}
@@ -168,7 +168,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
 
   /**
    * Show the AppBar menu, focused on a reflection through index (NOT id).
-   * @param {Integer} index 
+   * @param {Integer} index
    */
   _showMenu(index) {
     if (Platform.OS === 'android') {
@@ -194,7 +194,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
 
   /**
    * Confirms the user if they really want to delete the reflection. Then calls _deleteItem()
-   * @param {Integer} id 
+   * @param {Integer} id
    */
   _confirmDelete(id) {
     Alert.alert(
@@ -202,19 +202,19 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
       'Are you sure you want to delete this reflection/evidence?',
       [
         {
-          text: 'Yes, delete',
-          onPress: () => this._deleteItem(id)
+          text: 'No, keep it!'
         },
         {
-          text: 'No, keep it!'
+          text: 'Yes, delete',
+          onPress: () => this._deleteItem(id)
         }
       ]
     );
   }
 
   /**
-   * Calls _requestDeleteReflection using credentials. 
-   * @param {Integer} id 
+   * Calls _requestDeleteReflection using credentials.
+   * @param {Integer} id
    */
   _deleteItem(id) {
     this.setState(
@@ -225,22 +225,24 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
       },
       () => {
         Storage.retrieveCredentials()
-          .then((credentials) => this._requestDeleteReflection(credentials, id))
+          .then(credentials => this._requestDeleteReflection(credentials, id))
           .catch(err => {
             console.warn(err);
-          }); 
+          });
       }
     );
   }
 
   /**
    * Sends a DELETE request to delete the specific reflection. Calls _onRefresh on success.
-   * @param {String} credentials 
-   * @param {Integer} id 
+   * @param {String} credentials
+   * @param {Integer} id
    */
   _requestDeleteReflection(credentials, id) {
     fetch(
-      `${BASE_URL}/api/cas/${this.props.navigation.state.params.id}/reflections/${id.toString()}`,
+      `${BASE_URL}/api/cas/${
+        this.props.navigation.state.params.id
+      }/reflections/${id.toString()}`,
       {
         method: 'DELETE',
         headers: {
@@ -259,7 +261,25 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
       });
   }
 
-  _editItem(index) {}
+  _editItem(id) {
+    this.props.navigation.navigate('EditCASReflection', {
+      id: this.props.navigation.state.params.id,
+      reflectionId: id.toString(),
+      currentValueHTML: this._parseContent(
+        this.state.reflectionsData.filter(obj => {
+          return obj.id === id;
+        })[0].content
+      ),
+      onGoBack: () => {
+        this.setState({
+          menuVisible: false,
+          menuFocusedOn: null
+        }, () => {
+          this._onRefresh()
+        })
+      }
+    });
+  }
 
   /**
    * Function to return a FlatList of learning outcome labels to be called for each reflection item.
