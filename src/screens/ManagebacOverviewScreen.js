@@ -5,7 +5,8 @@ import { ScrollView, RefreshControl } from 'react-native';
 import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
-import UpcomingExpandableCard from '../components/UpcomingExpandableCard';
+import GreetingsCard from '../components/GreetingsCard';
+import OverviewHeading from '../components/OverviewHeading';
 import UpcomingCarousel from '../components/UpcomingCarousel';
 import CASExpandableCard from '../components/CASExpandableCard';
 import ClassesExpandableCard from '../components/ClassesExpandableCard';
@@ -19,7 +20,8 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
       refreshing: true,
       upcomingEvents: [], // These three are taken from the dashboard data.
       classList: [], // CAS data is done in the CAS expandable card component
-      groupList: []
+      groupList: [],
+      userInfo: {}
     };
     this._onRefresh = this._onRefresh.bind(this);
   }
@@ -36,7 +38,8 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
         refreshing: false,
         upcomingEvents: data.deadlines,
         classList: data.classes,
-        groupList: data.groups
+        groupList: data.groups,
+        userInfo: data.user
       });
     });
   }
@@ -72,7 +75,8 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
                       refreshing: false,
                       upcomingEvents: data.deadlines,
                       classList: data.classes,
-                      groupList: data.groups
+                      groupList: data.groups,
+                      userInfo: data.user
                     });
                   })
                   .catch(err => {
@@ -137,6 +141,8 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           />
         }
       >
+        <GreetingsCard name={this.state.userInfo.name} />
+        <OverviewHeading>Upcoming</OverviewHeading>
         <UpcomingCarousel
           upcomingEvents={this.state.upcomingEvents}
           allGroupsAndClasses={[
@@ -145,13 +151,14 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           ]}
           navigation={this.props.navigation}
         />
-        <CASExpandableCard
-          title="CAS EXPERIENCES"
-          navigation={this.props.navigation}
-        />
+        <OverviewHeading>Classes</OverviewHeading>
         <ClassesExpandableCard
           title="CLASSES"
           classList={this.state.classList}
+          navigation={this.props.navigation}
+        />
+        <CASExpandableCard
+          title="CAS EXPERIENCES"
           navigation={this.props.navigation}
         />
         <GroupsExpandableCard groupList={this.state.groupList} />
