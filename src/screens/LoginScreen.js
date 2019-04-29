@@ -116,9 +116,9 @@ class LoginForm extends React.Component {
       .then(response => {
         if (response.status === 200) {
           // store response tokens
-          const credentials = JSON.parse(
+          const credentials = { ...JSON.parse(
             response.headers.map['login-token'] || '{}'
-          );
+          ), ...{ sardonyxToken: response.headers.map['sardonyx-token'] }};
           Storage.writeCredentials(credentials)
             .then(() => {
               this.toggleButton(); // Make button available again
