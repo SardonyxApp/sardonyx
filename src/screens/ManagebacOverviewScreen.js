@@ -8,8 +8,8 @@ import { Storage } from '../helpers';
 import GreetingsCard from '../components/GreetingsCard';
 import OverviewHeading from '../components/OverviewHeading';
 import UpcomingCarousel from '../components/UpcomingCarousel';
+import ClassesCarousel from '../components/ClassesCarousel';
 import CASExpandableCard from '../components/CASExpandableCard';
-import ClassesExpandableCard from '../components/ClassesExpandableCard';
 import GroupsExpandableCard from '../components/UpcomingExpandableCard';
 
 export default class ManagebacOverviewScreen extends React.PureComponent {
@@ -152,8 +152,7 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           navigation={this.props.navigation}
         />
         <OverviewHeading>Classes</OverviewHeading>
-        <ClassesExpandableCard
-          title="CLASSES"
+        <ClassesCarousel
           classList={this.state.classList}
           navigation={this.props.navigation}
         />
