@@ -77,6 +77,10 @@ export default class UpcomingCarousel extends React.Component {
           activeSlideAlignment={'start'}
           inactiveSlideScale={1}
           inactiveSlideOpacity={1}
+          contentContainerCustomStyle={{
+            overflow: 'hidden',
+            width: 300 * this.props.upcomingEvents.length
+          }}
         />
       </View>
     );
