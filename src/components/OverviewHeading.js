@@ -17,9 +17,10 @@ export default class OverviewHeading extends React.PureComponent {
 const headingStyles = StyleSheet.create({
   title: {
     ...fonts.jost800,
-    fontSize: 40,
+    fontSize: 30,
     color: colors.lightPrimary2,
     marginHorizontal: 16,
+    marginTop: 8,
     marginBottom: -16
   }
 });
