@@ -4,7 +4,8 @@ import {
   View
 } from 'react-native';
 
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
+import { Storage } from '../helpers';
 import { BASE_URL } from '../../env.json';
 
 // Disable sockets for now 
@@ -64,14 +65,18 @@ export default class TasksScreen extends React.Component {
   }
 
   // Safely fetch data after initial render 
-  componentDidMount() {
+  async componentDidMount() {
+    const token = await Storage.retrieveValue('sardonyxToken');
+    const sardonyxToken = { 'Sardonyx-Token': token };
+
     // Fetch common data 
     Promise.all([
-      fetch('/app/user').then(response => response.json()),
-      fetch(`/app/tasklist`).then(response => response.json()),
-      fetch('/app/tasks?full=true').then(response => response.json()),
-      fetch('/app/subjects').then(response => response.json()),
-      fetch('/app/categories').then(response => response.json())
+      // TODO: clean up the promise chains 
+      fetch(`${BASE_URL}/app/user`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
+      fetch(`${BASE_URL}/app/tasklist`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
+      fetch(`${BASE_URL}/app/tasks?full=true`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
+      fetch(`${BASE_URL}/app/subjects`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
+      fetch(`${BASE_URL}/app/categories`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e))
     ]).then(responses => {
       this.setState({
         user: responses[0],
@@ -83,7 +88,7 @@ export default class TasksScreen extends React.Component {
         categoriesFilter: responses[0].categories,
       });
       
-      socket.emit('join room', responses[1].id);
+      // socket.emit('join room', responses[1].id);
     }).catch(err => {
       alert('There was an error while retrieving information. If this error persists, please contact SardonyxApp.');
       console.error(err); 
@@ -91,7 +96,7 @@ export default class TasksScreen extends React.Component {
 
     // Teachers only feature 
 
-    // fetch('/app/tasklist?tasklist=all')
+    // fetch(`${BASE_URL}/app/tasklist?tasklist=all`)
     // .then(response => response.json())
     // .then(response => {
     //   this.setState({
@@ -104,7 +109,7 @@ export default class TasksScreen extends React.Component {
     // Disable sockets for now 
 
     // socket.on('tasks', () => {
-    //   fetch(`/app/tasks?tasklist=${this.state.tasklist.id}&full=true`)
+    //   fetch(`${BASE_URL}/app/tasks?tasklist=${this.state.tasklist.id}&full=true`)
     //   .then(response => response.json())
     //   .then(response => {
     //     this.setState({ 
@@ -114,7 +119,7 @@ export default class TasksScreen extends React.Component {
     // });
 
     // socket.on('labels', type => {
-    //   fetch(`/app/${type}?tasklist=${this.state.tasklist.id}`)
+    //   fetch(`${BASE_URL}/app/${type}?tasklist=${this.state.tasklist.id}`)
     //   .then(response => response.json())
     //   .then(response => {
     //     this.setState(() => {
@@ -127,15 +132,18 @@ export default class TasksScreen extends React.Component {
   }
 
   // Fetch data to change tasklist 
-  _handleSelectTasklist(tasklist) {
+  async _handleSelectTasklist(tasklist) {
+    const token = await Storage.retrieveValue('sardonyxToken');
+    const sardonyxToken = { 'Sardonyx-Token': token };
+
     Promise.all([
       // Fetch user because the default filters change 
-      fetch(`/app/user?tasklist=${tasklist.id}`).then(response => response.json()),
-      fetch(`/app/tasks?full=true&tasklist=${tasklist.id}`).then(response => response.json()),
-      fetch(`/app/subjects?tasklist=${tasklist.id}`).then(response => response.json()),
-      fetch(`/app/categories?tasklist=${tasklist.id}`).then(response => response.json())
+      fetch(`${BASE_URL}/app/user?tasklist=${tasklist.id}`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
+      fetch(`${BASE_URL}/app/tasks?full=true&tasklist=${tasklist.id}`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
+      fetch(`${BASE_URL}/app/subjects?tasklist=${tasklist.id}`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
+      fetch(`${BASE_URL}/app/categories?tasklist=${tasklist.id}`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e))
     ]).then(responses => {
-      socket.emit('leave room', this.state.tasklist.id);
+      // socket.emit('leave room', this.state.tasklist.id);
 
       this.setState({
         user: responses[0],
@@ -179,7 +187,7 @@ export default class TasksScreen extends React.Component {
    * @description Create a new task 
    * @param {Object} obj task object 
    */
-  _handleCreateTask(obj) {
+  async _handleCreateTask(obj) {
     const task = {
       name: obj.name || '',
       description: obj.description || null,
@@ -191,13 +199,14 @@ export default class TasksScreen extends React.Component {
       category_id: obj.category_id || null
     };
 
-    fetch(`/app/task?tasklist=${this.state.tasklist.id}`, {
+    const token = await Storage.retrieveValue('sardonyxToken');
+    fetch(`${BASE_URL}/app/task?tasklist=${this.state.tasklist.id}`, {
       method: 'POST',
       body: JSON.stringify(task),
-      credentials: 'include',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Sardonyx-Token': token
       }
     })
     .then(response => response.json())
@@ -206,14 +215,14 @@ export default class TasksScreen extends React.Component {
         return {
           currentTask: response.insertId,
           tasks: [...prevState.tasks, Object.assign({
-              id: response.insertId,
-              student_name: prevState.user.teacher ? null : prevState.user.name,
-              teacher_name: prevState.user.teacher ? prevState.user.name : null,
-              subject_name: null, // TODO: initially set these according to task.subject_id 
-              subject_color: null,
-              category_name: null,
-              category_color: null
-            }, task)]
+            id: response.insertId,
+            student_name: prevState.user.teacher ? null : prevState.user.name,
+            teacher_name: prevState.user.teacher ? prevState.user.name : null,
+            subject_name: null, // TODO: initially set these according to task.subject_id 
+            subject_color: null,
+            category_name: null,
+            category_color: null
+          }, task)]
         };
       });
     
@@ -229,7 +238,7 @@ export default class TasksScreen extends React.Component {
    * @param {Object} obj task object with any key value pair that is to be changed  
    * @param {Number} id required in order to change state correctly 
    */
-  _handleUpdateTask(obj) {
+  async _handleUpdateTask(obj) {
     // Deep copy object
     const body = JSON.parse(JSON.stringify(obj));
 
@@ -240,13 +249,14 @@ export default class TasksScreen extends React.Component {
     delete body.category_color;
 
     // Send the request 
-    fetch(`/app/task?id=${obj.id}&tasklist=${this.state.tasklist.id}`, {
+    const token = await Storage.retrieveValue('sardonyxToken')
+    fetch(`${BASE_URL}/app/task?id=${obj.id}&tasklist=${this.state.tasklist.id}`, {
       body: JSON.stringify(body),
       method: 'PATCH',
-      credentials: 'include',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Sardonyx-Token': token
       }
     }).then(() => {
       // Update local state using local data, as response object does not return tables 
@@ -265,10 +275,13 @@ export default class TasksScreen extends React.Component {
    * Delete a task 
    * @param {String|Number} id 
    */
-  _handleDeleteTask(id) {
-    fetch(`/app/task?id=${id}&tasklist=${this.state.tasklist.id}`, {
+  async _handleDeleteTask(id) {
+    const token = await Storage.retrieveValue('sardonyxToken');
+    fetch(`${BASE_URL}/app/task?id=${id}&tasklist=${this.state.tasklist.id}`, {
       method: 'DELETE',
-      credentials: 'include',
+      headers: {
+        'Sardonyx-Token': token
+      }
     }).then(() => {
       this.setState(prevState => {
         return {
@@ -289,14 +302,15 @@ export default class TasksScreen extends React.Component {
    * @param {String} type subjects or categories
    * @param {Object} obj label object
    */ 
-  _handleCreateLabel(type, obj) {
-    fetch(`/app/${type}?tasklist=${this.state.tasklist.id}`, {
+  async _handleCreateLabel(type, obj) {
+    const token = await Storage.retrieveValue('sardonyxToken');
+    fetch(`${BASE_URL}/app/${type}?tasklist=${this.state.tasklist.id}`, {
       method: 'POST',
       body: JSON.stringify(obj),
-      credentials: 'include',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Sardonyx-Token': token
       }
     })
     .then(response => response.json())
@@ -325,14 +339,15 @@ export default class TasksScreen extends React.Component {
    * @param {String} obj.color 
    * @param {String} obj.managebac 
    */
-  _handleUpdateLabel(type, obj) {
-    fetch(`/app/${type}?id=${obj.id}&tasklist=${this.state.tasklist.id}`, {
+  async _handleUpdateLabel(type, obj) {
+    const token = await Storage.retrieveValue('sardonyxToken');
+    fetch(`${BASE_URL}/app/${type}?id=${obj.id}&tasklist=${this.state.tasklist.id}`, {
       method: 'PATCH',
       body: JSON.stringify(obj),
-      credentials: 'include',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Sardonyx-Token': token
       }
     }).then(() => {
       this.setState(prevState => {
@@ -353,10 +368,13 @@ export default class TasksScreen extends React.Component {
    * @param {String} type subjects or categories 
    * @param {Number} id 
    */
-  _handleDeleteLabel(type, id) {
-    fetch(`/app/${type}?id=${id}&tasklist=${this.state.tasklist.id}`, {
+  async _handleDeleteLabel(type, id) {
+    const token = await Storage.retrieveValue('sardonyxToken');
+    fetch(`${BASE_URL}/app/${type}?id=${id}&tasklist=${this.state.tasklist.id}`, {
       method: 'DELETE',
-      credentials: 'include'
+      headers: {
+        'Sardonyx-Token': token 
+      }
     }).then(() => {
       this.setState(prevState => {
         const payload = {};
@@ -376,11 +394,14 @@ export default class TasksScreen extends React.Component {
    * @param {String} type 
    * @param {Number} id 
    */
-  _handleUpdateUserLabel(type, id) {
+  async _handleUpdateUserLabel(type, id) {
     const method = this.state.user[type].includes(id) ? 'DELETE' : 'POST';
-    fetch(`/app/user/${type}?id=${id}`, {
+    const token = await Storage.retrieveValue('sardonyxToken');
+    fetch(`${BASE_URL}/app/user/${type}?id=${id}`, {
       method,
-      credentials: 'include'
+      headers: {
+        'Sardonyx-Token': token 
+      }
     }).then(() => {
       this.setState(prevState => {
         const user = prevState.user;
@@ -397,12 +418,15 @@ export default class TasksScreen extends React.Component {
    * @description Update a teacher's default tasklist 
    * @param {Number} tasklistId 
    */
-  _handleChangeUserTasklist(tasklistId) {
-    fetch(`/app/user/tasklist?id=${tasklistId}`, { 
+  async _handleChangeUserTasklist(tasklistId) {
+    const token = await Storage.retrieveValue('sardonyxToken');
+    fetch(`${BASE_URL}/app/user/tasklist?id=${tasklistId}`, { 
       method: 'PATCH',
-      credentials: 'include' 
-    })
-    .then(() => {
+      headers: {
+        'Sardonyx-Token': token
+      }
+    }).then(response => {
+      Storage.writeValue('sardonyxToken', response.headers.map['sardonyx-token']);
       this.setState(prevState => {
         return { user: {  ...prevState.user, tasklist_id: tasklistId } };
       });

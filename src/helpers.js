@@ -45,7 +45,8 @@ class StorageClass extends React.Component {
       SecureStore.getItemAsync('managebacSession'),
       SecureStore.getItemAsync('authenticityToken'),
       SecureStore.getItemAsync('login'),
-      SecureStore.getItemAsync('password')
+      SecureStore.getItemAsync('password'),
+      SecureStore.getItemAsync('sardonyxToken')
     ]).then(arr => {
       if (arr[0] && arr[1] && arr[2] && arr[3] && arr[4]) {
         return JSON.stringify({
@@ -56,7 +57,7 @@ class StorageClass extends React.Component {
           password: arr[4]
         });
       }
-      //return null if the token is invalid
+      //return empty object if the store is invalid
       return '{}';
     });
   }
@@ -98,13 +99,15 @@ class StorageClass extends React.Component {
    * Musst catch error in the case of invalid credentials
    */
   async writeCredentials(credentials) {
+    console.log(credentials);
     if (credentials.cfduid && credentials.managebacSession && credentials.authenticityToken && credentials.login && credentials.password) {
       return Promise.all([
         SecureStore.setItemAsync('cfduid', credentials.cfduid),
         SecureStore.setItemAsync('managebacSession', credentials.managebacSession),
         SecureStore.setItemAsync('authenticityToken', credentials.authenticityToken),
         SecureStore.setItemAsync('login', credentials.login),
-        SecureStore.setItemAsync('password', credentials.password)
+        SecureStore.setItemAsync('password', credentials.password),
+        SecureStore.setItemAsync('sardonyxToken', credentials.sardonyxToken)
       ]);
     }
     return new Promise((resolve, reject) => {
@@ -135,7 +138,8 @@ class StorageClass extends React.Component {
       SecureStore.deleteItemAsync('managebacSession'),
       SecureStore.deleteItemAsync('authenticityToken'),
       SecureStore.deleteItemAsync('login'),
-      SecureStore.deleteItemAsync('password')
+      SecureStore.deleteItemAsync('password'),
+      SecureStore.deleteItemAsync('sardonyxToken')
     ]);
   }
 
