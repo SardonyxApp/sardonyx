@@ -109,28 +109,6 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
     });
   }
 
-  /**
-   * Put raw deadline data into a array sorted by date to be used in SectionList
-   * @param {Array} deadlines
-   */
-  _sortDeadlineArray(deadlines) {
-    let sorted = [];
-    deadlines.forEach(deadline => {
-      dueDate = Date.parse(deadline.due);
-      // If deadline section already exists then put the deadline in there, otherwise create a section
-      let index = sorted.findIndex(element => element.title === dueDate);
-      if (index !== -1) {
-        sorted[index].data.push(deadline);
-        return;
-      }
-      sorted.push({
-        title: dueDate,
-        data: [deadline]
-      });
-    });
-    return sorted;
-  }
-
   render() {
     return (
       <ScrollView
