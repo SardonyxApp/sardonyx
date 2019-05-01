@@ -1,12 +1,13 @@
 import React from 'react';
 
-import {
-  View
-} from 'react-native';
+import { ScrollView } from 'react-native';
 
 // import io from 'socket.io-client';
 import { Storage } from '../helpers';
-import { BASE_URL } from '../../env.json';
+import { BASE_URL } from '../../env';
+
+import TasksFilter from '../components/TasksFilter';
+import TasksContainer from '../components/TasksContainer';
 
 // Disable sockets for now 
 // const socket = io.connect(BASE_URL);
@@ -438,9 +439,9 @@ export default class TasksScreen extends React.Component {
 
   render() {
     return (
-      <View>
-        {/* <TasksFilter 
-          subjects={this.statethis.props.subjects}
+      <ScrollView>
+        <TasksFilter 
+          subjects={this.state.subjects}
           categories={this.state.categories}
           subjectsFilter={this.state.subjectsFilter}
           categoriesFilter={this.state.categoriesFilter}
@@ -452,8 +453,8 @@ export default class TasksScreen extends React.Component {
           categoriesFilter={this.state.categoriesFilter}
           currentTask={this.state.currentTask}
           onSelectTask={this._handleSelectTask}
-        /> */}
-      </View>
+        />
+      </ScrollView>
     );
   }
 }
