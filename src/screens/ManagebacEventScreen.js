@@ -16,7 +16,7 @@ import HTMLView from 'react-native-htmlview';
 import CalendarDate from '../components/CalendarDate';
 import NearDeadlineWarning from '../components/NearDeadlineWarning';
 import { Storage } from '../helpers';
-import { fonts, colors } from '../styles';
+import { fonts, labelColors, colors } from '../styles';
 
 export default class ManagebacEventScreen extends React.Component {
   _isMounted = false;
@@ -98,7 +98,7 @@ export default class ManagebacEventScreen extends React.Component {
         style={[
           eventStyles.label,
           {
-            backgroundColor: colors.lightPrimary //temporary color
+            backgroundColor: labelColors(item) //temporary color
           }
         ]}
       >
@@ -186,7 +186,7 @@ export default class ManagebacEventScreen extends React.Component {
           <HTMLView
             value={
               'details' in this.state.upcomingEventData
-                ? this.state.upcomingEventData.details
+                ? (this.state.upcomingEventData.details || 'No details provided.')
                 : '<p />'
             }
             stylesheet={htmlStyles}
@@ -232,7 +232,8 @@ const eventStyles = StyleSheet.create({
     marginRight: 4
   },
   labelText: {
-    ...fonts.jost400
+    ...fonts.jost400,
+    color: colors.white
   },
   warnings: {
     flexDirection: 'column'
