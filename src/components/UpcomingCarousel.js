@@ -99,7 +99,7 @@ const upcomingCarouselStyles = StyleSheet.create({
     backgroundColor: colors.white,
     height: 100,
     borderRadius: 4,
-    elevation: 15 // Really increase this so the shadows appear blurry like iOS,
+    elevation: 13 // Really increase this so the shadows appear blurry like iOS,
   },
   container: {
     flexDirection: 'row'
