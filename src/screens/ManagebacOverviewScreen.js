@@ -5,9 +5,11 @@ import { ScrollView, RefreshControl } from 'react-native';
 import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
-import UpcomingExpandableCard from '../components/UpcomingExpandableCard';
+import GreetingsCard from '../components/GreetingsCard';
+import OverviewHeading from '../components/OverviewHeading';
+import UpcomingCarousel from '../components/UpcomingCarousel';
+import ClassesCarousel from '../components/ClassesCarousel';
 import CASExpandableCard from '../components/CASExpandableCard';
-import ClassesExpandableCard from '../components/ClassesExpandableCard';
 import GroupsExpandableCard from '../components/UpcomingExpandableCard';
 
 export default class ManagebacOverviewScreen extends React.PureComponent {
@@ -18,7 +20,8 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
       refreshing: true,
       upcomingEvents: [], // These three are taken from the dashboard data.
       classList: [], // CAS data is done in the CAS expandable card component
-      groupList: []
+      groupList: [],
+      userInfo: {}
     };
     this._onRefresh = this._onRefresh.bind(this);
   }
@@ -35,7 +38,8 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
         refreshing: false,
         upcomingEvents: data.deadlines,
         classList: data.classes,
-        groupList: data.groups
+        groupList: data.groups,
+        userInfo: data.user
       });
     });
   }
@@ -49,32 +53,42 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
         refreshing: true
       },
       () => {
-        Storage.retrieveCredentials().then(credentials => {
-          fetch(BASE_URL + '/api/dashboard', {
-            method: 'GET',
-            headers: {
-              'Login-Token': credentials
-            },
-            mode: 'no-cors'
-          }).then(response => {
-            if (response.status === 200) {
-              Storage.writeValue(
-                'managebacOverview',
-                response.headers.map['managebac-data']
-              ).then(() => {
-                this.setState({
-                  refreshing: false
-                });
-              }).catch(err => {
-                console.warn(err);
-              });
-              return;
-            }
-          }); // TODO: Data is loaded but screen is never reloaded fix it
-        })
-        .catch(err => {
-          console.warn(err);
-        });
+        Storage.retrieveCredentials()
+          .then(credentials => {
+            fetch(BASE_URL + '/api/dashboard', {
+              method: 'GET',
+              headers: {
+                'Login-Token': credentials
+              },
+              mode: 'no-cors'
+            }).then(response => {
+              if (response.status === 200) {
+                Storage.writeValue(
+                  'managebacOverview',
+                  response.headers.map['managebac-data']
+                )
+                  .then(() => {
+                    const data = JSON.parse(
+                      response.headers.map['managebac-data']
+                    );
+                    this.setState({
+                      refreshing: false,
+                      upcomingEvents: data.deadlines,
+                      classList: data.classes,
+                      groupList: data.groups,
+                      userInfo: data.user
+                    });
+                  })
+                  .catch(err => {
+                    console.warn(err);
+                  });
+                return;
+              }
+            });
+          })
+          .catch(err => {
+            console.warn(err);
+          });
       }
     );
   }
@@ -85,11 +99,13 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
    */
   _getOverviewData() {
     return new Promise(resolve => {
-      Storage.retrieveValue('managebacOverview').then(data => {
-        resolve(JSON.parse(data));
-      }).catch(err => {
-        console.warn(err);
-      });
+      Storage.retrieveValue('managebacOverview')
+        .then(data => {
+          resolve(JSON.parse(data));
+        })
+        .catch(err => {
+          console.warn(err);
+        });
     });
   }
 
@@ -125,22 +141,23 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           />
         }
       >
-        <UpcomingExpandableCard
+        <GreetingsCard name={this.state.userInfo.name} />
+        <OverviewHeading>Upcoming</OverviewHeading>
+        <UpcomingCarousel
           upcomingEvents={this.state.upcomingEvents}
           allGroupsAndClasses={[
             ...this.state.classList,
             ...this.state.groupList
           ]}
-          title="UPCOMING"
+          navigation={this.props.navigation}
+        />
+        <OverviewHeading>Classes</OverviewHeading>
+        <ClassesCarousel
+          classList={this.state.classList}
           navigation={this.props.navigation}
         />
         <CASExpandableCard
           title="CAS EXPERIENCES"
-          navigation={this.props.navigation}
-        />
-        <ClassesExpandableCard
-          title="CLASSES"
-          classList={this.state.classList}
           navigation={this.props.navigation}
         />
         <GroupsExpandableCard groupList={this.state.groupList} />

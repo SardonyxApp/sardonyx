@@ -1,6 +1,12 @@
 import React from 'react';
 
-import { View, TextInput, StyleSheet, Alert } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  View,
+  TextInput,
+  StyleSheet,
+  Alert
+} from 'react-native';
 
 import { Icon } from 'react-native-elements';
 import { BASE_URL } from '../../env';
@@ -32,18 +38,22 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
             navigation.goBack();
           }}
         >
+          {/**TODO: Check if using a custom Icon component here affects iOS rendering */}
           <Icon name="clear" color={colors.white} />
         </HeaderIcon>
       ),
       headerRight: (
         <HeaderIcon onPress={navigation.state.params.sendReflection}>
-          {/** navigationOptions is static, so we have to use params to access the state */}
+          {/** navigationOptions is static, so we have to use params to access a method */}
           <Icon name="send" color={colors.white} />
         </HeaderIcon>
       )
     };
   };
 
+  /**
+   * Remove the key/value pair for this CAS id draft in Storage (if it exists).
+   */
   _discardDraft() {
     Storage.retrieveValue('reflectionDrafts')
       .then(drafts => {
@@ -61,12 +71,15 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
       });
   }
 
+  /**
+   * Save the current value of the textbox to Storage under the CAS id key.
+   */
   _saveDraft() {
     Storage.retrieveValue('reflectionDrafts')
       .then(drafts => {
         if (!drafts) drafts = '{}';
         drafts = JSON.parse(drafts);
-        drafts[this.props.navigation.getParam('id', null)] = {
+        drafts[this.props.navigation.state.params.id] = {
           value: this.state.reflectionValue
         };
         Storage.writeValue('reflectionDrafts', JSON.stringify(drafts)).catch(
@@ -81,6 +94,7 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
   }
 
   _onWillBlur() {
+    // Don't show the Save Draft dialog if the value is empty or has been sent already
     if (this.state.reflectionValue !== '' && this.state.sending === false) {
       Alert.alert(
         '',
@@ -133,6 +147,9 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
     }, 100);
   }
 
+  /**
+   * POST to /api/cas/:id/reflections and go back upon success. Also call the onGoBack() function.
+   */
   _sendReflection() {
     this.setState(
       {
@@ -143,10 +160,7 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
         Storage.retrieveCredentials()
           .then(credentials => {
             fetch(
-              BASE_URL +
-                '/api/cas/' +
-                this.props.navigation.getParam('id', null) +
-                '/reflections',
+              `${BASE_URL}/api/cas/${this.props.navigation.state.params.id}/reflections`,
               {
                 method: 'POST',
                 headers: {
@@ -159,22 +173,11 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
               }
             )
               .then(response => {
-                // Remove the drafts if any
-                Storage.retrieveValue('reflectionDrafts')
-                  .then(drafts => {
-                    if (!drafts) return;
-                    drafts = JSON.parse(drafts);
-                    delete drafts[this.props.navigation.getParam('id', null)];
-                    Storage.writeValue(
-                      'reflectionDrafts',
-                      JSON.stringify(drafts)
-                    ).catch(err => {
-                      console.warn(err);
-                    });
-                  })
-                  .catch(err => {
-                    console.warn(err);
-                  });
+                // Remove the drafts if any exist
+                this._discardDraft();
+                if(this.props.navigation.getParam('onGoBack', null) !== null) {
+                  this.props.navigation.state.params.onGoBack();
+                }
                 this.props.navigation.goBack();
               })
               .catch(err => {
@@ -190,7 +193,7 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
 
   render() {
     return (
-      <View>
+      <KeyboardAvoidingView behavior="padding">
         <TextInput
           style={addReflectionStyles.textinput}
           value={this.state.reflectionValue}
@@ -205,11 +208,11 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
           blurOnSubmit={false}
           multiline={true}
           autoFocus={true}
-          textAlignVertical={'top'}
+          textAlignVertical="top"
           selectionColor={colors.black}
           underlineColorAndroid={'rgba(0,0,0,0)'}
         />
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

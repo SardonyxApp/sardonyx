@@ -15,9 +15,9 @@ import { BASE_URL } from '../../env';
 import HeaderIcon from '../components/HeaderIcon';
 import Timespan from '../components/Timespan';
 import ExperienceUneditableWarning from '../components/ExperienceUneditableWarning';
+import CTAButton from '../components/CTAButton';
 import { Storage } from '../helpers';
 import { styles, fonts, colors } from '../styles';
-import CTAButton from '../components/CTAButton';
 
 export default class ManagebacCASScreen extends React.Component {
   isMounted = false;
@@ -79,6 +79,7 @@ export default class ManagebacCASScreen extends React.Component {
       return;
     }
     this.props.navigation.navigate('ViewCASReflections', {
+      editable: this.props.navigation.state.params.editable,
       id: this.state.casExperienceData.link.split('/')[3]
     });
   }
@@ -139,6 +140,7 @@ export default class ManagebacCASScreen extends React.Component {
   }
 
   render() {
+    console.log(this.state.casExperienceData.learningOutcomes);
     return (
       <ScrollView
         refreshControl={
@@ -156,10 +158,10 @@ export default class ManagebacCASScreen extends React.Component {
                 : null
             }
           />
-          {'reflectionCount' in this.state.casExperienceData &&
-          this.state.casExperienceData.status !== 'complete' ? (
+          {'reflectionCount' in this.state.casExperienceData ? (
             <CTAButton style={casStyles.ctaButton} onPress={this._onCTAPressed}>
-              {this.props.navigation.getParam('reflectionCount', 0) === null
+              {this.props.navigation.getParam('reflectionCount', 0) === null &&
+              this.props.navigation.state.params.editable
                 ? 'ADD REFLECTION'
                 : 'VIEW REFLECTIONS'}
             </CTAButton>
@@ -197,6 +199,7 @@ const casStyles = StyleSheet.create({
     marginTop: -30
   },
   warnings: {
+    marginTop: 16,
     flexDirection: 'column'
   },
   detailsContainer: {

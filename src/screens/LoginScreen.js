@@ -121,8 +121,19 @@ class LoginForm extends React.Component {
           ), ...{ sardonyxToken: response.headers.map['sardonyx-token'] }};
           Storage.writeCredentials(credentials)
             .then(() => {
-              this.toggleButton(); // Make button available again
-              this.props.navigation.navigate('AppStack');
+              Storage.writeValue(
+                'managebacOverview',
+                response.headers.map['managebac-data']
+              )
+                .then(() => {
+                  this.toggleButton(); // Make button available again
+                  this.props.navigation.navigate('AppStack');
+                })
+                .catch(err => {
+                  this.props.navigation.navigate('Login', {
+                    errorMessage: 'There was an error while storing data. ' + error
+                  });
+                });
             })
             .catch(error => {
               this.toggleButton();

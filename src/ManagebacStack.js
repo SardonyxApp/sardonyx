@@ -12,6 +12,7 @@ import ManagebacEventScreen from './screens/ManagebacEventScreen';
 import ManagebacCASScreen from './screens/ManagebacCASScreen';
 import ManagebacEditCASScreen from './screens/ManagebacEditCASScreen';
 import ManagebacAddCASReflectionScreen from './screens/ManagebacAddCASReflectionScreen';
+import ManagebacEditCASReflectionScreen from './screens/ManagebacEditCASReflectionScreen';
 import ManagebacViewCASReflectionsScreen from './screens/ManagebacViewCASReflectionsScreen';
 import ManagebacClassScreen from './screens/ManagebacClassScreen';
 import ManagebacGroupScreen from './screens/ManagebacGroupScreen';
@@ -27,6 +28,7 @@ const ManagebacStack = createStackNavigator(
     CASItem: ManagebacCASScreen,
     EditCASItem: ManagebacEditCASScreen,
     AddCASReflection: ManagebacAddCASReflectionScreen,
+    EditCASReflection: ManagebacEditCASReflectionScreen,
     ViewCASReflections: ManagebacViewCASReflectionsScreen,
     ClassItem: ManagebacClassScreen,
     GroupItem: ManagebacGroupScreen
@@ -37,7 +39,7 @@ const ManagebacStack = createStackNavigator(
       let tabBarVisible;
       if (navigation.state.routes.length > 1) {
         navigation.state.routes.map(route => {
-          if (route.routeName === 'UpcomingEventItem') {
+          if (route.routeName === 'AddCASReflection' || route.routeName === 'EditCASReflection') {
             tabBarVisible = false;
           } else {
             tabBarVisible = true;
