@@ -10,7 +10,7 @@ import OverviewHeading from '../components/OverviewHeading';
 import UpcomingCarousel from '../components/UpcomingCarousel';
 import ClassesCarousel from '../components/ClassesCarousel';
 import CASExpandableCard from '../components/CASExpandableCard';
-import GroupsExpandableCard from '../components/UpcomingExpandableCard';
+import GroupsExpandableCard from '../components/ExpandableCard';
 
 export default class ManagebacOverviewScreen extends React.PureComponent {
   constructor(props) {
