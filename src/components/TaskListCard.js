@@ -12,17 +12,17 @@ export default TaskListCard = props => (
       className="overview-title" 
       style={cardStyles.title}
       numberOfLines={1}
-      ellipsizeMode={'tail'}
+      ellipsizeMode="tail"
     >
-      {decodeURI(props.task.name)}
+      {decodeURIComponent(props.task.name)}
     </Text>
     <Text 
       className="overview-description" 
       style={cardStyles.description}
       numberOfLines={1}
-      ellipsizeMode={'tail'}
+      ellipsizeMode="tail"
     >
-      {decodeURI(props.task.description)}
+      {props.task.description === null ? null : decodeURIComponent(props.task.description)}
     </Text>
 
     {props.task.subject_id || props.task.category_id 
