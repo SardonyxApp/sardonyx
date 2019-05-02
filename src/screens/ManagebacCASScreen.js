@@ -67,20 +67,20 @@ export default class ManagebacCASScreen extends React.Component {
   _setEditableParam() {
     this.props.navigation.setParams({
       editable: this.state.casExperienceData.status !== 'complete',
-      id: this.state.casExperienceData.link.split('/')[3]
+      id: this.state.casExperienceData.id
     });
   }
 
   _onCTAPressed() {
     if (this.props.navigation.getParam('reflectionCount', 0) === null) {
       this.props.navigation.navigate('AddCASReflection', {
-        id: this.state.casExperienceData.link.split('/')[3]
+        id: this.state.casExperienceData.id
       });
       return;
     }
     this.props.navigation.navigate('ViewCASReflections', {
       editable: this.props.navigation.state.params.editable,
-      id: this.state.casExperienceData.link.split('/')[3]
+      id: this.state.casExperienceData.id
     });
   }
 
