@@ -451,6 +451,7 @@ export default class TasksScreen extends React.Component {
           subjectsFilter={this.state.subjectsFilter}
           categoriesFilter={this.state.categoriesFilter}
           onFilter={this.state._handleFilter}
+          navigation={this.props.navigation}
         />
         <TasksContainer
           tasks={this.state.tasks}
@@ -458,6 +459,7 @@ export default class TasksScreen extends React.Component {
           categoriesFilter={this.state.categoriesFilter}
           currentTask={this.state.currentTask}
           onSelectTask={this._handleSelectTask}
+          navigation={this.props.navigation}
         />
       </ScrollView>
     );
