@@ -2,23 +2,24 @@ import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 
 import { fonts } from '../styles';
+
+import { Icon } from 'react-native-elements';
 import { TouchableRipple } from 'react-native-paper';
 
-const Label = props => (
+const Label = ({label, list, onFilter}) => (
   <TouchableRipple
-    onPress={props.onFilter} 
+    onPress={onFilter} 
     rippleColor="rgba(0, 0, 0, 0.16)"
   >
     <View
-      style={[labelStyles.label, { backgroundColor: props.label.color }]}
+      style={[labelStyles.label, { backgroundColor: label.color }]}
     >
-      <Text style={labelStyles.labelName}>{props.label.name}</Text>
-      {props.list.includes(props.label.id) 
-      ? <Icon name="check" type="material" style={{width: 16, height: 16}} />
+      <Text style={labelStyles.labelName}>{label.name}</Text>
+      {list.includes(label.id) 
+      ? <Icon name="check" type="material" size={16} containerStyle={labelStyles.icon} color="white" />
       : null}
     </View>
   </TouchableRipple>
-  
 );
 
 export default class TasklistLabelsFilterScreen extends React.Component {
@@ -39,7 +40,7 @@ export default class TasklistLabelsFilterScreen extends React.Component {
         key={label.name}
         label={label}
         list={subjectsFilter}
-        onFilter={() => this.props.navigation.getParam('onFilter')('subjectsFilter', label.id)}
+        onFilter={() => this.props.navigation.state.params.onFilter('subjectsFilter', label.id)}
       />
     ));
 
@@ -48,7 +49,7 @@ export default class TasklistLabelsFilterScreen extends React.Component {
         key={label.name}
         label={label}
         list={categoriesFilter}
-        onFilter={() => this.props.navigation.getParam('onFilter')('categoriesFilter', label.id)}
+        onFilter={() => this.props.navigation.state.params.onFilter('categoriesFilter', label.id)}
       />
     ));
 
@@ -66,10 +67,14 @@ const labelStyles = StyleSheet.create({
     margin: 4,
     borderRadius: 4,
     padding: 12,
+    flexDirection: 'row'
   },
   labelName: {
     ...fonts.jost400,
     fontSize: 16,
     color: '#fff'
+  },
+  icon: {
+    marginLeft: 4
   }
-})
+});
