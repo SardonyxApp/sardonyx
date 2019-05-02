@@ -439,7 +439,12 @@ export default class TasksScreen extends React.Component {
 
   render() {
     return (
-      <ScrollView>
+      <ScrollView
+        style={{
+          backgroundColor: '#f4f4fa',
+          paddingHorizontal: 12
+        }}
+      >
         <TasksFilter 
           subjects={this.state.subjects}
           categories={this.state.categories}

@@ -1,7 +1,19 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 import TaskListCard from './TaskListCard';
+
+import { fonts } from '../styles';
+
+Date.prototype.getDayName = function() {
+  const index = this.getDay();
+  return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index];
+};
+
+Date.prototype.getMonthName = function() {
+  const index= this.getMonth();
+  return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][index];
+};
 
 export default class TasksContainer extends React.PureComponent {
   render() {
@@ -20,14 +32,13 @@ export default class TasksContainer extends React.PureComponent {
     let store = null;
 
     const todayTasks = tasks.filter(t => new Date().toDateString() === new Date(t.due).toDateString()).map((t, i) => (
-      <View>
-        <View className="side">
-          <Text>{i === 0 ? new Date(t.due).toLocaleString('en-US', { weekday: 'short' }) : null}</Text>
-          <Text>{i === 0 ? new Date(t.due).getDate() : null}</Text>
+      <View style={containerStyles.container} key={t.id}>
+        <View style={containerStyles.side} className="side">
+          <Text style={fonts.jost200}>{i === 0 ? new Date(t.due).getDayName() : null}</Text>
+          <Text style={fonts.jost200}>{i === 0 ? new Date(t.due).getDate() : null}</Text>
         </View>
         <TaskListCard 
           task={t}
-          selected={this.props.currentTask === t.id}
           onSelectTask={this.props.onSelectTask}
         />
       </View>
@@ -37,14 +48,13 @@ export default class TasksContainer extends React.PureComponent {
     const upcomingTasks = tasks.filter(t => new Date().toDateString() !== new Date(t.due).toDateString() && new Date() < new Date(t.due)).map(t => {
       const due = new Date(t.due);
       const view = (
-        <View>
-          <View className="side">
-            <Text>{store === due.toDateString() ? null : due.toLocaleString('en-US', { weekday: 'short' })}</Text>
-            <Text>{store === due.toDateString() ? null : due.getDate()}</Text>
+        <View style={containerStyles.container} key={t.id}>
+          <View style={containerStyles.side} className="side">
+            <Text style={fonts.jost200}>{store === due.toDateString() ? null : due.getDayName()}</Text>
+            <Text style={fonts.jost200}>{store === due.toDateString() ? null : due.getDate()}</Text>
           </View>
           <TaskListCard 
             task={t}
-            selected={this.props.currentTask === t.id}
             onSelectTask={this.props.onSelectTask}
           />
         </View>
@@ -55,11 +65,10 @@ export default class TasksContainer extends React.PureComponent {
     count += upcomingTasks.length;
 
     const noDateTasks = tasks.filter(t => t.due === null).map(t => (
-      <View>
-        <View className="side"></View>
+      <View style={containerStyles.container} key={t.id}>
+        <View style={containerStyles.side} className="side"></View>
         <TaskListCard 
           task={t}
-          selected={this.props.currentTask === t.id}
           onSelectTask={this.props.onSelectTask}
         />
       </View>
@@ -69,14 +78,13 @@ export default class TasksContainer extends React.PureComponent {
     const pastTasks = tasks.filter(t => t.due !== null && new Date().toDateString() !== new Date(t.due).toDateString() && new Date() > new Date(t.due)).reverse().map(t => {
       const due = new Date(t.due);
       const view = (
-        <View>
-          <View className="side">
-            <Text>{store === due.toDateString() ? null : due.toLocaleString('en-US', { month: 'short' })}</Text>
-            <Text>{store === due.toDateString() ? null : due.getDate()}</Text>
+        <View style={containerStyles.container} key={t.id}>
+          <View style={containerStyles.side} className="side">
+            <Text style={fonts.jost200}>{store === due.toDateString() ? null : due.getMonthName()}</Text>
+            <Text style={fonts.jost200}>{store === due.toDateString() ? null : due.getDate()}</Text>
           </View>
           <TaskListCard 
             task={t}
-            selected={this.props.currentTask === t.id}
             onSelectTask={this.props.onSelectTask}
           />
         </View>
@@ -87,41 +95,43 @@ export default class TasksContainer extends React.PureComponent {
 
     return (
       <View>
-        <Text 
-          className="subheading" 
-          // style={{ display: todayTasks.length ? 'block' : 'none' }}
-        >
-          Today
-        </Text>
+        {todayTasks.length ? <Text style={containerStyles.subheading}>TODAY</Text> : null}
         {todayTasks}
-        <Text 
-          className="subheading" 
-          // style={{ display: upcomingTasks.length ? 'block' : 'none', marginTop: todayTasks.length ? '16px' : 0 }}
-        >
-          Upcoming
-        </Text>
+
+        {upcomingTasks.length 
+          ? <Text style={[containerStyles.subheading, { marginTop: todayTasks.length ? '16px' : 0 }]}>UPCOMING</Text>
+          : null }
         {upcomingTasks}
-        <Text 
-          className="subheading" 
-          // style={{ display: noDateTasks.length ? 'block' : 'none', marginTop: todayTasks.length || upcomingTasks.length ? '16px' : 0 }}
-        >
-          No date set
-        </Text>
+
+        {noDateTasks.length 
+          ? <Text style={[containerStyles.subheading, { marginTop: todayTasks.length || upcomingTasks.length ? '16px' : 0 }]}>NO DATE SET</Text> 
+          : null}
         {noDateTasks}
-        <Text 
-          className="subheading" 
-          // style={{ display: pastTasks.length ? 'block' : 'none', marginTop: todayTasks.length || upcomingTasks.length || noDateTasks.length ? '16px' : 0 }}
-        >
-          Past due
-        </Text>
+
+        {pastTasks.length 
+          ? <Text style={[containerStyles.subheading, { marginTop: todayTasks.length || upcomingTasks.length || noDateTasks.length ? '16px' : 0 }]}>PAST DUE</Text>
+          : null}
         {pastTasks}
-        <Text 
-          className="subheading" 
-          // style={{ display: tasks.length ? 'none' : 'block' }}
-        >
-          No tasks found
-        </Text>
+
+        {tasks.length ? null : <Text className="subheading" style={containerStyles.subheading}>NO TASKS FOUND</Text>}
       </View>
     );
   }
 }
+
+const containerStyles = StyleSheet.create({
+  subheading: {
+    ...fonts.jost400,
+    fontSize: 16,
+    marginTop: 16
+  },
+  container: {
+    flexDirection: 'row',
+    alignItems: 'stretch'
+  },
+  side: {
+    width: 31,
+    marginTop: 12,
+    flex: 0
+  }
+});
