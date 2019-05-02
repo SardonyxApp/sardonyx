@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { ScrollView, Text, StyleSheet } from 'react-native';
 
 import { Icon } from 'react-native-elements';
 import { TouchableRipple } from 'react-native-paper';
 
 import { fonts } from '../styles';
+
+import Label from './TaskLabel';
 
 export default class TasksFilter extends React.PureComponent {
   constructor(props) {
@@ -13,22 +15,20 @@ export default class TasksFilter extends React.PureComponent {
   }
 
   _handleNavigate() {
-    this.props.navigation.navigate('LabelsFilter', {
-      ...this.props
-    })
+    this.props.navigation.navigate('LabelsFilter', this.props);
   }
 
   render() {
     const subjects = this.props.subjects
       .filter(label => this.props.subjectsFilter.includes(label.id))
-      .map(label => <Label label={label} onRemove={id => this.props.onFilter('subjectsFilter', id)} removable={true} />);
+      .map(label => <Label key={label.name} label={label} onRemove={id => this.props.onFilter('subjectsFilter', id)} removable={true} />);
 
     const categories = this.props.categories
       .filter(label => this.props.categoriesFilter.includes(label.id))
-      .map(label => <Label label={label} onRemove={id => this.props.onFilter('categoriesFilter', id)}  removable={true} />);
+      .map(label => <Label key={label.name} label={label} onRemove={id => this.props.onFilter('categoriesFilter', id)}  removable={true} />);
 
     return (
-      <View id="tasks-filter" className="custom-scroll" style={filterStyles.container}>
+      <ScrollView id="tasks-filter" className="custom-scroll" contentContainerStyle={filterStyles.container}>
         <TouchableRipple 
           onPress={this._handleNavigate}
           rippleColor="rgba(0, 0, 0, 0.16)"
@@ -36,17 +36,20 @@ export default class TasksFilter extends React.PureComponent {
           <Icon 
             name="search"
             type="material"
-            style={filterStyles.icon}
+            iconStyle={filterStyles.icon}
           /> 
         </TouchableRipple>
         {subjects}
         {categories}
-        <TouchableRipple 
-          onPress={this._handleNavigate}
-          rippleColor="rgba(0, 0, 0, 0.16)"
-        >
-          {!subjects.length && !categories.length ? <Text className="overview-description" style={filterStyles.hint}>Filter labels...</Text> : null}
-        </TouchableRipple>
+        {!subjects.length && !categories.length 
+        ? <Text 
+            className="overview-description" 
+            style={filterStyles.hint}
+            onPress={this._handleNavigate}
+          >
+            Filter labels...
+          </Text> 
+        : null}
         <TouchableRipple 
           onPress={this._handleNavigate}
           rippleColor="rgba(0, 0, 0, 0.16)"
@@ -54,10 +57,10 @@ export default class TasksFilter extends React.PureComponent {
           <Icon 
             name="add"
             type="material"
-            containerStyle={filterStyles.icon}
+            iconStyle={filterStyles.icon}
           />
         </TouchableRipple>
-      </View>
+      </ScrollView>
     );
   }
 }
