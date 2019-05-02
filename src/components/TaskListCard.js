@@ -8,6 +8,14 @@ export default TaskListCard = props => (
     onClick={() => props.onSelectTask(props.task.id)}
     style={cardStyles.card}
   >
+
+    {props.task.subject_id || props.task.category_id 
+    ? <View className="overview-dots" style={cardStyles.dots}>
+        {props.task.subject_id ? <View className="dot" style={[cardStyles.dot, { backgroundColor: props.task.subject_color }]}></View> : null}
+        {props.task.category_id ? <View className="dot" style={[cardStyles.dot, { backgroundColor: props.task.category_color }]}></View> : null}
+      </View>
+    : null}
+    
     <Text 
       className="overview-title" 
       style={cardStyles.title}
@@ -24,13 +32,6 @@ export default TaskListCard = props => (
     >
       {props.task.description === null ? null : decodeURIComponent(props.task.description)}
     </Text>
-
-    {props.task.subject_id || props.task.category_id 
-    ? <View className="overview-dots" style={cardStyles.dots}>
-        {props.task.subject_id ? <View className="dot" style={[cardStyles.dot, { backgroundColor: props.task.subject_color }]}></View> : null}
-        {props.task.category_id ? <View className="dot" style={[cardStyles.dot, { backgroundColor: props.task.category_color }]}></View> : null}
-      </View>
-    : null}
   </View>
 );
 
@@ -38,7 +39,7 @@ const cardStyles = StyleSheet.create({
   card: {
     ...styles.padding10,
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 2,
     marginTop: 12,
     flex: 1
   },
@@ -51,14 +52,13 @@ const cardStyles = StyleSheet.create({
     fontSize: 14
   },
   dots: {
-    height: 12,
-    marginTop: 4,
+    height: 6,
+    marginBottom: 4,
     flexDirection: 'row'
   },
   dot: {
-    height: 12,
-    width: 12,
-    borderRadius: 6,
+    height: 6,
+    width: 18,
     marginHorizontal: 2
   }
 });

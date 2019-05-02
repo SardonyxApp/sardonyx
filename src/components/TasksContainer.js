@@ -95,21 +95,21 @@ export default class TasksContainer extends React.PureComponent {
 
     return (
       <View>
-        {todayTasks.length ? <Text style={containerStyles.subheading}>TODAY</Text> : null}
+        {todayTasks.length ? <Text style={[containerStyles.subheading, { marginTop: 16 }]}>TODAY</Text> : null}
         {todayTasks}
 
         {upcomingTasks.length 
-          ? <Text style={[containerStyles.subheading, { marginTop: todayTasks.length ? 16 : 0 }]}>UPCOMING</Text>
+          ? <Text style={[containerStyles.subheading, { marginTop: 16 }]}>UPCOMING</Text>
           : null }
         {upcomingTasks}
 
         {noDateTasks.length 
-          ? <Text style={[containerStyles.subheading, { marginTop: todayTasks.length || upcomingTasks.length ? 16 : 0 }]}>NO DATE SET</Text> 
+          ? <Text style={[containerStyles.subheading, { marginTop: 16 }]}>NO DATE SET</Text> 
           : null}
         {noDateTasks}
 
         {pastTasks.length 
-          ? <Text style={[containerStyles.subheading, { marginTop: todayTasks.length || upcomingTasks.length || noDateTasks.length ? 16 : 0 }]}>PAST DUE</Text>
+          ? <Text style={[containerStyles.subheading, { marginTop: 16 }]}>PAST DUE</Text>
           : null}
         {pastTasks}
 
