@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ScrollView, RefreshControl } from 'react-native';
+import { ScrollView, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { BASE_URL } from '../../env';
 
@@ -8,9 +8,9 @@ import { Storage } from '../helpers';
 import GreetingsCard from '../components/GreetingsCard';
 import OverviewHeading from '../components/OverviewHeading';
 import UpcomingCarousel from '../components/UpcomingCarousel';
-import ClassesCarousel from '../components/ClassesCarousel';
+import RoundIconCarousel from '../components/RoundIconCarousel';
 import CASExpandableCard from '../components/CASExpandableCard';
-import GroupsExpandableCard from '../components/ExpandableCard';
+import { colors } from '../styles';
 
 export default class ManagebacOverviewScreen extends React.PureComponent {
   constructor(props) {
@@ -130,16 +130,32 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           navigation={this.props.navigation}
         />
         <OverviewHeading>Classes</OverviewHeading>
-        <ClassesCarousel
-          classList={this.state.classList}
+        <RoundIconCarousel
+          color={colors.primary}
+          icon={'library-books'}
+          list={this.state.classList}
+          navigation={this.props.navigation}
+        />
+        <OverviewHeading>Groups</OverviewHeading>
+        <RoundIconCarousel
+          color={colors.lightPrimary}
+          icon={'people'}
+          list={this.state.groupList}
           navigation={this.props.navigation}
         />
         <CASExpandableCard
+          expanded={true}
           title="CAS EXPERIENCES"
           navigation={this.props.navigation}
+          style={overviewStyles.lastElementPadding}
         />
-        <GroupsExpandableCard groupList={this.state.groupList} />
       </ScrollView>
     );
   }
 }
+
+const overviewStyles = StyleSheet.create({
+  lastElementPadding: {
+    marginBottom: 16
+  }
+});
