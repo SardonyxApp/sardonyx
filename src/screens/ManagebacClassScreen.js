@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ScrollView, RefreshControl } from 'react-native';
+import { ScrollView, RefreshControl, Alert } from 'react-native';
 
 import { BASE_URL } from '../../env';
 
@@ -85,13 +85,6 @@ export default class ManagebacClassScreen extends React.Component {
         return;
       }
     });
-  }
-
-  /**
-   * 
-   */
-  generateHappyFaceIfNoUpcomingEvents() {
-    return this.state.classCompletedEventsData
   }
 
   render() {
