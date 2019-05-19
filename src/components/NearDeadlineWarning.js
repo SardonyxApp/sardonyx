@@ -45,11 +45,11 @@ const warningStyles = StyleSheet.create({
   container: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: colors.lightPrimary2,
+    backgroundColor: colors.lightError2,
     marginBottom: 16
   },
   text: {
     textAlign: 'center',
-    color: colors.primary
+    color: colors.error
   }
 });
