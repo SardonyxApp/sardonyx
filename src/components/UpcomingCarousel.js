@@ -37,16 +37,25 @@ export default class UpcomingCarousel extends React.Component {
   _renderItem({ item, index }) {
     return (
       <View style={upcomingCarouselStyles.wrapper}>
-        <View style={upcomingCarouselStyles.containerWrapper}>
+        <View
+          style={[
+            upcomingCarouselStyles.containerWrapper,
+            !item.upcoming && {
+              backgroundColor: colors.lightError2
+            }
+          ]}
+        >
           <TouchableRipple
             onPress={() => this._navigateToUpcomingEventScreen(item)}
             rippleColor="rgba(0, 0, 0, .16)"
           >
             <View style={upcomingCarouselStyles.container}>
-              <CalendarDate date={new Date(Date.parse(item.due))} />
+              <CalendarDate date={new Date(Date.parse(item.due))} color={!item.upcoming && colors.error} />
               <View style={upcomingCarouselStyles.textContainer}>
                 <Text
-                  style={upcomingCarouselStyles.title}
+                  style={[upcomingCarouselStyles.title, !item.upcoming && {
+                    color: colors.error
+                  }]}
                   ellipsizeMode={'tail'}
                 >
                   {decodeURI(item.title)}
@@ -66,11 +75,28 @@ export default class UpcomingCarousel extends React.Component {
     );
   }
 
+  /**
+   *
+   */
+  _parseData() {
+    let completedEvents = this.props.completedEvents || [];
+    let upcomingEvents = this.props.upcomingEvents || [];
+    completedEvents.map(item => {
+      item.upcoming = false;
+    });
+    upcomingEvents.map(item => {
+      item.upcoming = true;
+    });
+
+    return [...completedEvents, ...upcomingEvents];
+  }
+
   render() {
+    const parsedData = this._parseData();
     return (
       <View style={upcomingCarouselStyles.carouselContainer}>
         <Carousel
-          data={this.props.upcomingEvents}
+          data={parsedData}
           renderItem={this._renderItem}
           sliderWidth={Dimensions.get('window').width}
           itemWidth={300}
@@ -79,7 +105,7 @@ export default class UpcomingCarousel extends React.Component {
           inactiveSlideOpacity={1}
           contentContainerCustomStyle={{
             overflow: 'hidden',
-            width: 300 * this.props.upcomingEvents.length
+            width: 300 * parsedData.length
           }}
         />
       </View>
