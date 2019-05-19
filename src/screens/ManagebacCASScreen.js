@@ -43,7 +43,7 @@ export default class ManagebacCASScreen extends React.Component {
     this._isMounted = false;
   }
 
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation }) => { 
     return {
       title: `${navigation.state.params.title}`,
       headerRight: navigation.state.params.editable ? (
@@ -140,7 +140,6 @@ export default class ManagebacCASScreen extends React.Component {
   }
 
   render() {
-    console.log(this.state.casExperienceData.learningOutcomes);
     return (
       <ScrollView
         refreshControl={
