@@ -14,6 +14,7 @@ export default class CASExpandableCard extends ExpandableCard {
   constructor(props) {
     super(props);
     this.state = {
+      expanded: true,
       casExperiences: []
     };
     this._navigateToCASScreen = this._navigateToCASScreen.bind(this);

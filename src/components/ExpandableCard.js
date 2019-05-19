@@ -32,7 +32,7 @@ export default class ExpandableCard extends React.PureComponent {
 
   render() {
     return (
-      <View style={cardStyles.card}>
+      <View style={[cardStyles.card, this.props.style]}>
         <TouchableRipple onPress={this._toggleCard} rippleColor="rgba(0, 0, 0, .16)">
           <View style={cardStyles.title}>
             <Text style={cardStyles.titleText}>{this.props.title}</Text>
