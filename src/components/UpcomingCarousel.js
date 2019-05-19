@@ -25,6 +25,7 @@ export default class UpcomingCarousel extends React.Component {
   /**
    * Get the name of the class or group that the event is located in.
    * @param {String} link
+   * @return {String}
    */
   _getGroupClassName(link) {
     let groupClass = this.props.allGroupsAndClasses.find(item => {
@@ -76,6 +77,11 @@ export default class UpcomingCarousel extends React.Component {
     ];
   }
 
+  /**
+   * Return a View that contains a Carousel Card saying "Congratulations you have nothing to do"
+   * Has quite a lot of inline styling.
+   * @return {React.Component}
+   */
   _renderNothingToDo() {
     return (
       <View style={upcomingCarouselStyles.wrapper}>
@@ -126,6 +132,11 @@ export default class UpcomingCarousel extends React.Component {
     );
   }
 
+  /**
+   * Renders each View for the task Carousel.
+   * @param {{Object, Integer}} 
+   * @return {React.Component}
+   */
   _renderItem({ item, index }) {
     if (item.nothingToDo) return this._renderNothingToDo();
     return (
@@ -174,6 +185,10 @@ export default class UpcomingCarousel extends React.Component {
     );
   }
 
+  // Let me just say that it took god damn ages to get this working, react-native-snap-carousel has
+  // weird oddities where if you have a dynamic firstItem prop it doesn't re-render upon a change,
+  // or if you use .snapToItem() inside a componentDidUpdate there has to be a delay because of how
+  // it's built. The current method seems very much like a workaround but at least it works.
   componentDidUpdate(prevProps, prevState) {
     // Set the states only if the props are different. Omitting this check will result in a loop.
     if (
