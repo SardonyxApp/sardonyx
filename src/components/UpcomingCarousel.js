@@ -112,7 +112,7 @@ export default class UpcomingCarousel extends React.Component {
                   }
                 ]}
               >
-                Congratulations!
+                Nothing!
               </Text>
               <Text
                 style={[
@@ -123,7 +123,7 @@ export default class UpcomingCarousel extends React.Component {
                   }
                 ]}
               >
-                You have nothing to do!
+                There are no tasks/events coming up!
               </Text>
             </View>
           </View>
