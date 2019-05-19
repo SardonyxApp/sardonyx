@@ -16,7 +16,11 @@ export default class RoundIconCarousel extends React.Component {
   }
 
   _navigateToScreen(item) {
-    this.props.navigation.navigate('GroupItem', {
+    const screenName =
+      this.props.type.charAt(0).toUpperCase() +
+      this.props.type.slice(1) +
+      'Item';
+    this.props.navigation.navigate(screenName, {
       ...item,
       title: decodeURI(item.title)
     });
@@ -25,15 +29,23 @@ export default class RoundIconCarousel extends React.Component {
   _renderItem({ item, index }) {
     return (
       <View style={classesCarouselStyles.wrapper}>
-        <View style={[classesCarouselStyles.containerWrapper, this.props.color && {
-          backgroundColor: this.props.color
-        }]}>
+        <View
+          style={[
+            classesCarouselStyles.containerWrapper,
+            this.props.color && {
+              backgroundColor: this.props.color
+            }
+          ]}
+        >
           <TouchableRipple
             onPress={() => this._navigateToScreen(item)}
             rippleColor="rgba(0, 0, 0, .16)"
           >
             <View style={classesCarouselStyles.container}>
-              <Icon name={this.props.icon} color={colors.white} />
+              <Icon
+                name={this.props.type === 'class' ? 'library-books' : 'people'}
+                color={colors.white}
+              />
             </View>
           </TouchableRipple>
         </View>

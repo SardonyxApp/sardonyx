@@ -132,14 +132,14 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
         <OverviewHeading>Classes</OverviewHeading>
         <RoundIconCarousel
           color={colors.primary}
-          icon={'library-books'}
+          type={'class'}
           list={this.state.classList}
           navigation={this.props.navigation}
         />
         <OverviewHeading>Groups</OverviewHeading>
         <RoundIconCarousel
           color={colors.lightPrimary}
-          icon={'people'}
+          type={'group'}
           list={this.state.groupList}
           navigation={this.props.navigation}
         />
