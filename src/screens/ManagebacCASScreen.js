@@ -84,6 +84,10 @@ export default class ManagebacCASScreen extends React.Component {
     });
   }
 
+  /**
+   * Sends a GET request to the API, sets State, and show Alert on error.
+   * @param {String} credentials 
+   */
   _fetchExperienceData(credentials) {
     fetch(BASE_URL + this.props.navigation.getParam('apiLink', '/404'), {
       method: 'GET',
