@@ -134,7 +134,8 @@ export default class UpcomingCarousel extends React.Component {
 
   /**
    * Renders each View for the task Carousel.
-   * @param {{Object, Integer}} 
+   * @param {{Object}} item
+   * @param {{Integer}} index
    * @return {React.Component}
    */
   _renderItem({ item, index }) {
