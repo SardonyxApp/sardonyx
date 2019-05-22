@@ -21,16 +21,13 @@ export default class TaskLabel extends React.PureComponent {
   render() {
     return (
       <TouchableRipple
-        onPress={evt => {
-          console.log(evt.target);
-        }}
+        onPress={this.props.updatable ? this.props.onUpdate : null}
       >
         <View 
           className="label"
           color="white"
           style={[labelStyles.label, { backgroundColor: this.props.label.color }]} 
           key={this.props.label.name} // Don't use id because it duplicates 
-          // onClick={props.updatable ? this.props.onUpdate : null}
         >
           <Text style={labelStyles.labelName}>{this.props.label.name}</Text>
           {this.props.removable 
@@ -40,10 +37,7 @@ export default class TaskLabel extends React.PureComponent {
               name="close"
               type="material"
               containerStyle={labelStyles.icon}
-              // onPress={evt => {
-              //   evt.stopPropagation();
-              //   props.onRemove(this.props.label.id);
-              // }}
+              onPress={() => this.props.onRemove(this.props.label.id)}
             />
           : null}
         </View>
