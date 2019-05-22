@@ -23,24 +23,44 @@ const Label = ({label, list, onFilter}) => (
 );
 
 export default class TasklistLabelsFilterScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      subjectsFilter: this.props.navigation.getParam('subjectsFilter'),
+      categoriesFilter: this.props.navigation.getParam('categoriesFilter')
+    }
+
+    this._handleFilter = this._handleFilter.bind(this);
+  }
+
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Edit filter'
     }
   }
 
+
+  _handleFilter(filter, id) {
+    this.setState(prevState => {
+      prevState[filter] = prevState[filter].includes(id) ? prevState[filter].filter(l => l !== id) : prevState[filter].concat([id]);
+      return prevState;
+    });
+
+    this.props.navigation.state.params.onFilter(filter, id);
+  }
+
   render() {
     let subjects = this.props.navigation.getParam('subjects');
     let categories = this.props.navigation.getParam('categories');
-    const subjectsFilter = this.props.navigation.getParam('subjectsFilter');
-    const categoriesFilter = this.props.navigation.getParam('categoriesFilter');
+    const subjectsFilter = this.state.subjectsFilter;
+    const categoriesFilter = this.state.categoriesFilter;
 
     subjects = subjects.map(label => (
       <Label 
         key={label.name}
         label={label}
         list={subjectsFilter}
-        onFilter={() => this.props.navigation.state.params.onFilter('subjectsFilter', label.id)}
+        onFilter={() => this._handleFilter('subjectsFilter', label.id)}
       />
     ));
 
@@ -49,7 +69,7 @@ export default class TasklistLabelsFilterScreen extends React.Component {
         key={label.name}
         label={label}
         list={categoriesFilter}
-        onFilter={() => this.props.navigation.state.params.onFilter('categoriesFilter', label.id)}
+        onFilter={() => this._handleFilter('categoriesFilter', label.id)}
       />
     ));
 
