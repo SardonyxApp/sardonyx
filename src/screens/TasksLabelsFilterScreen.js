@@ -22,7 +22,7 @@ const Label = ({label, list, onFilter}) => (
   </TouchableRipple>
 );
 
-export default class TasklistLabelsFilterScreen extends React.Component {
+export default class TasksLabelsFilterScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

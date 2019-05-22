@@ -7,8 +7,8 @@ import { createStackNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 
 import TasksScreen from './screens/TasksScreen';
-import TasklistTaskInfoScreen from './screens/TaslistTaskInfoScreen';
-import TasklistLabelsFilterScreen from './screens/TasklistLabelsFilterScreen'
+import TasksInfoScreen from './screens/TasksInfoScreen';
+import TasksLabelsFilterScreen from './screens/TasksLabelsFilterScreen'
 
 import { colors, fonts } from './styles';
 
@@ -16,8 +16,8 @@ import { colors, fonts } from './styles';
 const TasksStack = createStackNavigator(
   {
     Tasks: TasksScreen,
-    TaskInfo: TasklistTaskInfoScreen,
-    LabelsFilter: TasklistLabelsFilterScreen
+    TaskInfo: TasksInfoScreen,
+    LabelsFilter: TasksLabelsFilterScreen
   },
   {
     initialRouteName: 'Tasks',
