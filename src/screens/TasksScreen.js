@@ -12,11 +12,6 @@ import TasksContainer from '../components/TasksContainer';
 // Disable sockets for now 
 // const socket = io.connect(BASE_URL);
 
-Array.prototype.findById = function(id) {
-  const index = this.findIndex(i => i.id === id);
-  return this[index] || null;
-};
-
 export default class TasksScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -39,7 +34,6 @@ export default class TasksScreen extends React.Component {
       },
       tasklists: [], // Store information about other tasklists (teachers only)
       tasks: [],
-      currentTask: -1, // Store the id of current task: -1 -> no task selected 
       subjects: [],
       categories: [],
       subjectsFilter: [],
@@ -47,7 +41,6 @@ export default class TasksScreen extends React.Component {
     };
 
     this._handleSelectTasklist = this._handleSelectTasklist.bind(this);
-    this._handleSelectTask = this._handleSelectTask.bind(this);
     this._handleFilter = this._handleFilter.bind(this);
     this._handleCreateTask = this._handleCreateTask.bind(this);
     this._handleUpdateTask = this._handleUpdateTask.bind(this);
@@ -152,7 +145,6 @@ export default class TasksScreen extends React.Component {
         tasks: responses[1],
         subjects: responses[2],
         categories: responses[3],
-        currentTask: -1,
         subjectsFilter: responses[0].subjects,
         categoriesFilter: responses[0].categories
       });
@@ -162,13 +154,6 @@ export default class TasksScreen extends React.Component {
       alert('There was an error while retrieving information. If this error persists, please contact SardonyxApp.');
       console.error(err);
     });
-  }
-
-  // Update current task 
-  _handleSelectTask(i) {
-    this.setState(prevState => ({
-      currentTask: prevState.currentTask === i ? -1 : i
-    }));
   }
 
   /**
@@ -214,7 +199,7 @@ export default class TasksScreen extends React.Component {
     .then(response => {
       this.setState(prevState => {
         return {
-          currentTask: response.insertId,
+          // currentTask: response.insertId,
           tasks: [...prevState.tasks, Object.assign({
             id: response.insertId,
             student_name: prevState.user.teacher ? null : prevState.user.name,
@@ -286,8 +271,7 @@ export default class TasksScreen extends React.Component {
     }).then(() => {
       this.setState(prevState => {
         return {
-          tasks: prevState.tasks.filter(t => t.id !== id),
-          currentTask: -1
+          tasks: prevState.tasks.filter(t => t.id !== id)
         };
       });
 
@@ -457,8 +441,6 @@ export default class TasksScreen extends React.Component {
           tasks={this.state.tasks}
           subjectsFilter={this.state.subjectsFilter}
           categoriesFilter={this.state.categoriesFilter}
-          currentTask={this.state.currentTask}
-          onSelectTask={this._handleSelectTask}
           navigation={this.props.navigation}
         />
       </ScrollView>

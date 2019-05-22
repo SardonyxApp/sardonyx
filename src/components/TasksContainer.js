@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import TaskListCard from './TaskListCard';
 
@@ -37,10 +37,14 @@ export default class TasksContainer extends React.PureComponent {
           <Text style={fonts.jost200}>{i === 0 ? new Date(t.due).getDayName() : null}</Text>
           <Text style={fonts.jost200}>{i === 0 ? new Date(t.due).getDate() : null}</Text>
         </View>
-        <TaskListCard 
-          task={t}
-          onSelectTask={this.props.onSelectTask}
-        />
+        <TouchableOpacity
+          style={containerStyles.touchableOpacity}
+          onPress={() => this.props.navigation.navigate('TaskInfo', { ...this.props, currentTask: t.id })}
+        >
+          <TaskListCard 
+            task={t}
+          />
+        </TouchableOpacity>
       </View>
     ));
     count += todayTasks.length;
@@ -53,10 +57,14 @@ export default class TasksContainer extends React.PureComponent {
             <Text style={fonts.jost200}>{store === due.toDateString() ? null : due.getDayName()}</Text>
             <Text style={fonts.jost200}>{store === due.toDateString() ? null : due.getDate()}</Text>
           </View>
-          <TaskListCard 
-            task={t}
-            onSelectTask={this.props.onSelectTask}
-          />
+          <TouchableOpacity
+            style={containerStyles.touchableOpacity}
+            onPress={() => this.props.navigation.navigate('TaskInfo', { ...this.props, currentTask: t.id })}
+          >
+            <TaskListCard 
+              task={t}
+            />
+          </TouchableOpacity>
         </View>
       );
       store = due.toDateString();
@@ -67,10 +75,14 @@ export default class TasksContainer extends React.PureComponent {
     const noDateTasks = tasks.filter(t => t.due === null).map(t => (
       <View style={containerStyles.container} key={t.id}>
         <View style={containerStyles.side} className="side"></View>
-        <TaskListCard 
-          task={t}
-          onSelectTask={this.props.onSelectTask}
-        />
+        <TouchableOpacity
+          style={containerStyles.touchableOpacity}
+          onPress={() => this.props.navigation.navigate('TaskInfo', { ...this.props, currentTask: t.id })}
+        >
+          <TaskListCard 
+            task={t}
+          />
+        </TouchableOpacity>
       </View>
     ));
     count += noDateTasks.length;
@@ -83,10 +95,14 @@ export default class TasksContainer extends React.PureComponent {
             <Text style={fonts.jost200}>{store === due.toDateString() ? null : due.getMonthName()}</Text>
             <Text style={fonts.jost200}>{store === due.toDateString() ? null : due.getDate()}</Text>
           </View>
-          <TaskListCard 
-            task={t}
-            onSelectTask={this.props.onSelectTask}
-          />
+          <TouchableOpacity
+            style={containerStyles.touchableOpacity}
+            onPress={() => this.props.navigation.navigate('TaskInfo', { ...this.props, currentTask: t.id })}
+          >
+            <TaskListCard 
+              task={t}
+            />
+          </TouchableOpacity>
         </View>
       );
       store = due.toDateString();
@@ -128,6 +144,9 @@ const containerStyles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'stretch'
+  },
+  touchableOpacity: {
+    flex: 1
   },
   side: {
     width: 31,
