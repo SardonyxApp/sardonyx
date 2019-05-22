@@ -28,7 +28,7 @@ export default class TasksFilter extends React.PureComponent {
       .map(label => <Label key={label.name} label={label} onRemove={id => this.props.onFilter('categoriesFilter', id)}  removable={true} />);
 
     return (
-      <ScrollView id="tasks-filter" className="custom-scroll" contentContainerStyle={filterStyles.container}>
+      <ScrollView id="tasks-filter" className="custom-scroll" horizontal={true} contentContainerStyle={filterStyles.container}>
         <TouchableRipple 
           onPress={this._handleNavigate}
           rippleColor="rgba(0, 0, 0, 0.16)"
@@ -70,7 +70,8 @@ const filterStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: 16
+    marginTop: 16,
+    marginBottom: 4
   },
   icon: {
     height: 24,
