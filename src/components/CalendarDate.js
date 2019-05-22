@@ -34,7 +34,9 @@ export default class CalendarDate extends React.PureComponent {
             </Text>
           </View>
           <View style={calendarStyles.date}>
-            <Text style={calendarStyles.dateText}>
+            <Text style={[calendarStyles.dateText, this.props.color && {
+              color: this.props.color
+            }]}>
               {this.props.date.getDate()}
             </Text>
           </View>

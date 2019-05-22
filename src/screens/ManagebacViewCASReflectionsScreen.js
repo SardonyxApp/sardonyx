@@ -458,7 +458,7 @@ const reflectionListStyles = StyleSheet.create({
     marginBottom: 16
   },
   focusedItem: {
-    backgroundColor: colors.lightBlue
+    backgroundColor: colors.lightBlue2
   },
   itemContent: {
     paddingHorizontal: 16,

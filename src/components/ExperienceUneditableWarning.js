@@ -24,7 +24,7 @@ const warningStyles = StyleSheet.create({
   container: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: colors.lightBlue,
+    backgroundColor: colors.lightBlue2,
     marginBottom: 16
   },
   text: {
