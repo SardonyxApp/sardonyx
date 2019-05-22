@@ -7,18 +7,37 @@
 
 import { StyleSheet } from 'react-native';
 
+/**
+ * The colors are generated with the following method:
+ * dark: [1/2] original (50%) #000000 (50%)
+ * dark2: [1/6] original (16.6%) #000000 (83.4%) 
+ * light: [1/6] original (50%) #ffffff (50%)
+ * light2: [1/6] original (16.6%) #ffffff (83.4%)
+ */
 const colors = {
   primary: '#d17b46',
-  lightPrimary: '#eda67b',
-  lightPrimary2: '#f1e3db',
-  secondary: '#6e4d12',
+  darkPrimary: '#693E23',
+  darkPrimary2: '#23150C',
+  lightPrimary: '#E8BDA3',
+  lightPrimary2: '#F7E9E0',
+
+  blue: '#2977b6',
+  darkBlue: '#153C5B',
+  darkBlue2: '#07141E',
+  lightBlue: '#94BBDB',
+  lightBlue2: '#DBE8F3',
+
+  error: '#f44138',
+  darkError: '#7A211C',
+  darkError2: '#290B09',
+  lightError: '#FAA09C',
+  lightError2: '#FDDFDE',
+
   black: '#332927',
   gray1: '#d8d8e0',
   gray2: '#babbc2',
   white: '#fff',
-  blue: '#2977b6',
-  lightBlue: '#ecf7ff',
-  error: '#f44138',
+
   inactive: '#c2c2c2',
   darkBackground: '#8c8c8b',
   lightBackground: '#f8f8fa'
@@ -128,11 +147,14 @@ const preset = {
     styles.width90Percent,
     styles.roundCorners
   ],
-  inputLine: [styles.padding10, {
-    borderColor: colors.primary,
-    borderWidth: 1,
-    backgroundColor: colors.white
-  }]
+  inputLine: [
+    styles.padding10,
+    {
+      borderColor: colors.primary,
+      borderWidth: 1,
+      backgroundColor: colors.white
+    }
+  ]
 };
 
 const labelColors = name => {
@@ -141,8 +163,8 @@ const labelColors = name => {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
   let color = '#';
-  for(let i = 0; i < 3; i++){
-    let hexaDecimal = (hash >> (i * 8)) & 0xFF;
+  for (let i = 0; i < 3; i++) {
+    let hexaDecimal = (hash >> (i * 8)) & 0xff;
     color += ('00' + hexaDecimal.toString(13)).substr(-2);
   }
   return color;

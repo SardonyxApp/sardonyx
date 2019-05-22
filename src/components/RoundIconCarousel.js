@@ -8,15 +8,19 @@ import { TouchableRipple } from 'react-native-paper';
 
 import { colors, fonts } from '../styles';
 
-export default class ClassesCarousel extends React.Component {
+export default class RoundIconCarousel extends React.Component {
   constructor(props) {
     super(props);
 
     this._renderItem = this._renderItem.bind(this);
   }
 
-  _navigateToClassScreen(item) {
-    this.props.navigation.navigate('ClassItem', {
+  _navigateToScreen(item) {
+    const screenName =
+      this.props.type.charAt(0).toUpperCase() +
+      this.props.type.slice(1) +
+      'Item';
+    this.props.navigation.navigate(screenName, {
       ...item,
       title: decodeURI(item.title)
     });
@@ -25,13 +29,23 @@ export default class ClassesCarousel extends React.Component {
   _renderItem({ item, index }) {
     return (
       <View style={classesCarouselStyles.wrapper}>
-        <View style={classesCarouselStyles.containerWrapper}>
+        <View
+          style={[
+            classesCarouselStyles.containerWrapper,
+            this.props.color && {
+              backgroundColor: this.props.color
+            }
+          ]}
+        >
           <TouchableRipple
-            onPress={() => this._navigateToClassScreen(item)}
+            onPress={() => this._navigateToScreen(item)}
             rippleColor="rgba(0, 0, 0, .16)"
           >
             <View style={classesCarouselStyles.container}>
-              <Icon name="library-books" color={colors.white} />
+              <Icon
+                name={this.props.type === 'class' ? 'library-books' : 'people'}
+                color={colors.white}
+              />
             </View>
           </TouchableRipple>
         </View>
@@ -46,7 +60,7 @@ export default class ClassesCarousel extends React.Component {
     return (
       <View style={classesCarouselStyles.carouselContainer}>
         <Carousel
-          data={this.props.classList}
+          data={this.props.list}
           renderItem={this._renderItem}
           sliderWidth={Dimensions.get('window').width}
           itemWidth={100}
@@ -58,7 +72,7 @@ export default class ClassesCarousel extends React.Component {
           inactiveSlideOpacity={1}
           contentContainerCustomStyle={{
             overflow: 'hidden',
-            width: 100 * this.props.classList.length
+            width: 100 * this.props.list.length
           }}
         />
       </View>

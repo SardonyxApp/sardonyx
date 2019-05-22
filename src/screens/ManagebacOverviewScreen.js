@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ScrollView, RefreshControl } from 'react-native';
+import { ScrollView, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { BASE_URL } from '../../env';
 
@@ -8,9 +8,9 @@ import { Storage } from '../helpers';
 import GreetingsCard from '../components/GreetingsCard';
 import OverviewHeading from '../components/OverviewHeading';
 import UpcomingCarousel from '../components/UpcomingCarousel';
-import ClassesCarousel from '../components/ClassesCarousel';
+import RoundIconCarousel from '../components/RoundIconCarousel';
 import CASExpandableCard from '../components/CASExpandableCard';
-import GroupsExpandableCard from '../components/UpcomingExpandableCard';
+import { colors } from '../styles';
 
 export default class ManagebacOverviewScreen extends React.PureComponent {
   constructor(props) {
@@ -109,28 +109,6 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
     });
   }
 
-  /**
-   * Put raw deadline data into a array sorted by date to be used in SectionList
-   * @param {Array} deadlines
-   */
-  _sortDeadlineArray(deadlines) {
-    let sorted = [];
-    deadlines.forEach(deadline => {
-      dueDate = Date.parse(deadline.due);
-      // If deadline section already exists then put the deadline in there, otherwise create a section
-      let index = sorted.findIndex(element => element.title === dueDate);
-      if (index !== -1) {
-        sorted[index].data.push(deadline);
-        return;
-      }
-      sorted.push({
-        title: dueDate,
-        data: [deadline]
-      });
-    });
-    return sorted;
-  }
-
   render() {
     return (
       <ScrollView
@@ -152,16 +130,32 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           navigation={this.props.navigation}
         />
         <OverviewHeading>Classes</OverviewHeading>
-        <ClassesCarousel
-          classList={this.state.classList}
+        <RoundIconCarousel
+          color={colors.primary}
+          type={'class'}
+          list={this.state.classList}
+          navigation={this.props.navigation}
+        />
+        <OverviewHeading>Groups</OverviewHeading>
+        <RoundIconCarousel
+          color={colors.lightPrimary}
+          type={'group'}
+          list={this.state.groupList}
           navigation={this.props.navigation}
         />
         <CASExpandableCard
+          expanded={true}
           title="CAS EXPERIENCES"
           navigation={this.props.navigation}
+          style={overviewStyles.lastElementPadding}
         />
-        <GroupsExpandableCard groupList={this.state.groupList} />
       </ScrollView>
     );
   }
 }
+
+const overviewStyles = StyleSheet.create({
+  lastElementPadding: {
+    marginBottom: 16
+  }
+});
