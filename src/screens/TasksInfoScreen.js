@@ -1,9 +1,8 @@
 import React from 'react';
 import { ScrollView, Text, StyleSheet } from 'react-native';
-
 import { Icon } from 'react-native-elements';
 
-import { fonts } from '../styles';
+import { styles, fonts } from '../styles';
 
 import TaskLabel from '../components/TaskLabel';
 import TaskDescription from '../components/TaskDescription';
@@ -66,7 +65,7 @@ export default class TasksInfoScreen extends React.Component {
           <Icon 
             name="label"
             type="material"
-            iconStyle={infoStyles.icon}
+            iconStyle={styles.icon}
           />
           {!!labels.length 
           ? labels 
@@ -112,10 +111,5 @@ const infoStyles = StyleSheet.create({
   },
   label: {
     padding: 8
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    marginRight: 8
   }
 });

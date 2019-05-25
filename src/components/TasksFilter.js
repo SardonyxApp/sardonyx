@@ -4,7 +4,7 @@ import { ScrollView, Text, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { TouchableRipple } from 'react-native-paper';
 
-import { fonts } from '../styles';
+import { styles, fonts } from '../styles';
 
 import Label from './TaskLabel';
 
@@ -36,7 +36,7 @@ export default class TasksFilter extends React.PureComponent {
           <Icon 
             name="search"
             type="material"
-            iconStyle={filterStyles.icon}
+            iconStyle={styles.icon}
           /> 
         </TouchableRipple>
         {subjects}
@@ -57,7 +57,7 @@ export default class TasksFilter extends React.PureComponent {
           <Icon 
             name="add"
             type="material"
-            iconStyle={filterStyles.icon}
+            iconStyle={styles.icon}
           />
         </TouchableRipple>
       </ScrollView>
@@ -72,10 +72,6 @@ const filterStyles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: 16,
     marginBottom: 4
-  },
-  icon: {
-    height: 24,
-    width: 24
   },
   hint: {
     ...fonts.jost400,

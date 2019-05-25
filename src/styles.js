@@ -135,6 +135,10 @@ const styles = StyleSheet.create({
   logoIcon: {
     height: 100,
     width: 100
+  },
+  icon: {
+    height: 24,
+    width: 24
   }
 });
 
