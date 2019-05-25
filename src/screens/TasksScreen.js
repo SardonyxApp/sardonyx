@@ -222,7 +222,6 @@ export default class TasksScreen extends React.Component {
   /**
    * @description Update task content 
    * @param {Object} obj task object with any key value pair that is to be changed  
-   * @param {Number} id required in order to change state correctly 
    */
   async _handleUpdateTask(obj) {
     // Deep copy object
@@ -442,6 +441,7 @@ export default class TasksScreen extends React.Component {
           subjectsFilter={this.state.subjectsFilter}
           categoriesFilter={this.state.categoriesFilter}
           navigation={this.props.navigation}
+          onUpdateTask={this._handleUpdateTask}
         />
       </ScrollView>
     );

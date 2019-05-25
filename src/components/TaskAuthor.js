@@ -9,7 +9,8 @@ export default TaskAuthor = props => (
     style={{
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: 8
+      paddingVertical: 8,
+      display: props.author ? '' : 'none'
     }}
   >
     <Icon 

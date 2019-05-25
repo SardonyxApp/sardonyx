@@ -27,6 +27,7 @@
     "moment": "^2.24.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-native-datepicker": "^1.7.2",
     "react-native-elements": "^0.19.1",
     "react-native-htmlview": "0.14.0",
     "react-native-paper": "^2.12.0",

@@ -85,7 +85,6 @@ export default class TasksInfoScreen extends React.Component {
         <TaskDue 
           id={task.id}
           due={task.due}
-          onModal={this.props.onModal}
           onUpdateTask={this.props.navigation.state.params.onUpdateTask}
         />
         <TaskAuthor 
