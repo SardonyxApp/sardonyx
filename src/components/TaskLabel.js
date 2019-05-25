@@ -16,6 +16,7 @@ import { fonts } from '../styles';
  * @param {Function} props.onRemove passed id 
  * @param {Boolean} props.updatable if true, onUpdate will be triggered when clicked on the body 
  * @param {Bololean} props.removable if true, onRemove will be triggered when clicked on RemoveIcon
+ * @param {Styles} props.style
  */
 export default class TaskLabel extends React.PureComponent {
   render() {
@@ -26,7 +27,7 @@ export default class TaskLabel extends React.PureComponent {
         <View 
           className="label"
           color="white"
-          style={[labelStyles.label, { backgroundColor: this.props.label.color }]} 
+          style={[labelStyles.label, this.props.style, { backgroundColor: this.props.label.color }]} 
           key={this.props.label.name} // Don't use id because it duplicates 
         >
           <Text style={labelStyles.labelName}>{this.props.label.name}</Text>
@@ -50,8 +51,8 @@ const labelStyles = StyleSheet.create({
   label: {
     marginHorizontal: 2,
     borderRadius: 4,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     flexDirection: 'row'
   },
   labelName: {
