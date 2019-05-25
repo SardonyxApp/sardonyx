@@ -28,6 +28,7 @@ const descriptionStyles = StyleSheet.create({
   text: {
     ...fonts.jost300,
     fontSize: 16,
-    paddingHorizontal: 8
+    paddingHorizontal: 8,
+    flex: 1
   }
 });

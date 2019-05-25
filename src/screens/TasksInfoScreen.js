@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 import { styles, fonts } from '../styles';
@@ -33,7 +33,7 @@ export default class TasksInfoScreen extends React.Component {
             name: task.subject_name, 
             color: task.subject_color
           }}
-          key={task.id}
+          key={task.subject_id}
           style={infoStyles.label}
           onUpdate={() => this.props.navigation.navigate('TaskLabels')}
           updatable={true}
@@ -48,7 +48,7 @@ export default class TasksInfoScreen extends React.Component {
             name: task.category_name,
             color: task.category_color
           }}
-          key={task.id}
+          key={task.category_id}
           style={infoStyles.label}
           onUpdate={() => this.props.navigation.navigate('TaskLabels')}
           updatable={true}
@@ -68,10 +68,10 @@ export default class TasksInfoScreen extends React.Component {
             iconStyle={styles.icon}
           />
           {!!labels.length 
-          ? labels 
+          ? <View style={infoStyles.labelsWrapper}>{labels}</View>
           : <Text 
             onPress={() => this.props.navigation.navigate('TaskLabels')}
-            style={fonts.jost300}
+            style={infoStyles.noLabelsText}
           >
             No labels set.
           </Text>
@@ -109,7 +109,16 @@ const infoStyles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8
   },
+  labelsWrapper: {
+    paddingHorizontal: 8,
+    flexDirection: 'row'
+  },
   label: {
     padding: 8
+  },
+  noLabelsText: {
+    ...fonts.jost300,
+    fontSize: 16,
+    paddingHorizontal: 8
   }
 });
