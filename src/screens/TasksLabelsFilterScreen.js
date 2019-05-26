@@ -1,26 +1,8 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import Label from '../components//TasksSelectableLabel';
 
 import { fonts } from '../styles';
-
-import { Icon } from 'react-native-elements';
-import { TouchableRipple } from 'react-native-paper';
-
-const Label = ({label, list, onFilter}) => (
-  <TouchableRipple
-    onPress={onFilter} 
-    rippleColor="rgba(0, 0, 0, 0.16)"
-  >
-    <View
-      style={[labelStyles.label, { backgroundColor: label.color }]}
-    >
-      <Text style={labelStyles.labelName}>{label.name}</Text>
-      {list.includes(label.id) 
-      ? <Icon name="check" type="material" size={16} containerStyle={labelStyles.icon} color="white" />
-      : null}
-    </View>
-  </TouchableRipple>
-);
 
 export default class TasksLabelsFilterScreen extends React.Component {
   constructor(props) {
@@ -81,20 +63,3 @@ export default class TasksLabelsFilterScreen extends React.Component {
     );
   }
 }
-
-const labelStyles = StyleSheet.create({
-  label: {
-    margin: 4,
-    borderRadius: 4,
-    padding: 12,
-    flexDirection: 'row'
-  },
-  labelName: {
-    ...fonts.jost400,
-    fontSize: 16,
-    color: '#fff'
-  },
-  icon: {
-    marginLeft: 4
-  }
-});

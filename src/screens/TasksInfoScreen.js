@@ -1,10 +1,7 @@
 import React from 'react';
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { ScrollView, View, Text } from 'react-native';
 
-import { styles, fonts } from '../styles';
-
-import TaskLabel from '../components/TaskLabel';
+import TaskLabels from '../components/TaskLabels';
 import TaskDescription from '../components/TaskDescription';
 import TaskDue from '../components/TaskDue';
 import TaskAuthor from '../components/TaskAuthor';
@@ -25,58 +22,11 @@ export default class TasksInfoScreen extends React.Component {
     const tasks = this.props.navigation.getParam('tasks');
     const task = tasks.filter(t => t.id === this.props.navigation.getParam('currentTask'))[0];
 
-    const labels = [];
-    if (task.subject_id) {
-      labels.push(
-        <TaskLabel 
-          label={{
-            name: task.subject_name, 
-            color: task.subject_color
-          }}
-          key={task.subject_id}
-          style={infoStyles.label}
-          onUpdate={() => this.props.navigation.navigate('TaskLabels')}
-          updatable={true}
-        />
-      );
-    }
-
-    if (task.category_id) {
-      labels.push(
-        <TaskLabel 
-          label={{
-            name: task.category_name,
-            color: task.category_color
-          }}
-          key={task.category_id}
-          style={infoStyles.label}
-          onUpdate={() => this.props.navigation.navigate('TaskLabels')}
-          updatable={true}
-        />
-      );
-    }
-
     return (
-      <ScrollView contentContainerStyle={infoStyles.container}>
-        <ScrollView 
-          horizontal={true} 
-          contentContainerStyle={infoStyles.labelsContainer}
-        >
-          <Icon 
-            name="label"
-            type="material"
-            iconStyle={styles.icon}
-          />
-          {!!labels.length 
-          ? <View style={infoStyles.labelsWrapper}>{labels}</View>
-          : <Text 
-            onPress={() => this.props.navigation.navigate('TaskLabels')}
-            style={infoStyles.noLabelsText}
-          >
-            No labels set.
-          </Text>
-        }
-        </ScrollView>
+      <ScrollView contentContainerStyle={{ padding: 8 }}>
+        <TaskLabels 
+          task={task}
+        />
         <TaskDescription
           id={task.id}
           description={task.description}
@@ -98,26 +48,3 @@ export default class TasksInfoScreen extends React.Component {
     );
   }
 }
-
-const infoStyles = StyleSheet.create({
-  container: {
-    padding: 8
-  },
-  labelsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8
-  },
-  labelsWrapper: {
-    paddingHorizontal: 8,
-    flexDirection: 'row'
-  },
-  label: {
-    padding: 8
-  },
-  noLabelsText: {
-    ...fonts.jost300,
-    fontSize: 16,
-    paddingHorizontal: 8
-  }
-});
