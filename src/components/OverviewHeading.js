@@ -10,7 +10,7 @@ export default class OverviewHeading extends React.PureComponent {
   }
 
   render() {
-    return <Text style={headingStyles.title}>{this.props.children}</Text>;
+    return <Text style={[headingStyles.title, this.props.style]}>{this.props.children}</Text>;
   }
 }
 
