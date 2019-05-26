@@ -5,26 +5,16 @@ import {
   RefreshControl,
   Alert,
   View,
-  Text,
-  FlatList,
-  Image,
-  StyleSheet
+  Dimensions
 } from 'react-native';
 
-import { DangerZone } from 'expo';
-const { Lottie } = DangerZone;
-import HTMLView from 'react-native-htmlview';
 import { BASE_URL } from '../../env';
 
 import UpcomingCarousel from '../components/UpcomingCarousel';
 import OverviewHeading from '../components/OverviewHeading';
+import MessageListView from '../components/MessageListView';
 import { Storage } from '../helpers';
-import { fonts } from '../styles';
 
-/**
- * TODO: This screen is god damn resource intensive
- * TODO: Somehow split into smaller components
- */
 export default class ManagebacClassScreen extends React.Component {
   isMounted = false;
 
@@ -38,7 +28,6 @@ export default class ManagebacClassScreen extends React.Component {
       classUpcomingEventsData: [],
       classCompletedEventsData: [],
       classMessagesData: [],
-      classMessagesDataConcatted: [],
       classMessagesTotalPages: 1
     };
     this._onRefresh = this._onRefresh.bind(this);
@@ -50,11 +39,6 @@ export default class ManagebacClassScreen extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     this._onRefresh();
-    // For some reason this.animation.play() doesn't work when immediately called
-    // Weird, because it works in LoginCheckScreen
-    setTimeout(() => {
-      this.animation.play();
-    }, 50);
   }
 
   componentWillUnmount() {
@@ -91,6 +75,7 @@ export default class ManagebacClassScreen extends React.Component {
   /**
    * After performing several checks, load the next page of messages.
    */
+
   _fetchNextMessages() {
     if (!this._isMounted) return;
     // Don't call fetch if it's already fetching something
@@ -152,7 +137,7 @@ export default class ManagebacClassScreen extends React.Component {
       }
     });
   }
-
+  
   /**
    * Called on load, and on scroll to bottom. Asynchronously sets the state using newest messages.
    * @param {String} credentials
@@ -181,146 +166,50 @@ export default class ManagebacClassScreen extends React.Component {
         this.setState({
           fetchingMessages: false,
           classMessagesData: messages,
-          classMessagesDataConcatted: [].concat(...messages),
           classMessagesTotalPages: parsedManagebacResponse.numberOfPages
         });
         return;
       } else {
-        // Za end has been reached
-        this.setState({
-          fetchingMessages: false
-        });
+        Alert.alert('Error', 'Messages could not be loaded.', []);
         return;
       }
     });
   }
 
-  /**
-   * Render each message in its own row.
-   * @param {{ Object, Integer }}
-   * @return {React.Component}
-   */
-  _renderMessage({ item, index }) {
-    return (
-      <View style={messageListStyles.messageContainer}>
-        <View style={messageListStyles.imageContainer}>
-          <Image
-            source={
-              item.avatar
-                ? {
-                    uri: item.avatar
-                  }
-                : require('../logos/Icon.png')
-            }
-            style={messageListStyles.image}
-          />
-        </View>
-        <View style={messageListStyles.text}>
-          <Text style={messageListStyles.author}>{item.author}</Text>
-          <Text style={messageListStyles.title} numberOfLines={1}>
-            {decodeURI(item.title)}
-          </Text>
-          <HTMLView
-            style={messageListStyles.content}
-            value={`<html><body>${item.content}</body></html>`}
-            stylesheet={htmlStyles}
-            textComponentProps={{
-              style: htmlStyles.text
-            }}
-            nodeComponentProps={{
-              numberOfLines: 1
-            }}
-          />
-        </View>
-      </View>
-    );
-  }
-
   render() {
     return (
-      <FlatList
+      <ScrollView
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
             onRefresh={this._onRefresh}
           />
         }
-        data={this.state.classMessagesDataConcatted}
-        renderItem={this._renderMessage}
-        keyExtractor={(item, index) => item.id.toString()}
-        onEndReached={this._fetchNextMessages}
-        onEndReachedThreshold={0.01}
-        ListHeaderComponent={
-          <View>
-            <UpcomingCarousel
-              upcomingEvents={this.state.classUpcomingEventsData}
-              completedEvents={this.state.classCompletedEventsData}
-              allGroupsAndClasses={[this.props.navigation.state.params]}
-              navigation={this.props.navigation}
-            />
-            {/** OverviewHeading has a default marginBottom of -16px */}
-            <OverviewHeading style={{ marginBottom: 0 }}>
-              Messages
-            </OverviewHeading>
-          </View>
-        }
-        ListFooterComponent={
-          <View style={messageListStyles.lottieContainer}>
-            <Lottie
-              style={messageListStyles.lottie}
-              ref={animation => {
-                this.animation = animation;
-              }}
-              loop={true}
-              autoPlay={true}
-              source={require('../assets/loader.json')}
-            />
-          </View>
-        }
-      />
+        onScroll={event => {
+          let windowHeight = Dimensions.get('window').height,
+            height = event.nativeEvent.contentSize.height,
+            offset = event.nativeEvent.contentOffset.y;
+          if (windowHeight + offset >= height) {
+            // Thank you GitHub
+            // https://github.com/facebook/react-native/issues/2299
+            this._fetchNextMessages();
+          }
+        }}
+      >
+        <UpcomingCarousel
+          upcomingEvents={this.state.classUpcomingEventsData}
+          completedEvents={this.state.classCompletedEventsData}
+          allGroupsAndClasses={[this.props.navigation.state.params]}
+          navigation={this.props.navigation}
+        />
+        {/** OverviewHeading has a default marginBottom of -16px */}
+        <OverviewHeading style={{ marginBottom: 0 }}>Messages</OverviewHeading>
+        <MessageListView
+          messages={[].concat(...this.state.classMessagesData)}
+          onScrollEnd={this._fetchNextMessages}
+          loading={this.state.fetchingMessages}
+        />
+      </ScrollView>
     );
   }
 }
-
-const messageListStyles = StyleSheet.create({
-  messageContainer: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    flex: 1,
-    flexDirection: 'row'
-  },
-  imageContainer: {
-    width: 66,
-    height: 66
-  },
-  image: {
-    padding: 8,
-    width: 50,
-    height: 50
-  },
-  text: {
-    flex: 1
-  },
-  author: {
-    fontSize: 9,
-    ...fonts.jost300
-  },
-  title: {
-    fontSize: 15,
-    ...fonts.jost400
-  },
-  lottieContainer: {
-    flex: 1,
-    alignItems: 'center'
-  },
-  lottie: {
-    width: 30,
-    height: 30
-  }
-});
-
-const htmlStyles = StyleSheet.create({
-  text: {
-    fontSize: 11
-  }
-});
