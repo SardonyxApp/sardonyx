@@ -18,6 +18,7 @@ import ManagebacClassScreen from './screens/ManagebacClassScreen';
 import ManagebacGroupScreen from './screens/ManagebacGroupScreen';
 
 import { colors, fonts } from './styles';
+import ManagebacMessageThreadScreen from './screens/ManagebacMessageThreadScreen';
 
 // Navigation stack for the Managebac tab
 const ManagebacStack = createStackNavigator(
@@ -31,7 +32,8 @@ const ManagebacStack = createStackNavigator(
     EditCASReflection: ManagebacEditCASReflectionScreen,
     ViewCASReflections: ManagebacViewCASReflectionsScreen,
     ClassItem: ManagebacClassScreen,
-    GroupItem: ManagebacGroupScreen
+    GroupItem: ManagebacGroupScreen,
+    MessageThread: ManagebacMessageThreadScreen
   },
   {
     initialRouteName: 'Overview',

@@ -208,6 +208,7 @@ export default class ManagebacClassScreen extends React.Component {
           messages={[].concat(...this.state.classMessagesData)}
           onScrollEnd={this._fetchNextMessages}
           loading={this.state.fetchingMessages}
+          navigation={this.props.navigation}
         />
       </ScrollView>
     );
