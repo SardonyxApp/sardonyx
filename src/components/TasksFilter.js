@@ -6,7 +6,7 @@ import { TouchableRipple } from 'react-native-paper';
 
 import { styles, fonts } from '../styles';
 
-import Label from './TaskLabel';
+import Label from './TasksLabel';
 
 export default class TasksFilter extends React.PureComponent {
   constructor(props) {

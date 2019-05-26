@@ -18,7 +18,7 @@ import { fonts } from '../styles';
  * @param {Bololean} props.removable if true, onRemove will be triggered when clicked on RemoveIcon
  * @param {Styles} props.style
  */
-export default class TaskLabel extends React.PureComponent {
+export default class TasksLabel extends React.PureComponent {
   render() {
     return (
       <TouchableRipple
