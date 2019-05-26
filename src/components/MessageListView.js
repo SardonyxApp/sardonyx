@@ -4,9 +4,11 @@ import { Text, View, FlatList, StyleSheet, Image } from 'react-native';
 
 import { DangerZone } from 'expo';
 const { Lottie } = DangerZone;
+import { Icon } from 'react-native-elements';
 import HTMLView from 'react-native-htmlview';
 
-import { fonts } from '../styles';
+import { fonts, colors } from '../styles';
+import { TouchableRipple } from 'react-native-paper';
 
 export default class MessageListView extends React.Component {
   constructor(props) {
@@ -24,6 +26,13 @@ export default class MessageListView extends React.Component {
     setTimeout(() => {
       this.animation.play();
     }, 50);
+  }
+
+  _navigateToMessageThreadScreen(item) {
+    this.props.navigation.navigate('MessageThread', {
+      ...item,
+      title: decodeURI(item.title)
+    })
   }
 
   /**
@@ -47,19 +56,34 @@ export default class MessageListView extends React.Component {
           />
         </View>
         <View style={messageListStyles.text}>
-          <Text style={messageListStyles.author}>{item.author}</Text>
-          <Text style={messageListStyles.title} numberOfLines={1}>
-            {decodeURI(item.title)}
+          <Text style={messageListStyles.author}>
+            {item.author} <Text style={messageListStyles.subtext}>wrote</Text>
           </Text>
+          <View style={messageListStyles.titleFlex}>
+            <Text style={messageListStyles.title}>{decodeURI(item.title)}</Text>
+            <View style={messageListStyles.comments}>
+              <TouchableRipple
+                onPress={() => this._navigateToMessageThreadScreen(item)}
+                rippleColor="rgba(0, 0, 0, .16)"
+              >
+                <View style={messageListStyles.commentsWrapper}>
+                  <Text style={messageListStyles.commentCount}>1</Text>
+                  <Icon
+                    size={18}
+                    name="chat-bubble"
+                    color={colors.darkBlue}
+                    style={messageListStyles.commentIcon}
+                  />
+                </View>
+              </TouchableRipple>
+            </View>
+          </View>
           <HTMLView
             style={messageListStyles.content}
             value={`<html><body>${item.content}</body></html>`}
             stylesheet={htmlStyles}
             textComponentProps={{
               style: htmlStyles.text
-            }}
-            nodeComponentProps={{
-              numberOfLines: 1
             }}
           />
         </View>
@@ -95,32 +119,63 @@ const messageListStyles = StyleSheet.create({
   messageContainer: {
     paddingVertical: 8,
     paddingHorizontal: 16,
+    marginBottom: 32,
     flex: 1,
     flexDirection: 'row'
   },
   imageContainer: {
-    width: 66,
-    height: 66
+    width: 48,
+    height: 48
   },
   image: {
-    padding: 8,
-    width: 50,
-    height: 50
+    padding: 6,
+    width: 36,
+    height: 36
   },
   text: {
     flex: 1
   },
   author: {
-    fontSize: 9,
+    fontSize: 12,
     ...fonts.jost300
   },
+  subtext: {
+    color: colors.darkBackground
+  },
+  titleFlex: {
+    flex: 1,
+    flexDirection: 'row'
+  },
   title: {
-    fontSize: 15,
+    flex: 1,
+    fontSize: 18,
     ...fonts.jost400
+  },
+  comments: {
+    width: 48,
+    justifyContent: 'center',
+    borderRadius: 4,
+    overflow: 'hidden'
+  },
+  commentsWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 3
+  },
+  commentCount: {
+    marginRight: 4,
+    color: colors.darkBlue
+  },
+  content: {
+    backgroundColor: colors.lightBackground,
+    borderRadius: 4,
+    padding: 8
   },
   lottieContainer: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 16
   },
   lottie: {
     width: 30,
@@ -130,6 +185,10 @@ const messageListStyles = StyleSheet.create({
 
 const htmlStyles = StyleSheet.create({
   text: {
-    fontSize: 11
+    fontSize: 12,
+    color: colors.black
+  },
+  p: {
+    marginBottom: 0
   }
 });
