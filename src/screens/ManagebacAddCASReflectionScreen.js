@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Alert,
   KeyboardAvoidingView,
-  Dimensions
+  Dimensions,
+  InteractionManager
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -60,31 +61,34 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
     // Register the sendReflection method so it can be called from static navigationOptions
     this.props.navigation.setParams({ sendReflection: this._sendReflection });
 
-    // Retrieve the draft is any exists, and set the value.
-    Storage.retrieveValue('reflectionDrafts')
-      .then(drafts => {
-        if (!drafts) return;
-        drafts = JSON.parse(drafts);
-        if (this.props.navigation.getParam('id', null) in drafts) {
-          this.setState({
-            reflectionValue:
-              drafts[this.props.navigation.getParam('id', null)].value
-          });
-        }
-      })
-      .catch(err => {
-        console.warn(err);
-      });
+    // Wait until all transitions/animations complete until running
+    InteractionManager.runAfterInteractions(() => {
+      // Retrieve the draft is any exists, and set the value.
+      Storage.retrieveValue('reflectionDrafts')
+        .then(drafts => {
+          if (!drafts) return;
+          drafts = JSON.parse(drafts);
+          if (this.props.navigation.getParam('id', null) in drafts) {
+            this.setState({
+              reflectionValue:
+                drafts[this.props.navigation.getParam('id', null)].value
+            });
+          }
+        })
+        .catch(err => {
+          console.warn(err);
+        });
 
-    // Register the willBlur event so we can save the draft upon closing
-    this.props.navigation.addListener('willBlur', this._onWillBlur);
+      // Register the willBlur event so we can save the draft upon closing
+      this.props.navigation.addListener('willBlur', this._onWillBlur);
 
-    // Set the textinput as editable (https://github.com/facebook/react-native/issues/20887)
-    setTimeout(() => {
-      this.setState({
-        editable: true
-      });
-    }, 100);
+      // Set the textinput as editable (https://github.com/facebook/react-native/issues/20887)
+      setTimeout(() => {
+        this.setState({
+          editable: true
+        });
+      }, 100);
+    });
   }
 
   /**
