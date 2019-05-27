@@ -16,9 +16,9 @@ import ManagebacEditCASReflectionScreen from './screens/ManagebacEditCASReflecti
 import ManagebacViewCASReflectionsScreen from './screens/ManagebacViewCASReflectionsScreen';
 import ManagebacClassScreen from './screens/ManagebacClassScreen';
 import ManagebacGroupScreen from './screens/ManagebacGroupScreen';
+import ManagebacMessageThreadScreen from './screens/ManagebacMessageThreadScreen';
 
 import { colors, fonts } from './styles';
-import ManagebacMessageThreadScreen from './screens/ManagebacMessageThreadScreen';
 
 // Navigation stack for the Managebac tab
 const ManagebacStack = createStackNavigator(
@@ -41,7 +41,10 @@ const ManagebacStack = createStackNavigator(
       let tabBarVisible;
       if (navigation.state.routes.length > 1) {
         navigation.state.routes.map(route => {
-          if (route.routeName === 'AddCASReflection' || route.routeName === 'EditCASReflection') {
+          if (
+            route.routeName === 'AddCASReflection' ||
+            route.routeName === 'EditCASReflection'
+          ) {
             tabBarVisible = false;
           } else {
             tabBarVisible = true;
