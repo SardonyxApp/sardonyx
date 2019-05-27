@@ -78,10 +78,6 @@ const styles = StyleSheet.create({
   },
 
   //apply to View
-  fullScreen: {
-    height: '100%',
-    width: '100%'
-  },
   width90Percent: {
     width: '90%'
   },

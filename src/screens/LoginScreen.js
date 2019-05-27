@@ -22,7 +22,7 @@ export default class Login extends React.Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
-          style={[styles.alignChildrenCenter, styles.fullScreen]}
+          style={[styles.alignChildrenCenter, { flex: 1 }]}
         >
           <View style={preset.loginBox}>
             <Image
