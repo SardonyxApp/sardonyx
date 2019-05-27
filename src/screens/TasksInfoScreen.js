@@ -28,6 +28,10 @@ export default class TasksInfoScreen extends React.Component {
       <ScrollView contentContainerStyle={{ padding: 8, marginBottom: 100 }}>
         <TaskLabels 
           task={task}
+          navigation={this.props.navigation}
+          subjects={this.props.navigation.getParam('subjects')}
+          categories={this.props.navigation.getParam('categories')}
+          onUpdateTask={this.props.navigation.state.params.onUpdateTask}
         />
         <TaskDescription
           id={task.id}

@@ -438,6 +438,8 @@ export default class TasksScreen extends React.Component {
         />
         <TasksContainer
           tasks={this.state.tasks}
+          subjects={this.state.subjects}
+          categories={this.state.categories}
           subjectsFilter={this.state.subjectsFilter}
           categoriesFilter={this.state.categoriesFilter}
           navigation={this.props.navigation}

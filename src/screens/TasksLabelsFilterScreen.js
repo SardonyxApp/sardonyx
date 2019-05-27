@@ -1,8 +1,6 @@
 import React from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
-import Label from '../components//TasksSelectableLabel';
-
-import { fonts } from '../styles';
+import { ScrollView } from 'react-native';
+import Label from '../components/TasksSelectableLabel';
 
 export default class TasksLabelsFilterScreen extends React.Component {
   constructor(props) {
