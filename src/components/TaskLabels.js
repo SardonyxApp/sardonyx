@@ -46,7 +46,7 @@ export default class TaskLabels extends React.Component {
 
       this.props.onUpdateTask(obj);
     } else {
-      const label = this.props.categories.filter(c => c.id === obj.category_id)[0];
+      const label = this.props.categories.filter(c => c.id === id)[0];
       const obj = {
         id: this.props.task.id,
         category_id: id,
