@@ -62,7 +62,7 @@ export default class MessageListView extends React.Component {
           <View style={messageListStyles.titleFlex}>
             <Text style={messageListStyles.title}>{decodeURI(item.title)}</Text>
             <View style={messageListStyles.comments}>
-              <TouchableRipple
+              <TouchableRipple style={messageListStyles.commentsTouchable}
                 onPress={() => this._navigateToMessageThreadScreen(item)}
                 rippleColor="rgba(0, 0, 0, .16)"
               >
@@ -154,10 +154,14 @@ const messageListStyles = StyleSheet.create({
   comments: {
     width: 48,
     justifyContent: 'center',
-    borderRadius: 4,
+    borderRadius: 6,
     overflow: 'hidden'
   },
+  commentsTouchable: {
+    flex: 1
+  },
   commentsWrapper: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
