@@ -98,13 +98,14 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
       .then(response => {
         if (!this._isMounted) return;
         if (response.status === 200) {
+          const parsedManagebacResponse = JSON.parse(
+            response.headers.map['managebac-data']
+          );
           this.setState({
             refreshing: false,
-            reflectionsData: JSON.parse(response.headers.map['managebac-data'])
-              .reflections,
+            reflectionsData: parsedManagebacResponse.reflections,
             numberOfLines: Array(
-              JSON.parse(response.headers.map['managebac-data']).reflections
-                .length
+              parsedManagebacResponse.reflections.length
             ).fill(10)
           });
           return;
