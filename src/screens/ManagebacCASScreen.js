@@ -6,7 +6,8 @@ import {
   Text,
   StyleSheet,
   RefreshControl,
-  Alert
+  Alert,
+  InteractionManager
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -36,7 +37,7 @@ export default class ManagebacCASScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this._onRefresh();
+    InteractionManager.runAfterInteractions(this._onRefresh);
   }
 
   componentWillUnmount() {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ScrollView, RefreshControl, Alert } from 'react-native';
+import { ScrollView, RefreshControl, Alert, InteractionManager } from 'react-native';
 
 import { BASE_URL } from '../../env';
 
@@ -24,7 +24,7 @@ export default class ManagebacGroupScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this._onRefresh();
+    InteractionManager.runAfterInteractions(this._onRefresh);
   }
 
   componentWillUnmount() {
