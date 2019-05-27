@@ -40,7 +40,7 @@ export default class LogoutScreen extends React.Component {
 
   render() {
     return (
-      <View style={[styles.fullScreen, styles.alignChildrenCenter]}>
+      <View style={[styles.alignChildrenCenter, { flex: 1 }]}>
         <Text style={[styles.p, styles.alignCenter]}>{this.state.errorMessage}</Text>
         <Button 
           title='Go to Login'

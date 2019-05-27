@@ -105,7 +105,7 @@ export default class LoginCheckScreen extends React.Component {
 
   render() {
     return (
-      <View style={[styles.alignChildrenCenter, styles.fullScreen]}>
+      <View style={[styles.alignChildrenCenter, { flex: 1 }]}>
         <Lottie
           style={{
             width: 100,

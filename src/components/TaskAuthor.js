@@ -10,7 +10,7 @@ export default TaskAuthor = props => (
       flexDirection: 'row',
       alignItems: 'center',
       paddingVertical: 8,
-      display: props.author ? '' : 'none'
+      display: props.author ? 'flex' : 'none'
     }}
   >
     <Icon 
@@ -25,7 +25,7 @@ export default TaskAuthor = props => (
         paddingHorizontal: 8,
       }}
     >
-      {props.author}
+      Added by {props.author}
     </Text>
   </View>
 );

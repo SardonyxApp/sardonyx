@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View, Text } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import TaskTitle from '../components/TaskTitle';
 import TaskLabels from '../components/TaskLabels';
@@ -16,7 +16,6 @@ export default class TasksInfoScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const id = navigation.getParam('currentTask');
     return {
-      // title: navigation.getParam('tasks').filter(t => t.id === navigation.getParam('currentTask'))[0].name
       headerTitle: <TaskTitle id={id} title={navigation.getParam('tasks').filter(t => t.id === id)[0].name} onUpdateTask={navigation.state.params.onUpdateTask} />
     };
   };
@@ -26,7 +25,7 @@ export default class TasksInfoScreen extends React.Component {
     const task = tasks.filter(t => t.id === this.props.navigation.getParam('currentTask'))[0];
 
     return (
-      <ScrollView contentContainerStyle={{ padding: 8 }}>
+      <ScrollView contentContainerStyle={{ padding: 8, marginBottom: 100 }}>
         <TaskLabels 
           task={task}
         />
