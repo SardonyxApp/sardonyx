@@ -444,6 +444,7 @@ export default class TasksScreen extends React.Component {
           categoriesFilter={this.state.categoriesFilter}
           navigation={this.props.navigation}
           onUpdateTask={this._handleUpdateTask}
+          onDeleteTask={this._handleDeleteTask}
         />
       </ScrollView>
     );

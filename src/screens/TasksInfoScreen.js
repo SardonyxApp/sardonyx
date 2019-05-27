@@ -47,7 +47,8 @@ export default class TasksInfoScreen extends React.Component {
           author={task.student_name || task.teacher_name}
         />
         <TaskDelete 
-          task={task}
+          id={task.id}
+          navigation={this.props.navigation}
           onDeleteTask={this.props.navigation.state.params.onDeleteTask}
         />
       </ScrollView>
