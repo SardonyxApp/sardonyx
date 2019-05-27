@@ -1,11 +1,13 @@
 import React from 'react';
 
 import {
-  KeyboardAvoidingView,
   View,
+  ScrollView,
   TextInput,
   StyleSheet,
-  Alert
+  Alert,
+  KeyboardAvoidingView,
+  Dimensions
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -21,11 +23,14 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
     this.state = {
       reflectionValue: '',
       editable: false,
-      sending: false
+      sending: false,
+      textInputHeight: 0,
+      textInputOffset: 0
     };
     this._onWillBlur = this._onWillBlur.bind(this);
     this._discardDraft = this._discardDraft.bind(this);
     this._saveDraft = this._saveDraft.bind(this);
+    this._onLayout = this._onLayout.bind(this);
     this._sendReflection = this._sendReflection.bind(this);
   }
 
@@ -50,6 +55,37 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
       )
     };
   };
+
+  componentDidMount() {
+    // Register the sendReflection method so it can be called from static navigationOptions
+    this.props.navigation.setParams({ sendReflection: this._sendReflection });
+
+    // Retrieve the draft is any exists, and set the value.
+    Storage.retrieveValue('reflectionDrafts')
+      .then(drafts => {
+        if (!drafts) return;
+        drafts = JSON.parse(drafts);
+        if (this.props.navigation.getParam('id', null) in drafts) {
+          this.setState({
+            reflectionValue:
+              drafts[this.props.navigation.getParam('id', null)].value
+          });
+        }
+      })
+      .catch(err => {
+        console.warn(err);
+      });
+
+    // Register the willBlur event so we can save the draft upon closing
+    this.props.navigation.addListener('willBlur', this._onWillBlur);
+
+    // Set the textinput as editable (https://github.com/facebook/react-native/issues/20887)
+    setTimeout(() => {
+      this.setState({
+        editable: true
+      });
+    }, 100);
+  }
 
   /**
    * Remove the key/value pair for this CAS id draft in Storage (if it exists).
@@ -116,35 +152,17 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
     }
   }
 
-  componentDidMount() {
-    // Register the sendReflection method so it can be called from static navigationOptions
-    this.props.navigation.setParams({ sendReflection: this._sendReflection });
-
-    // Retrieve the draft is any exists, and set the value.
-    Storage.retrieveValue('reflectionDrafts')
-      .then(drafts => {
-        if (!drafts) return;
-        drafts = JSON.parse(drafts);
-        if (this.props.navigation.getParam('id', null) in drafts) {
-          this.setState({
-            reflectionValue:
-              drafts[this.props.navigation.getParam('id', null)].value
-          });
-        }
-      })
-      .catch(err => {
-        console.warn(err);
-      });
-
-    // Register the willBlur event so we can save the draft upon closing
-    this.props.navigation.addListener('willBlur', this._onWillBlur);
-
-    // Set the textinput as editable (https://github.com/facebook/react-native/issues/20887)
-    setTimeout(() => {
-      this.setState({
-        editable: true
-      });
-    }, 100);
+  /**
+   * Calculate the offset for the keyboard for the TextInput
+   * @param {{{{ Integer }}}} height
+   */
+  _onLayout({
+    nativeEvent: {
+      layout: { height }
+    }
+  }) {
+    const textInputOffset = Dimensions.get('window').height - height;
+    this.setState({ textInputOffset });
   }
 
   /**
@@ -160,7 +178,9 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
         Storage.retrieveCredentials()
           .then(credentials => {
             fetch(
-              `${BASE_URL}/api/cas/${this.props.navigation.state.params.id}/reflections`,
+              `${BASE_URL}/api/cas/${
+                this.props.navigation.state.params.id
+              }/reflections`,
               {
                 method: 'POST',
                 headers: {
@@ -175,7 +195,7 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
               .then(response => {
                 // Remove the drafts if any exist
                 this._discardDraft();
-                if(this.props.navigation.getParam('onGoBack', null) !== null) {
+                if (this.props.navigation.getParam('onGoBack', null) !== null) {
                   this.props.navigation.state.params.onGoBack();
                 }
                 this.props.navigation.goBack();
@@ -193,35 +213,45 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding">
-        <TextInput
-          style={addReflectionStyles.textinput}
-          value={this.state.reflectionValue}
-          returnKeyType="next"
-          autoCapitalize="sentences"
-          onChangeText={text =>
-            this.setState({
-              reflectionValue: text
-            })
-          }
-          editable={this.state.editable}
-          blurOnSubmit={false}
-          multiline={true}
-          autoFocus={true}
-          textAlignVertical="top"
-          selectionColor={colors.black}
-          underlineColorAndroid={'rgba(0,0,0,0)'}
-        />
-      </KeyboardAvoidingView>
+      <View style={addReflectionStyles.flex1} onLayout={this._onLayout}>
+        <KeyboardAvoidingView
+          style={addReflectionStyles.flex1}
+          behavior={'padding'}
+          keyboardVerticalOffset={this.state.textInputOffset}
+        >
+          <ScrollView keyboardDismissMode={'interactive'}>
+            <TextInput
+              style={addReflectionStyles.textinput}
+              value={this.state.reflectionValue}
+              onChangeText={reflectionValue =>
+                this.setState({ reflectionValue })
+              }
+              editable={this.state.editable}
+              multiline={true}
+              blurOnSubmit={false}
+              autoFocus={true}
+              textAlignVertical={'top'}
+              selectionColor={colors.darkBlue}
+              underlineColorAndroid={'rgba(0,0,0,0)'}
+              placeholder={'Start typing here... :)'}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
     );
   }
 }
 
 const addReflectionStyles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+    backgroundColor: colors.lightPrimary2
+  },
   textinput: {
+    flex: 1,
     marginTop: 16,
     paddingVertical: 16,
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
     fontSize: 16,
     backgroundColor: colors.lightPrimary2
   }
