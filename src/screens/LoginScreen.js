@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   TextInput,
-  KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard
 } from 'react-native';
@@ -17,11 +16,13 @@ import { BASE_URL } from '../../env';
 import { Storage } from '../helpers';
 import { styles, colors, preset, fonts } from '../styles';
 
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+
 export default class Login extends React.Component {
   render() {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView
+        <View
           style={[styles.alignChildrenCenter, { flex: 1 }]}
         >
           <View style={preset.loginBox}>
@@ -41,7 +42,8 @@ export default class Login extends React.Component {
             />
           </View>
           <DisclaimerMessage />
-        </KeyboardAvoidingView>
+          <KeyboardSpacer topSpacing={-150} />
+        </View>
       </TouchableWithoutFeedback>
     );
   }
