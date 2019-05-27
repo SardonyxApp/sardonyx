@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { View } from 'react-native';
+import { View, InteractionManager } from 'react-native';
 
 import { BASE_URL } from '../../env';
 
@@ -19,7 +19,9 @@ export default class ManagebacMessageThreadScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this._onRefresh();
+    InteractionManager.runAfterInteractions(() => {
+      this._onRefresh();
+    });
   }
 
   componentWillUnmount() {

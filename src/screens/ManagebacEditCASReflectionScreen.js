@@ -1,10 +1,13 @@
 import React from 'react';
 
 import {
-  KeyboardAvoidingView,
+  View,
+  ScrollView,
   TextInput,
   StyleSheet,
-  Alert
+  KeyboardAvoidingView,
+  Dimensions,
+  InteractionManager
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -21,8 +24,10 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
     this.state = {
       reflectionValue: '',
       editable: false,
-      sending: false
+      sending: false,
+      textInputOffset: 0
     };
+    this._onLayout = this._onLayout.bind(this);
     this._updateReflection = this._updateReflection.bind(this);
   }
 
@@ -54,21 +59,37 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
       updateReflection: this._updateReflection
     });
 
-    const currentValueHTML = this.props.navigation.getParam(
-      'currentValueHTML',
-      ''
-    );
-    const turndownService = new TurndownService();
-    this.setState({
-      reflectionValue: turndownService.turndown(currentValueHTML)
-    });
+    InteractionManager.runAfterInteractions(() => {
 
-    // Set the textinput as editable (https://github.com/facebook/react-native/issues/20887)
-    setTimeout(() => {
+      const currentValueHTML = this.props.navigation.getParam(
+        'currentValueHTML',
+        ''
+      );
+      const turndownService = new TurndownService();
       this.setState({
-        editable: true
+        reflectionValue: turndownService.turndown(currentValueHTML)
       });
-    }, 100);
+
+      // Set the textinput as editable (https://github.com/facebook/react-native/issues/20887)
+      setTimeout(() => {
+        this.setState({
+          editable: true
+        });
+      }, 100);
+    });
+  }
+
+  /**
+   * Calculate the offset for the keyboard for the TextInput
+   * @param {{{{ Integer }}}} height
+   */
+  _onLayout({
+    nativeEvent: {
+      layout: { height }
+    }
+  }) {
+    const textInputOffset = Dimensions.get('window').height - height;
+    this.setState({ textInputOffset });
   }
 
   /**
@@ -118,35 +139,45 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding">
-        <TextInput
-          style={updateReflectionStyles.textinput}
-          value={this.state.reflectionValue}
-          returnKeyType="next"
-          autoCapitalize="sentences"
-          onChangeText={text =>
-            this.setState({
-              reflectionValue: text
-            })
-          }
-          editable={this.state.editable}
-          blurOnSubmit={false}
-          multiline={true}
-          autoFocus={true}
-          textAlignVertical="top"
-          selectionColor={colors.black}
-          underlineColorAndroid={'rgba(0,0,0,0)'}
-        />
-      </KeyboardAvoidingView>
+      <View style={updateReflectionStyles.flex1} onLayout={this._onLayout}>
+        <KeyboardAvoidingView
+          style={updateReflectionStyles.flex1}
+          behavior={'padding'}
+          keyboardVerticalOffset={this.state.textInputOffset}
+        >
+          <ScrollView keyboardDismissMode={'interactive'}>
+            <TextInput
+              style={updateReflectionStyles.textinput}
+              value={this.state.reflectionValue}
+              onChangeText={reflectionValue =>
+                this.setState({ reflectionValue })
+              }
+              editable={this.state.editable}
+              multiline={true}
+              blurOnSubmit={false}
+              autoFocus={true}
+              textAlignVertical={'top'}
+              selectionColor={colors.darkBlue}
+              underlineColorAndroid={'rgba(0,0,0,0)'}
+              placeholder={'Start typing here... :)'}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
     );
   }
 }
 
 const updateReflectionStyles = StyleSheet.create({
+  flex1: {
+    flex: 1,
+    backgroundColor: colors.lightPrimary2
+  },
   textinput: {
+    flex: 1,
     marginTop: 16,
     paddingVertical: 16,
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
     fontSize: 16,
     backgroundColor: colors.lightPrimary2
   }

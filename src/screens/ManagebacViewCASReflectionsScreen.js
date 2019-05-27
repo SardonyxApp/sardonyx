@@ -10,7 +10,8 @@ import {
   FlatList,
   RefreshControl,
   Alert,
-  Vibration
+  Vibration,
+  InteractionManager
 } from 'react-native';
 
 import { Haptic } from 'expo';
@@ -49,10 +50,10 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this._onRefresh();
     this.props.navigation.setParams({
       refreshPage: this._onRefresh
     });
+    InteractionManager.runAfterInteractions(this._onRefresh);
   }
 
   componentWillUnmount() {
@@ -263,7 +264,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
 
   /**
    * Navigates to EditCASReflection with current value, and refreshes on Back action.
-   * @param {Integer} id 
+   * @param {Integer} id
    */
   _editItem(id) {
     this.props.navigation.navigate('EditCASReflection', {

@@ -4,7 +4,7 @@ import {
   ScrollView,
   RefreshControl,
   Alert,
-  View,
+  InteractionManager,
   Dimensions
 } from 'react-native';
 
@@ -38,7 +38,7 @@ export default class ManagebacClassScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this._onRefresh();
+    InteractionManager.runAfterInteractions(this._onRefresh);
   }
 
   componentWillUnmount() {

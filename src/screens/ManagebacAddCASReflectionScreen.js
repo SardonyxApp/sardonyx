@@ -25,7 +25,6 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
       reflectionValue: '',
       editable: false,
       sending: false,
-      textInputHeight: 0,
       textInputOffset: 0
     };
     this._onWillBlur = this._onWillBlur.bind(this);
