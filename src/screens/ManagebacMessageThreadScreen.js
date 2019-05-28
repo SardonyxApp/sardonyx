@@ -87,7 +87,6 @@ export default class ManagebacMessageThreadScreen extends React.Component {
 
     Promise.all(promises)
       .then(responses => {
-        console.log(this._isMounted);
         if (!this._isMounted) return;
         responses.forEach(response => {
           if (response.status === 200) {
@@ -292,12 +291,12 @@ const messageThreadStyles = StyleSheet.create({
   imageContainer: {
     justifyContent: 'center',
     width: 36,
-    borderRadius: 12,
     marginRight: 8
   },
   image: {
     height: 36,
-    width: 36
+    width: 36,
+    borderRadius: 18
   },
   messageTextInfo: {
     flex: 1

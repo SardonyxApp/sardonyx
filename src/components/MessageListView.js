@@ -133,7 +133,8 @@ const messageListStyles = StyleSheet.create({
   image: {
     padding: 6,
     width: 36,
-    height: 36
+    height: 36,
+    borderRadius: 18
   },
   text: {
     flex: 1
