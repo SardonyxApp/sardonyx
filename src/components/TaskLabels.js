@@ -32,35 +32,25 @@ export default class TaskLabels extends React.Component {
     if (type === 'subject_id') {
       const label = this.props.subjects.filter(s => s.id === id)[0];
       const obj = {
-        id: this.props.task.id,
         subject_id: id,
         subject_name: label ? label.name : null,
         subject_color: label ? label.color : null
       };
 
-      this.setState({
-        subject_id: obj.id,
-        subject_name: obj.subject_name,
-        subject_color: obj.subject_color
-      });
+      this.setState(obj);
 
-      this.props.onUpdateTask(obj);
+      this.props.onUpdateTask({ id: this.props.task.id, ...obj });
     } else {
       const label = this.props.categories.filter(c => c.id === id)[0];
       const obj = {
-        id: this.props.task.id,
         category_id: id,
         category_name: label ? label.name : null,
         category_color: label ? label.color : null
       };
 
-      this.setState({
-        category_id: obj.id,
-        category_name: obj.subject_name,
-        category_color: obj.subject_color
-      });
+      this.setState(obj);
       
-      this.props.onUpdateTask(obj);
+      this.props.onUpdateTask({ id: this.props.task.id, ...obj });
     }
   }
 
@@ -73,7 +63,7 @@ export default class TaskLabels extends React.Component {
             name: this.state.subject_name, 
             color: this.state.subject_color
           }}
-          key={this.state.subject_id}
+          key="subject"
           style={labelsStyles.label}
           onUpdate={() => this.props.navigation.navigate('LabelsSelector', { ...this.props, onChange: this._handleChange })}
           updatable={true}
@@ -88,7 +78,7 @@ export default class TaskLabels extends React.Component {
             name: this.state.category_name,
             color: this.state.category_color
           }}
-          key={this.state.category_id}
+          key="category"
           style={labelsStyles.label}
           onUpdate={() => this.props.navigation.navigate('LabelsSelector', { ...this.props, onChange: this._handleChange })}
           updatable={true}
@@ -106,7 +96,7 @@ export default class TaskLabels extends React.Component {
           type="material"
           iconStyle={styles.icon}
         />
-        {!!labels.length 
+        {this.state.subject_id || this.state.category_id 
           ? <View style={labelsStyles.labelsWrapper}>{labels}</View>
           : <Text 
             onPress={() => this.props.navigation.navigate('LabelsSelector', { ...this.props, onChange: this._handleChange })}
