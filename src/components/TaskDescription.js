@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 import { styles, fonts } from '../styles';
@@ -12,12 +12,19 @@ export default class TaskDescription extends React.Component {
       description: null
     };
 
+    this._handleFocus = this._handleFocus.bind(this);
     this._handleSubmit = this._handleSubmit.bind(this);
   }
 
   componentDidMount() {
     this.setState({
       description: this.props.description
+    });
+  }
+
+  _handleFocus() {
+    this.setState({
+      focused: true
     });
   }
 
@@ -40,15 +47,25 @@ export default class TaskDescription extends React.Component {
           type="material"
           iconStyles={styles.icon}
         />
-        <TextInput
-          style={[descriptionStyles.text, { borderBottomWidth: this.state.focused ? 2 : 0, borderBottomColor: '#2977b6' }]}
-          multiline={true}
-          onFocus={() => this.setState({ focused: true })}
-          onBlur={this._handleSubmit}
-          onChangeText={text => this.setState({ description: text })}
-          maxLength={65535}
-          value={this.state.description}
-        />
+        {!this.state.focused 
+          ? <TouchableWithoutFeedback onPress={this._handleFocus} style={{ flex: 1 }}>
+              <Text style={descriptionStyles.text}>
+                {this.state.description}
+              </Text>
+            </TouchableWithoutFeedback>
+          : <View pointerEvents="none" style={{ flex: 1 }}>
+              <TextInput
+                style={[descriptionStyles.text, { borderBottomWidth: 2, borderBottomColor: '#2977b6' }]}
+                multiline={true}
+                autoFocus={true}
+                scrollEnabled={false}
+                onBlur={this._handleSubmit}
+                onChangeText={text => this.setState({ description: text })}
+                maxLength={65535}
+                value={this.state.description}
+              />
+            </View>
+        }
       </View>
     );
   }
