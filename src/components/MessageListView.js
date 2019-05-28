@@ -32,7 +32,7 @@ export default class MessageListView extends React.Component {
     this.props.navigation.navigate('MessageThread', {
       ...item,
       title: decodeURI(item.title)
-    })
+    });
   }
 
   /**
@@ -62,12 +62,15 @@ export default class MessageListView extends React.Component {
           <View style={messageListStyles.titleFlex}>
             <Text style={messageListStyles.title}>{decodeURI(item.title)}</Text>
             <View style={messageListStyles.comments}>
-              <TouchableRipple style={messageListStyles.commentsTouchable}
+              <TouchableRipple
+                style={messageListStyles.commentsTouchable}
                 onPress={() => this._navigateToMessageThreadScreen(item)}
                 rippleColor="rgba(0, 0, 0, .16)"
               >
                 <View style={messageListStyles.commentsWrapper}>
-                  <Text style={messageListStyles.commentCount}>1</Text>
+                  <Text style={messageListStyles.commentCount}>
+                    {item.comments}
+                  </Text>
                   <Icon
                     size={18}
                     name="chat-bubble"
