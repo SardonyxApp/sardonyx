@@ -37,8 +37,9 @@ export default class SettingsScreen extends React.Component {
         <Button
           title="Log out"
           onPress={this.handleLogout}
-          backgroundColor={colors.primary}
-          containerViewStyle={styles.padding10}
+          buttonStyle={{ backgroundColor: colors.primary }}
+          containerStyle={styles.padding10}
+          titleStyle={fonts.jost400}
         />
       </View>
     );

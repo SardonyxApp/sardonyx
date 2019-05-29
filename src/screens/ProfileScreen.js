@@ -26,10 +26,13 @@ export default class ProfileScreen extends React.Component {
         ...fonts.jost400
       },
       headerRight: (
-      <HeaderIcon onPress={() => {navigation.navigate('Settings')}}><Icon
-        name="settings"
-        color={colors.primary}
-        /></HeaderIcon>)
+        <HeaderIcon onPress={() => {navigation.navigate('Settings')}}>
+          <Icon
+            name="settings"
+            color={colors.primary}
+          />
+        </HeaderIcon>
+      )
     }
   }
 

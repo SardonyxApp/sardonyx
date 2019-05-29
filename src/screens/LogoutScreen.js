@@ -1,16 +1,11 @@
 import React from 'react';
 
-import {
-  View,
-  Text,
-} from 'react-native';
+import { View, Text } from 'react-native';
 
-import {
-  Button
-} from 'react-native-elements';
+import { Button } from 'react-native-elements';
 
 import { Storage } from '../helpers';
-import { styles, colors } from '../styles';
+import { styles, colors, fonts } from '../styles';
 
 export default class LogoutScreen extends React.Component {
   constructor(props) {
@@ -43,9 +38,11 @@ export default class LogoutScreen extends React.Component {
       <View style={[styles.alignChildrenCenter, { flex: 1 }]}>
         <Text style={[styles.p, styles.alignCenter]}>{this.state.errorMessage}</Text>
         <Button 
-          title='Go to Login'
-          backgroundColor={colors.primary}
-          containerViewStyle={styles.padding10}
+          title="Go to Login"
+          type="solid"
+          buttonStyle={{ backgroundColor: colors.primary }}
+          containerStyle={styles.padding10}
+          titleStyle={fonts.jost400}
           onPress={this.handlePress}
         />
       </View>
