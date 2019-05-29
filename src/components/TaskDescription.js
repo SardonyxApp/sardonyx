@@ -9,6 +9,7 @@ export default class TaskDescription extends React.Component {
     super(props);
     this.state = {
       focused: false,
+      height: 0,
       description: null
     };
 
@@ -53,7 +54,7 @@ export default class TaskDescription extends React.Component {
                 {this.state.description}
               </Text>
             </TouchableWithoutFeedback>
-          : <View pointerEvents="none" style={{ flex: 1 }}>
+          : <View style={{ flex: 1, flexDirection: 'row' }}>
               <TextInput
                 style={[descriptionStyles.text, { borderBottomWidth: 2, borderBottomColor: '#2977b6' }]}
                 multiline={true}
@@ -61,6 +62,8 @@ export default class TaskDescription extends React.Component {
                 scrollEnabled={false}
                 onBlur={this._handleSubmit}
                 onChangeText={text => this.setState({ description: text })}
+                onContentSizeChange={event => this.setState({ height: event.nativeEvent.contentSize.height })}
+                height={this.state.height}
                 maxLength={65535}
                 value={this.state.description}
               />
