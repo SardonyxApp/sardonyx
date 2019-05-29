@@ -1,11 +1,12 @@
 import React from 'react';
-
 import { ScrollView } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 // import io from 'socket.io-client';
 import { Storage } from '../helpers';
 import { BASE_URL } from '../../env';
 
+import HeaderIcon from '../components/HeaderIcon';
 import TasksFilter from '../components/TasksFilter';
 import TasksContainer from '../components/TasksContainer';
 
@@ -32,7 +33,7 @@ export default class TasksScreen extends React.Component {
         name: '',
         description: ''
       },
-      tasklists: [], // Store information about other tasklists (teachers only)
+      // tasklists: [], // Store information about other tasklists (teachers only)
       tasks: [],
       subjects: [],
       categories: [],
@@ -40,7 +41,9 @@ export default class TasksScreen extends React.Component {
       categoriesFilter: []
     };
 
-    this._handleSelectTasklist = this._handleSelectTasklist.bind(this);
+    // this._handleSelectTasklist = this._handleSelectTasklist.bind(this);
+    // this feature is for teachers and administrators only 
+
     this._handleFilter = this._handleFilter.bind(this);
     this._handleCreateTask = this._handleCreateTask.bind(this);
     this._handleUpdateTask = this._handleUpdateTask.bind(this);
@@ -54,7 +57,16 @@ export default class TasksScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Tasks'
+      title: 'Tasks',
+      headerRight: (
+        <HeaderIcon>
+          <Icon 
+            name="playlist-add" 
+            type="material" 
+            color="white" 
+          />
+        </HeaderIcon>
+      )
     };
   }
 
