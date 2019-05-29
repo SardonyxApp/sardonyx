@@ -64,6 +64,7 @@ export default class TasksScreen extends React.Component {
             name="playlist-add" 
             type="material" 
             color="white" 
+            onPress={() => navigation.navigate('TasksCreate')}
           />
         </HeaderIcon>
       )

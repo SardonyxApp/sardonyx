@@ -8,6 +8,7 @@ import { Icon } from 'react-native-elements';
 
 import TasksScreen from './screens/TasksScreen';
 import TasksInfoScreen from './screens/TasksInfoScreen';
+import TasksCreateScreen from './screens/TasksCreateScreen';
 import TasksLabelsFilterScreen from './screens/TasksLabelsFilterScreen'
 import TaskLabelsSelectorScreen from './screens/TaskLabelsSelectorScreen';
 
@@ -18,6 +19,7 @@ const TasksStack = createStackNavigator(
   {
     Tasks: TasksScreen,
     TaskInfo: TasksInfoScreen,
+    TasksCreate: TasksCreateScreen,
     LabelsFilter: TasksLabelsFilterScreen,
     LabelsSelector: TaskLabelsSelectorScreen
   },
