@@ -247,9 +247,11 @@ class LoginForm extends React.Component {
 
         <Button
           title="Sign in"
-          backgroundColor={colors.primary}
+          type="solid"
           onPress={this.handleSubmit}
-          containerViewStyle={styles.padding10}
+          buttonStyle={{ backgroundColor: colors.primary }}
+          containerStyle={styles.padding10}
+          titleStyle={fonts.jost400}
           disabled={this.state.disabled}
           disabledStyle={{ backgroundColor: colors.lightPrimary }}
         />
