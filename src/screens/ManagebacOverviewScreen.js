@@ -1,10 +1,12 @@
 import React from 'react';
 
-import { ScrollView, RefreshControl, StyleSheet, View } from 'react-native';
+import { ScrollView, RefreshControl, StyleSheet } from 'react-native';
 
+import { Icon } from 'react-native-elements';
 import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
+import HeaderIcon from '../components/HeaderIcon';
 import GreetingsCard from '../components/GreetingsCard';
 import OverviewHeading from '../components/OverviewHeading';
 import UpcomingCarousel from '../components/UpcomingCarousel';
@@ -28,7 +30,23 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
 
   static navigationOptions({ navigation }) {
     return {
-      title: 'ManageBac'
+      title: 'ManageBac',
+      headerRight: (
+        <HeaderIcon
+          onPress={() => {
+            navigation.navigate('Alerts');
+          }}
+        >
+          <Icon
+            name={
+              navigation.state.params && navigation.state.params.notificationCount
+                ? 'notifications-active'
+                : 'notifications-none'
+            }
+            color={colors.white}
+          />
+        </HeaderIcon>
+      )
     };
   }
 
@@ -40,6 +58,9 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
         classList: data.classes,
         groupList: data.groups,
         userInfo: data.user
+      });
+      this.props.navigation.setParams({
+        notificationCount: data.notificationCount
       });
     });
   }

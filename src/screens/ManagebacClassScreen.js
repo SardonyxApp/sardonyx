@@ -75,7 +75,6 @@ export default class ManagebacClassScreen extends React.Component {
   /**
    * After performing several checks, load the next page of messages.
    */
-
   _fetchNextMessages() {
     if (!this._isMounted) return;
     // Don't call fetch if it's already fetching something
