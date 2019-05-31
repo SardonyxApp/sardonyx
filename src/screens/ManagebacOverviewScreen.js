@@ -34,12 +34,15 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
       headerRight: (
         <HeaderIcon
           onPress={() => {
-            navigation.navigate('Alerts');
+            navigation.navigate('Alerts', {
+              refreshPage: navigation.state.params.refreshPage
+            });
           }}
         >
           <Icon
             name={
-              navigation.state.params && navigation.state.params.notificationCount
+              navigation.state.params &&
+              navigation.state.params.notificationCount
                 ? 'notifications-active'
                 : 'notifications-none'
             }
@@ -60,6 +63,7 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
         userInfo: data.user
       });
       this.props.navigation.setParams({
+        refreshPage: this._onRefresh,
         notificationCount: data.notificationCount
       });
     });
@@ -98,6 +102,9 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
                       classList: data.classes,
                       groupList: data.groups,
                       userInfo: data.user
+                    });
+                    this.props.navigation.setParams({
+                      notificationCount: data.notificationCount
                     });
                   })
                   .catch(err => {

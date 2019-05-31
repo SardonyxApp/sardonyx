@@ -153,6 +153,9 @@ export default class ManagebacAlertsScreen extends React.Component {
       ...pressedItem,
       title: decodeURI(pressedItem.title)
     });
+    if (this.props.navigation.getParam('refreshPage', null) !== null) {
+      this.props.navigation.state.params.refreshPage();
+    }
   }
 
   _renderRow({ item }) {
