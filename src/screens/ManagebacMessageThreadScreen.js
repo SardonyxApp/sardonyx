@@ -7,7 +7,8 @@ import {
   Image,
   RefreshControl,
   StyleSheet,
-  InteractionManager
+  InteractionManager,
+  TextInput
 } from 'react-native';
 
 import HTMLView from 'react-native-htmlview';
@@ -15,6 +16,8 @@ import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
 import { colors } from '../styles';
+import { Icon } from 'react-native-elements';
+import { TouchableRipple } from 'react-native-paper';
 
 export default class ManagebacMessageThreadScreen extends React.Component {
   isMounted = false;
@@ -23,10 +26,15 @@ export default class ManagebacMessageThreadScreen extends React.Component {
     super(props);
     this.state = {
       refreshing: true,
+      textInputShownId: null,
+      newCommentContent: '',
       messageData: {}
     };
     this._onRefresh = this._onRefresh.bind(this);
     this._fetchMessageThreadData = this._fetchMessageThreadData.bind(this);
+    this._toggleTextInputVisibility = this._toggleTextInputVisibility.bind(
+      this
+    );
   }
 
   componentDidMount() {
@@ -66,7 +74,7 @@ export default class ManagebacMessageThreadScreen extends React.Component {
 
   /**
    * Sends multiple GET requests to the API for each comment that has subcomments, and updates the state
-   * @param {String} credentials 
+   * @param {String} credentials
    */
   _fetchMessageSubCommentsData(credentials) {
     let url = this.props.navigation.getParam('link', '/404');
@@ -102,11 +110,9 @@ export default class ManagebacMessageThreadScreen extends React.Component {
                 item.comments = parsedManagebacResponse.replyOfReply;
               }
             });
-            this.setState(
-              {
-                messageData: stateMessageData
-              }
-            );
+            this.setState({
+              messageData: stateMessageData
+            });
           }
         });
       })
@@ -153,9 +159,58 @@ export default class ManagebacMessageThreadScreen extends React.Component {
   }
 
   /**
+   * Send a reply to the comment with the given id
+   * @param {Integer} level
+   * @param {Integer} id
+   */
+  _sendNewComment(level, id) {
+    let url = this.props.navigation.getParam('link', '/404');
+    if (level === 1) url += '/reply';
+    if (level === 2) url += '/reply/' + id;
+    console.log(url);
+    Storage.retrieveCredentials()
+      .then(credentials => {
+        fetch(BASE_URL + url, {
+          method: 'POST',
+          headers: {
+            'Login-Token': credentials,
+            'Message-Data': JSON.stringify({
+              body: this.state.newCommentContent,
+              notifyViaEmail: 0,
+              privateMessage: 0
+            })
+          },
+          mode: 'no-cors'
+        })
+          .then(response => {
+            console.log(response);
+            if (!this._isMounted) return;
+            this._onRefresh();
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      })
+      .catch(err => {
+        console.warn(err);
+      });
+  }
+
+  /**
+   * Sets the state textInputShownId to the given id, toggles off if already set
+   * @param {Integer} id
+   */
+  _toggleTextInputVisibility(id) {
+    if (!('id' in this.state.messageData)) return;
+    this.setState({
+      textInputShownId: this.state.textInputShownId === id ? null : id
+    });
+  }
+
+  /**
    * Renders a comment or subcomment. The level is directly sent to the styling as "level" + level
-   * @param {Object} comment 
-   * @param {Integer} level 
+   * @param {Object} comment
+   * @param {Integer} level
    */
   _renderComment(comment, level = 2) {
     return (
@@ -178,11 +233,52 @@ export default class ManagebacMessageThreadScreen extends React.Component {
               <Text style={messageThreadStyles.author}>{comment.author}</Text>
               <Text>{comment.date}</Text>
             </View>
+            {level !== 3 ? (
+              <View style={messageThreadStyles.replyButtonContainer}>
+                <TouchableRipple
+                  onPress={() => {
+                    this._toggleTextInputVisibility(comment.id);
+                  }}
+                >
+                  <View style={messageThreadStyles.replyButton}>
+                    <Icon name="reply" color={colors.darkBlue} size={16} />
+                    <Text style={messageThreadStyles.replyButtonText}>
+                      Reply
+                    </Text>
+                  </View>
+                </TouchableRipple>
+              </View>
+            ) : null}
           </View>
           <HTMLView
             style={messageThreadStyles.content}
             value={`<html><body>${comment.content}</body></html>`}
           />
+          {comment.id === this.state.textInputShownId ? (
+            <View style={messageThreadStyles.replyContainer}>
+              <TextInput
+                style={messageThreadStyles.replyTextinput}
+                autoFocus={true}
+                onChangeText={newCommentContent => {
+                  this.setState({ newCommentContent });
+                }}
+              />
+              <View style={messageThreadStyles.replySendButtonContainer}>
+                <TouchableRipple
+                  onPress={() => {
+                    this._sendNewComment(level, comment.id);
+                  }}
+                >
+                  <View style={messageThreadStyles.replyButton}>
+                    <Icon name="send" color={colors.darkBlue} size={16} />
+                    <Text style={messageThreadStyles.replyButtonText}>
+                      Send
+                    </Text>
+                  </View>
+                </TouchableRipple>
+              </View>
+            </View>
+          ) : null}
         </View>
         {'comments' in comment &&
           Array.isArray(comment.comments) &&
@@ -235,6 +331,18 @@ export default class ManagebacMessageThreadScreen extends React.Component {
                   : this.props.navigation.getParam('date')}
               </Text>
             </View>
+            <View style={messageThreadStyles.replyButtonContainer}>
+              <TouchableRipple
+                onPress={() => {
+                  this._toggleTextInputVisibility(this.state.messageData.id);
+                }}
+              >
+                <View style={messageThreadStyles.replyButton}>
+                  <Icon name="reply" color={colors.darkBlue} size={16} />
+                  <Text style={messageThreadStyles.replyButtonText}>Reply</Text>
+                </View>
+              </TouchableRipple>
+            </View>
           </View>
           <HTMLView
             style={messageThreadStyles.content}
@@ -244,6 +352,31 @@ export default class ManagebacMessageThreadScreen extends React.Component {
                 : this.props.navigation.getParam('content')
             }</body></html>`}
           />
+          {this.state.messageData.id === this.state.textInputShownId ? (
+            <View style={messageThreadStyles.replyContainer}>
+              <TextInput
+                style={messageThreadStyles.replyTextinput}
+                autoFocus={true}
+                onChangeText={newCommentContent => {
+                  this.setState({ newCommentContent });
+                }}
+              />
+              <View style={messageThreadStyles.replySendButtonContainer}>
+                <TouchableRipple
+                  onPress={() => {
+                    this._sendNewComment(1, this.state.messageData.id);
+                  }}
+                >
+                  <View style={messageThreadStyles.replyButton}>
+                    <Icon name="send" color={colors.darkBlue} size={16} />
+                    <Text style={messageThreadStyles.replyButtonText}>
+                      Send
+                    </Text>
+                  </View>
+                </TouchableRipple>
+              </View>
+            </View>
+          ) : null}
         </View>
         {'comments' in this.state.messageData &&
           this.state.messageData.comments.map(item => {
@@ -260,21 +393,21 @@ const messageThreadStyles = StyleSheet.create({
     backgroundColor: colors.lightBackground
   },
   topLevel: {
-    elevation: 2,
+    elevation: 3,
     backgroundColor: colors.white,
     marginBottom: 16
   },
   level2: {
-    elevation: 1,
+    elevation: 2,
     backgroundColor: colors.white,
     marginLeft: 16,
-    marginBottom: 8
+    marginBottom: 16
   },
   level3: {
     elevation: 1,
     backgroundColor: colors.white,
     marginLeft: 32,
-    marginBottom: 8
+    marginBottom: 16
   },
   title: {
     fontSize: 18,
@@ -304,8 +437,41 @@ const messageThreadStyles = StyleSheet.create({
   author: {
     fontWeight: 'bold'
   },
+  replyButtonContainer: {
+    backgroundColor: colors.white,
+    elevation: 4,
+    borderRadius: 15,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  replyButton: {
+    flex: 1,
+    paddingHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  replyButtonText: {
+    color: colors.darkBlue,
+    fontSize: 14
+  },
   content: {
     paddingHorizontal: 16,
-    paddingVertical: 16
+    paddingVertical: 16,
+    marginBottom: 8
+  },
+  replyContainer: {
+    flexDirection: 'row'
+  },
+  replyTextinput: {
+    backgroundColor: colors.lightBlue2,
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 16
+  },
+  replySendButtonContainer: {
+    right: 0,
+    flexDirection: 'row',
+    overflow: 'hidden'
   }
 });
