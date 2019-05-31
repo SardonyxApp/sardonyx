@@ -161,6 +161,7 @@ DB_HOST="localhost"
 DB_LOGIN="root" # Or however you have set the database up in your machine
 DB_PASSWORD="root" 
 DB_DATABASE="sardonyx" # Name of the database 
+DB_INSTANCE="sardony-app:asia-northeast1:sardonyx-db" # <project name>:<region>:<instance connection name>
 ```
 
 Check the server files and define any other variables necessary. Variables in `.env` are referred to as `process.env.VARIABLE_NAME`.
@@ -221,6 +222,15 @@ GROUP_MESSAGE_REPLY_OF_REPLY_ID="123456"
 NOTIFICATION_ID="123456"
 NOTIFICATION_PAGE_ID="2"
 CAS_ID="123456" 
+
+# Sample variables for testing the tasklist app
+STUDENT_ID="1"
+STUDENT_EMAIL="johndoe@example.com"
+STUDENT_TASKLIST="1"
+TEACHER_ID="1"
+TEACHER_EMAIL="janedoe@example.com"
+TEACHER_DEFAULT_TASKLIST="1"
+TASKLIST_ID="1"
 ```
 
 To run a custom test, create a `tmp.test.js` file under `__tests__`. 
@@ -246,7 +256,7 @@ $ npm run build
 Navigate to `localhost:PORT` as defined in `.env`
 
 ## Deployment
-Do not deploy broken builds. Deploy with extra care. Code can be tested with console on [Glitch](https://glitch.com).
+Do not deploy broken builds.
 
 Login to [Google Cloud Platform](https://console.cloud.google.com).
 

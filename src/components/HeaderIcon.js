@@ -46,7 +46,9 @@ export default class HeaderIcon extends React.Component {
                 true
               )}
             >
-              {this.props.children}
+              <View>
+                {this.props.children}
+              </View>
             </TouchableNativeFeedback>
           </View>
         </View>
