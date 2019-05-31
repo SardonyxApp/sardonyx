@@ -7,18 +7,38 @@
 
 import { StyleSheet } from 'react-native';
 
+/**
+ * The colors are generated with the following method:
+ * dark: [1/2] original (50%) #000000 (50%)
+ * dark2: [1/6] original (16.6%) #000000 (83.4%) 
+ * light: [1/6] original (50%) #ffffff (50%)
+ * light2: [1/6] original (16.6%) #ffffff (83.4%)
+ */
 const colors = {
   primary: '#d17b46',
-  secondary: '#6e4d12',
+  darkPrimary: '#693E23',
+  darkPrimary2: '#23150C',
+  lightPrimary: '#E8BDA3',
+  lightPrimary2: '#F7E9E0',
+
+  blue: '#2977b6',
+  darkBlue: '#153C5B',
+  darkBlue2: '#07141E',
+  lightBlue: '#94BBDB',
+  lightBlue2: '#DBE8F3',
+
+  error: '#f44138',
+  darkError: '#7A211C',
+  darkError2: '#290B09',
+  lightError: '#FAA09C',
+  lightError2: '#FDDFDE',
+
   black: '#332927',
   gray1: '#d8d8e0',
   gray2: '#babbc2',
   white: '#fff',
-  blue: '#2977b6',
-  error: '#f44138',
+
   inactive: '#c2c2c2',
-  lightPrimary: '#eda67b',
-  lightPrimary2: '#f1e3db',
   darkBackground: '#8c8c8b',
   lightBackground: '#f8f8fa'
 };
@@ -35,6 +55,9 @@ const fonts = StyleSheet.create({
   },
   jost500: {
     fontFamily: 'Jost-500'
+  },
+  jost800: {
+    fontFamily: 'Jost-800'
   }
 });
 
@@ -124,59 +147,25 @@ const preset = {
     styles.width90Percent,
     styles.roundCorners
   ],
-  inputLine: [styles.padding10]
+  inputLine: [
+    styles.padding10,
+    {
+      borderColor: colors.primary,
+      borderWidth: 1,
+      backgroundColor: colors.white
+    }
+  ]
 };
 
 const labelColors = name => {
-  let color;
-  switch (name) {
-    case 'Homework':
-      color = '#2175c6';
-      break;
-    case 'Quiz':
-      color = '#f16522';
-      break;
-    case 'Essay':
-      color = '#3333cc';
-      break;
-    case 'Deadline':
-      color = '#91181b';
-      break;
-    case 'Math IA':
-      color = '#0072bc';
-      break;
-    case 'Assignment':
-      color = '#0072bc';
-      break;
-    case 'Event':
-      color = '#009900';
-      break;
-    case 'Workshop':
-      color = '#528c00';
-      break;
-    case 'Take Home Assignment':
-      color = '#2f3192';
-      break;
-    case 'Discussion':
-      color = '#ed008c';
-      break;
-    case 'ToK':
-      color = '#3333cc';
-      break;
-    case 'Paper':
-      color = '#a2c400';
-      break;
-    case 'Summative':
-      color = '#478cfe';
-      break;
-    case 'Formative':
-      color = '#1aaf5d';
-      break;
-    case 'Extended Essay':
-      color = '#cc3333';
-      break;
-    default:
-      return;
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  let color = '#';
+  for (let i = 0; i < 3; i++) {
+    let hexaDecimal = (hash >> (i * 8)) & 0xff;
+    color += ('00' + hexaDecimal.toString(13)).substr(-2);
   }
   return color;
 };

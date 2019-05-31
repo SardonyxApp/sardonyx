@@ -84,7 +84,8 @@ export default class Root extends React.Component {
       'Jost-200': require('./src/assets/Jost-200-Thin.otf'),
       'Jost-300': require('./src/assets/Jost-300-Light.otf'),
       'Jost-400': require('./src/assets/Jost-400-Book.otf'),
-      'Jost-500': require('./src/assets/Jost-500-Medium.otf')
+      'Jost-500': require('./src/assets/Jost-500-Medium.otf'),
+      'Jost-800': require('./src/assets/Jost-800-Heavy.otf')
     }).then(() => {
       this.setState({
         fontLoaded: true
@@ -94,7 +95,11 @@ export default class Root extends React.Component {
   // I'm sure we're going to have to use state managers like Redux, and when that happens,
   // wrap this AppContainer in a Store Provider.
   render() {
-    return this.state.fontLoaded && <AppContainer />;
+    return (
+      this.state.fontLoaded && (
+        <AppContainer persistenceKey={__DEV__ ? 'NavigationStateDEV' : null} />
+      )
+    );
   }
 }
 
