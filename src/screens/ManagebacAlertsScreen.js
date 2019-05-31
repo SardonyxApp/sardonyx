@@ -166,7 +166,7 @@ export default class ManagebacAlertsScreen extends React.Component {
                 {decodeURI(item.title)}
               </Text>
               <Text style={alertsStyles.dateText}>
-                {moment(item.dateString).fromNow()}
+                {moment(item.dateString, 'MMM D, YYYY').fromNow()}
               </Text>
             </View>
             <View style={alertsStyles.unreadIndicatorContainer}>
