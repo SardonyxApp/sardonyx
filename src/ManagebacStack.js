@@ -7,6 +7,7 @@ import { createStackNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 
 import ManagebacAlertsScreen from './screens/ManagebacAlertsScreen';
+import ManagebacAlertScreen from './screens/ManagebacAlertScreen';
 import ManagebacOverviewScreen from './screens/ManagebacOverviewScreen';
 import ManagebacEventScreen from './screens/ManagebacEventScreen';
 import ManagebacCASScreen from './screens/ManagebacCASScreen';
@@ -23,7 +24,8 @@ import { colors, fonts } from './styles';
 // Navigation stack for the Managebac tab
 const ManagebacStack = createStackNavigator(
   {
-    Messages: ManagebacAlertsScreen,
+    Alerts: ManagebacAlertsScreen,
+    Alert: ManagebacAlertScreen,
     Overview: ManagebacOverviewScreen,
     UpcomingEventItem: ManagebacEventScreen,
     CASItem: ManagebacCASScreen,
