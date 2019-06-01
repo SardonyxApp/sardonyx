@@ -18,7 +18,7 @@ const SettingsStack = createStackNavigator(
   {
     navigationOptions: {
       tabBarLabel: <Text style={fonts.jost400}>Settings</Text>,
-      tabBarIcon: ({ tintColor }) => <Icon name="account-settings" type="material-community" Icolor={tintColor} />
+      tabBarIcon: ({ tintColor }) => <Icon name="account-settings" type="material-community" color={tintColor} />
     }
   }
 );
