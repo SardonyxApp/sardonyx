@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-import { styles, fonts } from '../styles';
+import { styles, fonts, colors } from '../styles';
 
 export default class TaskDescription extends React.Component {
   constructor(props) {
@@ -56,7 +56,7 @@ export default class TaskDescription extends React.Component {
             </TouchableWithoutFeedback>
           : <View style={{ flex: 1, flexDirection: 'row' }}>
               <TextInput
-                style={[descriptionStyles.text, { borderBottomWidth: 2, borderBottomColor: '#2977b6' }]}
+                style={[descriptionStyles.text, { borderBottomWidth: 2, borderBottomColor: colors.blue }]}
                 multiline={true}
                 autoFocus={true}
                 scrollEnabled={false}

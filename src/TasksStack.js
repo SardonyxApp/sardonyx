@@ -10,7 +10,9 @@ import TasksScreen from './screens/TasksScreen';
 import TasksInfoScreen from './screens/TasksInfoScreen';
 import TasksCreateScreen from './screens/TasksCreateScreen';
 import TasksLabelsFilterScreen from './screens/TasksLabelsFilterScreen'
-import TaskLabelsSelectorScreen from './screens/TaskLabelsSelectorScreen';
+import TasksLabelsSelectorScreen from './screens/TasksLabelsSelectorScreen';
+import TasksAddTaskScreen from './screens/TasksAddTaskScreen';
+import TasksAddLabelScreen from './screens/TasksAddLabelScreen';
 
 import { colors, fonts } from './styles';
 
@@ -21,7 +23,9 @@ const TasksStack = createStackNavigator(
     TaskInfo: TasksInfoScreen,
     TasksCreate: TasksCreateScreen,
     LabelsFilter: TasksLabelsFilterScreen,
-    LabelsSelector: TaskLabelsSelectorScreen
+    LabelsSelector: TasksLabelsSelectorScreen,
+    AddTask: TasksAddTaskScreen,
+    AddLabel: TasksAddLabelScreen
   },
   {
     initialRouteName: 'Tasks',
