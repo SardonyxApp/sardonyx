@@ -33,16 +33,12 @@ export default class TasksScreen extends React.Component {
         name: '',
         description: ''
       },
-      // tasklists: [], // Store information about other tasklists (teachers only)
       tasks: [],
       subjects: [],
       categories: [],
       subjectsFilter: [],
       categoriesFilter: []
     };
-
-    // this._handleSelectTasklist = this._handleSelectTasklist.bind(this);
-    // this feature is for teachers and administrators only 
 
     this._handleFilter = this._handleFilter.bind(this);
     this._handleCreateTask = this._handleCreateTask.bind(this);
@@ -64,7 +60,7 @@ export default class TasksScreen extends React.Component {
             name="playlist-add" 
             type="material" 
             color="white" 
-            onPress={() => navigation.navigate('TasksCreate')}
+            onPress={() => navigation.navigate('TasksCreate', navigation.state.params)}
           />
         </HeaderIcon>
       )
@@ -101,17 +97,12 @@ export default class TasksScreen extends React.Component {
       console.error(err); 
     });
 
-    // Teachers only feature 
-
-    // fetch(`${BASE_URL}/app/tasklist?tasklist=all`)
-    // .then(response => response.json())
-    // .then(response => {
-    //   this.setState({
-    //     tasklists: response
-    //   });
-    // }).catch(err => {
-    //   console.error('There was an error while retrieving all available tasklists. If you are a student, do not worry about this error. ' + err);
-    // });
+    this.props.navigation.setParams({ 
+      _handleCreateTask: this._handleCreateTask, 
+      _handleCreateLabel: this._handleCreateLabel,
+      _handleUpdateLabel: this._handleUpdateLabel,
+      _handleDeleteLabel: this._handleDeleteLabel
+    })
 
     // Disable sockets for now 
 
@@ -212,7 +203,6 @@ export default class TasksScreen extends React.Component {
     .then(response => {
       this.setState(prevState => {
         return {
-          // currentTask: response.insertId,
           tasks: [...prevState.tasks, Object.assign({
             id: response.insertId,
             student_name: prevState.user.teacher ? null : prevState.user.name,
@@ -223,6 +213,16 @@ export default class TasksScreen extends React.Component {
             category_color: null
           }, task)]
         };
+      });
+
+      this.props.navigation.popToTop();
+      this.props.navigation.push('TaskInfo', {
+        tasks: this.state.tasks, 
+        subjects: this.state.subjects, 
+        categories: this.state.categories, 
+        currentTask: response.insertId,
+        onUpdateTask: this._handleUpdateTask,
+        onDeleteTask: this._handleDeleteTask
       });
     
       // socket.emit('tasks', this.state.tasklist.id);

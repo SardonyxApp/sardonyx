@@ -5,7 +5,7 @@ import { ScrollView} from 'react-native';
 import Label from '../components/TasksSelectableLabel';
 
 
-export default class TaskLabelsSelectorScreen extends React.Component {
+export default class TasksLabelsSelectorScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
