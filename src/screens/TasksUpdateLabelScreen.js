@@ -130,6 +130,7 @@ export default class TasksUpdateLabelScreen extends React.Component {
 const updateStyles = StyleSheet.create({
   container: {
     padding: 8,
+    backgroundColor: colors.lightBackground
   },
   heading: {
     ...fonts.jost400,

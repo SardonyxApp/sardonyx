@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { colors } from '../styles';
 
 // import io from 'socket.io-client';
 import { Storage } from '../helpers';
@@ -458,7 +459,7 @@ export default class TasksScreen extends React.Component {
     return (
       <ScrollView
         style={{
-          backgroundColor: '#f4f4fa',
+          backgroundColor: colors.lightBackground,
           paddingHorizontal: 12
         }}
       >

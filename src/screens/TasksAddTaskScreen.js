@@ -58,6 +58,7 @@ export default class TasksAddTaskScreen extends React.Component {
 const addStyles = StyleSheet.create({
   container: {
     padding: 8,
+    backgroundColor: colors.lightBackground
   },
   heading: {
     ...fonts.jost300,

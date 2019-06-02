@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, Text, Alert } from 'react-native';
-import { fonts } from '../styles';
+import { fonts, colors } from '../styles';
 import Label from '../components/TasksLabel';
 
 export default class TasksManageLabelsScreen extends React.Component {
@@ -80,7 +80,7 @@ export default class TasksManageLabelsScreen extends React.Component {
     if (!labels.length) labels.push(<Text key="no labels" style={{ ...fonts.jost400, fontSize: 18 }}>NO LABELS FOUND</Text>)
     
     return (
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 8 }}>
+      <ScrollView style={{ flex: 1, backgroundColor: colors.lightBackground }} contentContainerStyle={{ padding: 8 }}>
         {labels}
       </ScrollView>
     );
