@@ -11,13 +11,13 @@ import {
   TextInput
 } from 'react-native';
 
+import { Icon } from 'react-native-elements';
+import { TouchableRipple } from 'react-native-paper';
 import HTMLView from 'react-native-htmlview';
 import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
 import { colors } from '../styles';
-import { Icon } from 'react-native-elements';
-import { TouchableRipple } from 'react-native-paper';
 
 export default class ManagebacMessageThreadScreen extends React.Component {
   isMounted = false;
@@ -39,9 +39,7 @@ export default class ManagebacMessageThreadScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    InteractionManager.runAfterInteractions(() => {
-      this._onRefresh();
-    });
+    InteractionManager.runAfterInteractions(this._onRefresh);
   }
 
   componentWillUnmount() {
@@ -167,7 +165,6 @@ export default class ManagebacMessageThreadScreen extends React.Component {
     let url = this.props.navigation.getParam('link', '/404');
     if (level === 1) url += '/reply';
     if (level === 2) url += '/reply/' + id;
-    console.log(url);
     Storage.retrieveCredentials()
       .then(credentials => {
         fetch(BASE_URL + url, {
@@ -183,7 +180,6 @@ export default class ManagebacMessageThreadScreen extends React.Component {
           mode: 'no-cors'
         })
           .then(response => {
-            console.log(response);
             if (!this._isMounted) return;
             this._onRefresh();
           })
