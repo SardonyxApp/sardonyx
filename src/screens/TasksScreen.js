@@ -458,9 +458,12 @@ export default class TasksScreen extends React.Component {
   render() {
     return (
       <ScrollView
-        style={{
-          backgroundColor: colors.lightBackground,
-          paddingHorizontal: 12
+        contentContainerStyle={{
+          padding: 12
+        }}
+        style={{ 
+          flex: 1, 
+          backgroundColor: colors.lightBackground
         }}
       >
         <TasksFilter 
