@@ -28,7 +28,6 @@ export default class TasksLabel extends React.PureComponent {
           className="label"
           color="white"
           style={[labelStyles.label, this.props.style, { backgroundColor: this.props.label.color }]} 
-          key={this.props.label.name} // Don't use id because it duplicates 
         >
           <Text style={labelStyles.labelName}>{this.props.label.name}</Text>
           {this.props.removable 
