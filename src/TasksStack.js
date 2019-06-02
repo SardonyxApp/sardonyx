@@ -1,9 +1,6 @@
 import React from 'react';
-
 import { Text } from 'react-native';
-
 import { createStackNavigator } from 'react-navigation';
-
 import { Icon } from 'react-native-elements';
 
 import TasksScreen from './screens/TasksScreen';
@@ -17,17 +14,17 @@ import TasksUpdateLabelScreen from './screens/TasksUpdateLabelScreen';
 
 import { colors, fonts } from './styles';
 
-// Navigation stack for the Chat tab
+// Navigation stack for the tasks tab
 const TasksStack = createStackNavigator(
   {
-    Tasks: TasksScreen,
-    TaskInfo: TasksInfoScreen,
-    TasksCreate: TasksCreateScreen,
-    LabelsFilter: TasksLabelsFilterScreen,
-    LabelsSelector: TasksLabelsSelectorScreen,
-    ManageLabels: TasksManageLabelsScreen,
-    AddTask: TasksAddTaskScreen,
-    UpdateLabel: TasksUpdateLabelScreen,
+    Tasks: TasksScreen, // Main screen: list of tasks
+    TaskInfo: TasksInfoScreen, // Detailed information for one task
+    TasksCreate: TasksCreateScreen, // Screen with tasklist actions
+    LabelsFilter: TasksLabelsFilterScreen, // Choose labels for filtering the tasklist
+    LabelsSelector: TasksLabelsSelectorScreen, // Choose labels for a task
+    ManageLabels: TasksManageLabelsScreen, // Display all of the task's labels
+    AddTask: TasksAddTaskScreen, // Create a new task
+    UpdateLabel: TasksUpdateLabelScreen // Create or edit a new label
   },
   {
     initialRouteName: 'Tasks',

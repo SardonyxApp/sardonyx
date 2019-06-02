@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import Label from '../components/TasksSelectableLabel';
+
 import { colors } from '../styles';
 
 export default class TasksLabelsFilterScreen extends React.Component {
@@ -19,7 +20,6 @@ export default class TasksLabelsFilterScreen extends React.Component {
       title: 'Edit filter'
     }
   }
-
 
   _handleFilter(filter, id) {
     this.setState(prevState => {

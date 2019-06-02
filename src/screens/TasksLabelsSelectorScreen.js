@@ -1,11 +1,10 @@
-// This screen is for selecting labels for a task. To filter the tasklist with labels, use TasksLabelsFilterScreen
-
 import React from 'react';
 import { ScrollView} from 'react-native';
 import Label from '../components/TasksSelectableLabel';
+
 import { colors } from '../styles';
 
-
+// This screen is for selecting labels for a task. To filter the tasklist with labels, use TasksLabelsFilterScreen
 export default class TasksLabelsSelectorScreen extends React.Component {
   constructor(props) {
     super(props);

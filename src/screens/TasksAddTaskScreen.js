@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, Text, TextInput, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
+
 import { fonts, styles, colors } from '../styles';
 
 export default class TasksAddTaskScreen extends React.Component {

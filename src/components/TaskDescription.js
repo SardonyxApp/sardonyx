@@ -4,12 +4,13 @@ import { Icon } from 'react-native-elements';
 
 import { styles, fonts, colors } from '../styles';
 
+// The editable description of a task
 export default class TaskDescription extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       focused: false,
-      height: 0,
+      height: 0, // Contrls the height of the TextInput
       description: null
     };
 
@@ -44,12 +45,15 @@ export default class TaskDescription extends React.Component {
     return (
       <View style={descriptionStyles.container}>
         <Icon 
-          name="subject" // using this because the "notes" icon somehow does not load
+          name="subject" // Using this iconbecause the "notes" icon somehow does not load
           type="material"
           iconStyles={styles.icon}
         />
         {!this.state.focused 
-          ? <TouchableWithoutFeedback onPress={this._handleFocus} style={{ flex: 1 }}>
+          ? <TouchableWithoutFeedback 
+              onPress={this._handleFocus} 
+              style={{ flex: 1 }}
+            >
               <Text style={descriptionStyles.text}>
                 {this.state.description ? this.state.description : 'No description provided.'}
               </Text>
