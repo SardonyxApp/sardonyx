@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, Text } from 'react-native';
-import { Button} from 'react-native-elements';
+import { Button } from 'react-native-elements';
 
 import { fonts, styles, colors } from '../styles';
 
@@ -31,7 +31,7 @@ export default class TasksCreateScreen extends React.Component {
           buttonStyle={{ backgroundColor: colors.primary }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
-          onPress={() => navigation.navigate('AddTask', navigation.state.params)}
+          onPress={() => navigation.navigate('AddTask', { onCreateTask: navigation.state.params.onCreateTask })}
         />
         <Button 
           title="Add subject label"
@@ -59,6 +59,7 @@ export default class TasksCreateScreen extends React.Component {
           buttonStyle={{ backgroundColor: colors.blue }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
+          onPress={() => navigation.navigate('ManageLabels', { onUpdateLabel: navigation.state.params.onUpdateLabel, onDeleteLabel: navigation.state.params.onDeleteLabel, labels: navigation.state.params.subjects, type: 'subjects' })}
         />
         <Button 
           title="Manage category labels"
@@ -66,6 +67,7 @@ export default class TasksCreateScreen extends React.Component {
           buttonStyle={{ backgroundColor: colors.blue }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
+          onPress={() => navigation.navigate('ManageLabels', { onUpdateLabel: navigation.state.params.onUpdateLabel, onDeleteLabel: navigation.state.params.onDeleteLabel, labels: navigation.state.params.categories, type: 'categories' })}
         />
       </ScrollView>
     );

@@ -23,7 +23,7 @@ export default class TasksAddTaskScreen extends React.Component {
 
   _handlePress() {
     if (!this.state.name) return;
-    this.props.navigation.state.params._handleCreateTask({ name: this.state.name });
+    this.props.navigation.state.params.onCreateTask({ name: this.state.name });
   }
 
   render() {

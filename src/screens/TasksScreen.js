@@ -90,19 +90,21 @@ export default class TasksScreen extends React.Component {
         subjectsFilter: responses[0].subjects,
         categoriesFilter: responses[0].categories,
       });
+
+      this.props.navigation.setParams({ 
+        onCreateTask: this._handleCreateTask, 
+        onCreateLabel: this._handleCreateLabel,
+        onUpdateLabel: this._handleUpdateLabel,
+        onDeleteLabel: this._handleDeleteLabel,
+        subjects: this.state.subjects,
+        categories: this.state.categories
+      })
       
       // socket.emit('join room', responses[1].id);
     }).catch(err => {
       alert('There was an error while retrieving information. If this error persists, please contact SardonyxApp.');
       console.error(err); 
     });
-
-    this.props.navigation.setParams({ 
-      _handleCreateTask: this._handleCreateTask, 
-      _handleCreateLabel: this._handleCreateLabel,
-      _handleUpdateLabel: this._handleUpdateLabel,
-      _handleDeleteLabel: this._handleDeleteLabel
-    })
 
     // Disable sockets for now 
 
@@ -320,6 +322,11 @@ export default class TasksScreen extends React.Component {
         return payload;
       });
 
+      this.props.navigation.setParams({
+        subjects: this.state.subjects,
+        categories: this.state.categories
+      });
+
       // socket.emit('labels', type, this.state.tasklist.id);
     }).catch(err => {
       alert('There was an error while creating a label. If this error persists, please contact SardonyxApp.');
@@ -353,6 +360,11 @@ export default class TasksScreen extends React.Component {
         return payload;
       });
 
+      this.props.navigation.setParams({
+        subjects: this.state.subjects,
+        categories: this.state.categories
+      });
+
       // socket.emit('labels', type, this.state.tasklist.id);
     }).catch(err => {
       alert('There was an error while editing a label. If this error persists, please contact SardonyxApp.');
@@ -377,6 +389,11 @@ export default class TasksScreen extends React.Component {
         const payload = {};
         payload[type] = prevState[type].filter(l => l.id !== id)
         return payload;
+      });
+
+      this.props.navigation.setParams({
+        subjects: this.state.subjects,
+        categories: this.state.categories
       });
 
       // socket.emit('labels', type, this.state.tasklist.id);
