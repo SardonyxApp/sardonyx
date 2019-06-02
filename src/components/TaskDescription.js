@@ -51,7 +51,7 @@ export default class TaskDescription extends React.Component {
         {!this.state.focused 
           ? <TouchableWithoutFeedback onPress={this._handleFocus} style={{ flex: 1 }}>
               <Text style={descriptionStyles.text}>
-                {this.state.description}
+                {this.state.description ? this.state.description : 'No description provided.'}
               </Text>
             </TouchableWithoutFeedback>
           : <View style={{ flex: 1, flexDirection: 'row' }}>
