@@ -38,7 +38,7 @@ export default class HeaderIcon extends React.Component {
               justifyContent: "center"
             }}
           >
-            {/* <TouchableNativeFeedback
+            <TouchableNativeFeedback
               delayPressIn={0}
               onPress={this.props.onPress}
               background={TouchableNativeFeedback.Ripple(
@@ -46,13 +46,10 @@ export default class HeaderIcon extends React.Component {
                 true
               )}
             >
-              {this.props.children}
-            </TouchableNativeFeedback> */}
-            <TouchableOpacity
-              onPress={this.props.onPress}
-            >
-              {this.props.children}
-            </TouchableOpacity>
+              <View>
+                {this.props.children}
+              </View>
+            </TouchableNativeFeedback>
           </View>
         </View>
       );

@@ -96,11 +96,13 @@ Ejection is only necessary when native code is needed.
 Tools needed:
 * Git
 * Node (8.x) / NPM 
-* MySQL (5.x)
+* MySQL (5.7) or MariaDB (10.13)
 
 Node 10.x is known to have testing problems. 
 
-If you are using MySQL 8.x, make sure that it can authorize using `mysql_native_password`.
+MySQL 8 will not work with the Node MySQL client unless it is set to authenticate with `mysql_native_password`. 
+
+Anything lower than MySQL 5.6 will require shorter VARCHAR sizes.
 
 ## Installation
 Clone this repository and navigate to it.
@@ -114,17 +116,17 @@ Install dependencies.
 $ npm install
 ```
 
-Configure MySQL to use utf8mb4.
+Configure MySQL to use utf8mb4. (This may not be needed for some Linux installations.)
 
 Modify (or create) `my.cnf`:
 ```
 [mysqld]
-character-set-client=utf8mb4
-character-set-connection=utf8mb4
-character-set-database=utf8mb4
-character-set-results=utf8mb4
+character-set-server=utf8mb4
 
 [client]
+default-character-set=utf8mb4
+
+[mysql]
 default-character-set=utf8mb4
 ```
 

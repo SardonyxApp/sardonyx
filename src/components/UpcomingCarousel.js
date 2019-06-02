@@ -228,7 +228,7 @@ export default class UpcomingCarousel extends React.Component {
           inactiveSlideScale={1}
           inactiveSlideOpacity={1}
           contentContainerCustomStyle={
-            this.state.upcomingLength
+            this.state.upcomingLength > 1
               ? {
                   overflow: 'hidden',
                   width: 300 * this.state.parsedData.length
