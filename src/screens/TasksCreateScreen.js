@@ -98,7 +98,8 @@ export default class TasksCreateScreen extends React.Component {
 
 const createStyles = {
   container: {
-    padding: 8
+    padding: 8,
+    backgroundColor: colors.lightBackground
   },
   heading: {
     ...fonts.jost400,

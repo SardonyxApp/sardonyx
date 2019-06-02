@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { colors } from '../styles';
 
 import TaskTitle from '../components/TaskTitle';
 import TaskLabels from '../components/TaskLabels';
@@ -27,7 +28,7 @@ export default class TasksInfoScreen extends React.Component {
 
     return (
       <ScrollView contentContainerStyle={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ padding: 8 }}>
+        <ScrollView style={{ padding: 8, backgroundColor: colors.lightBackground }}>
           <TaskLabels 
             task={task}
             navigation={this.props.navigation}

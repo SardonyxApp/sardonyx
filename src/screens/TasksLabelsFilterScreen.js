@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import Label from '../components/TasksSelectableLabel';
+import { colors } from '../styles';
 
 export default class TasksLabelsFilterScreen extends React.Component {
   constructor(props) {
@@ -54,7 +55,7 @@ export default class TasksLabelsFilterScreen extends React.Component {
     ));
 
     return (
-      <ScrollView>
+      <ScrollView style={{ backgroundColor: colors.lightBackground }}>
         {subjects}
         {categories}
       </ScrollView>
