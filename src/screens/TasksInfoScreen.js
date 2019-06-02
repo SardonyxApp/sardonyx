@@ -27,8 +27,8 @@ export default class TasksInfoScreen extends React.Component {
     const task = tasks.filter(t => t.id === this.props.navigation.getParam('currentTask'))[0];
 
     return (
-      <ScrollView contentContainerStyle={{ flex: 1 }}>
-        <ScrollView style={{ padding: 8, backgroundColor: colors.lightBackground }}>
+      <ScrollView contentContainerStyle={{ flex: 1, backgroundColor: colors.lightBackground }}>
+        <ScrollView contentContainerStyle={{ padding: 8 }}>
           <TaskLabels 
             task={task}
             navigation={this.props.navigation}

@@ -55,7 +55,7 @@ export default class TasksLabelsFilterScreen extends React.Component {
     ));
 
     return (
-      <ScrollView style={{ backgroundColor: colors.lightBackground }}>
+      <ScrollView style={{ flex: 1, backgroundColor: colors.lightBackground }}>
         {subjects}
         {categories}
       </ScrollView>

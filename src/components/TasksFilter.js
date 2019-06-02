@@ -70,7 +70,6 @@ const filterStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: 16,
     marginBottom: 4
   },
   hint: {
