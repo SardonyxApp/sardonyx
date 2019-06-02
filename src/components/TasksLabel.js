@@ -52,7 +52,8 @@ const labelStyles = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   labelName: {
     ...fonts.jost300,
