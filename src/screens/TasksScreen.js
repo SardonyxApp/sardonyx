@@ -49,19 +49,17 @@ export default class TasksScreen extends React.Component {
     this._handleUpdateLabel = this._handleUpdateLabel.bind(this);
     this._handleDeleteLabel = this._handleDeleteLabel.bind(this);
     this._handleUpdateUserLabel = this._handleUpdateUserLabel.bind(this);
-    this._handleChangeUserTasklist = this._handleChangeUserTasklist.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Tasks',
       headerRight: (
-        <HeaderIcon>
+        <HeaderIcon onPress={() => navigation.navigate('TasksCreate', navigation.state.params)}>
           <Icon 
             name="playlist-add" 
             type="material" 
             color="white" 
-            onPress={() => navigation.navigate('TasksCreate', navigation.state.params)}
           />
         </HeaderIcon>
       )
@@ -431,28 +429,6 @@ export default class TasksScreen extends React.Component {
       alert('There was an error while updating default labels. If this error persists, please contact SardonyxApp.');
       console.error(err);
     }) 
-  }
-
-  /**
-   * @description Update a teacher's default tasklist 
-   * @param {Number} tasklistId 
-   */
-  async _handleChangeUserTasklist(tasklistId) {
-    const token = await Storage.retrieveValue('sardonyxToken');
-    fetch(`${BASE_URL}/app/user/tasklist?id=${tasklistId}`, { 
-      method: 'PATCH',
-      headers: {
-        'Sardonyx-Token': token
-      }
-    }).then(response => {
-      Storage.writeValue('sardonyxToken', response.headers.map['sardonyx-token']);
-      this.setState(prevState => {
-        return { user: {  ...prevState.user, tasklist_id: tasklistId } };
-      });
-    }).catch(err => {
-      alert('There was an error while updating your default tasklist. If this error persists, please contact SardonyxApp.');
-      console.error(err);
-    });
   }
 
   render() {
