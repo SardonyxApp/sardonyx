@@ -327,6 +327,8 @@ export default class TasksScreen extends React.Component {
         categories: this.state.categories
       });
 
+      this.props.navigation.popToTop();
+
       // socket.emit('labels', type, this.state.tasklist.id);
     }).catch(err => {
       alert('There was an error while creating a label. If this error persists, please contact SardonyxApp.');
@@ -364,6 +366,8 @@ export default class TasksScreen extends React.Component {
         subjects: this.state.subjects,
         categories: this.state.categories
       });
+
+      this.props.navigation.pop();
 
       // socket.emit('labels', type, this.state.tasklist.id);
     }).catch(err => {

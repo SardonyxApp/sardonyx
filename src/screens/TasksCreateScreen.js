@@ -7,6 +7,9 @@ import { fonts, styles, colors } from '../styles';
 export default class TasksCreateScreen extends React.Component {
   constructor(props) {
     super(props);
+
+    this._handleUpdate = this._handleUpdate.bind(this);
+    this._handleDelete = this._handleDelete.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -14,7 +17,24 @@ export default class TasksCreateScreen extends React.Component {
       title: 'Manage tasklist'
     };
   };
+  
+  // These methods are necessary to update the navigation params accordingly
+  _handleUpdate(type, obj) {
+    this.props.navigation.setParams({
+      [type]: this.props.navigation.getParam(type).map(l => l.id === obj.id ? {...l, ...obj} : l)
+    });
 
+    this.props.navigation.state.params.onUpdateLabel(type, obj);
+  }
+
+  _handleDelete(type, id) {
+    this.props.navigation.setParams({
+      [type]: this.props.navigation.getParam(type).filter(l => l.id !== id)
+    });
+
+    this.props.navigation.state.params.onDeleteLabel(type, id);
+  }
+  
   render() {
     const navigation = this.props.navigation;
     return (
@@ -39,6 +59,7 @@ export default class TasksCreateScreen extends React.Component {
           buttonStyle={{ backgroundColor: colors.primary }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
+          onPress={() => navigation.navigate('UpdateLabel', { onUpdate: navigation.state.params.onCreateLabel, type: 'subjects' })}
         />
         <Button 
           title="Add category label"
@@ -46,6 +67,7 @@ export default class TasksCreateScreen extends React.Component {
           buttonStyle={{ backgroundColor: colors.primary }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
+          onPress={() => navigation.navigate('UpdateLabel', { onUpdate: navigation.state.params.onCreateLabel, type: 'categories' })}
         />
 
         <Text
@@ -59,7 +81,7 @@ export default class TasksCreateScreen extends React.Component {
           buttonStyle={{ backgroundColor: colors.blue }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
-          onPress={() => navigation.navigate('ManageLabels', { onUpdateLabel: navigation.state.params.onUpdateLabel, onDeleteLabel: navigation.state.params.onDeleteLabel, labels: navigation.state.params.subjects, type: 'subjects' })}
+          onPress={() => navigation.navigate('ManageLabels', { onUpdate: this._handleUpdate, onDelete: this._handleDelete, labels: navigation.state.params.subjects, type: 'subjects' })}
         />
         <Button 
           title="Manage category labels"
@@ -67,7 +89,7 @@ export default class TasksCreateScreen extends React.Component {
           buttonStyle={{ backgroundColor: colors.blue }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
-          onPress={() => navigation.navigate('ManageLabels', { onUpdateLabel: navigation.state.params.onUpdateLabel, onDeleteLabel: navigation.state.params.onDeleteLabel, labels: navigation.state.params.categories, type: 'categories' })}
+          onPress={() => navigation.navigate('ManageLabels', { onUpdate: this._handleUpdate, onDelete: this._handleDelete, labels: navigation.state.params.categories, type: 'categories' })}
         />
       </ScrollView>
     );
