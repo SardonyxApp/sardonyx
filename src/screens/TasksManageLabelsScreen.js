@@ -33,7 +33,7 @@ export default class TasksManageLabelsScreen extends React.Component {
       return prevState;
     });
 
-    this.props.navigation.state.params.onUpdateLabel(type, obj);
+    this.props.navigation.state.params.onUpdate(type, obj);
   }
 
   _handleRemove(id) {
@@ -51,7 +51,7 @@ export default class TasksManageLabelsScreen extends React.Component {
               prevState.labels = prevState.labels.filter(l => l.id !== id);
               return prevState;
             });
-            this.props.navigation.state.params.onDeleteLabel(this.props.navigation.getParam('type'), id);
+            this.props.navigation.state.params.onDelete(this.props.navigation.getParam('type'), id);
           }
         }
       ]
@@ -69,7 +69,7 @@ export default class TasksManageLabelsScreen extends React.Component {
             paddingVertical: 12
           }}
           updatable={true} 
-          onUpdate={() => this.props.navigation.navigate('UpdateLabel', { onUpdate: this.props.navigation.state.params.onUpdateTask, label, type: this.props.navigation.getParam('type') })}
+          onUpdate={() => this.props.navigation.navigate('UpdateLabel', { onUpdate: this._handleUpdate, label, type: this.props.navigation.getParam('type') })}
           removable={true}
           onRemove={this._handleRemove}
           key={label.name}
