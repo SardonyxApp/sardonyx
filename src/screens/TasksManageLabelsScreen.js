@@ -1,6 +1,8 @@
 import React from 'react';
 import { ScrollView, Text, Alert } from 'react-native';
+
 import { fonts, colors } from '../styles';
+
 import Label from '../components/TasksLabel';
 
 export default class TasksManageLabelsScreen extends React.Component {

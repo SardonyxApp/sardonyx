@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+
 import { fonts, styles, colors } from '../styles';
 
 export default class ColorPicker extends React.Component {
@@ -9,7 +10,7 @@ export default class ColorPicker extends React.Component {
     this.state = {
       focused: false,
       error: false,
-      colors: []
+      colors: [] // Color palette
     }
   }
 
@@ -17,23 +18,30 @@ export default class ColorPicker extends React.Component {
     this.setState(prevState => {
       const colors = [];
       for (let i = 0; i < 6; i++) {
-        colors.push("#000000".replace(/0/g, () => Math.floor(Math.random() * 16).toString(16)));
+        colors.push("#000000".replace(/0/g, () => Math.floor(Math.random() * 16).toString(16))); // Generate random colors for the color palette
         if (i === 5) return { colors }
       }
     });
   }
 
   _handleChange(color) {
+    // When called by onEndEditing, color is an event object
     if (typeof color === 'object') color = color.nativeEvent.text;
+
     this.setState({
       focused: false
     });
+
     if (!/^#([\da-fA-F]{3}|[\da-fA-F]{6})$/.test(color)) return this.setState({ error: true });
-    this.setState({ error: false });
+
+    this.setState({ 
+      error: false 
+    });
     this.props.onChangeColor(color);
   }
 
   render() {
+    // The color palette
     const dots = this.state.colors.map(color => {
       return (
         <TouchableOpacity onPress={() => this._handleChange(color)} key={color}>

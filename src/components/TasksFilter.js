@@ -1,6 +1,5 @@
 import React from 'react';
 import { ScrollView, Text, StyleSheet } from 'react-native';
-
 import { Icon } from 'react-native-elements';
 import { TouchableRipple } from 'react-native-paper';
 

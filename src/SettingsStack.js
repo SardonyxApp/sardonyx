@@ -10,7 +10,7 @@ import SettingsScreen from './screens/SettingsScreen';
 
 import { fonts } from './styles';
 
-// Navigation stack for the Profile tab
+// Navigation stack for settings tab
 const SettingsStack = createStackNavigator(
   {
     Settings: SettingsScreen

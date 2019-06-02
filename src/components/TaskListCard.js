@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+
 import { fonts, styles } from '../styles';
 
 export default TaskListCard = props => (
@@ -8,16 +9,14 @@ export default TaskListCard = props => (
     onClick={() => props.onSelectTask(props.task.id)}
     style={cardStyles.card}
   >
-
     {props.task.subject_id || props.task.category_id 
-    ? <View className="overview-dots" style={cardStyles.dots}>
+    ? <View style={cardStyles.dots}>
         {props.task.subject_id ? <View className="dot" style={[cardStyles.dot, { backgroundColor: props.task.subject_color }]}></View> : null}
         {props.task.category_id ? <View className="dot" style={[cardStyles.dot, { backgroundColor: props.task.category_color }]}></View> : null}
       </View>
     : null}
     
     <Text 
-      className="overview-title" 
       style={cardStyles.title}
       numberOfLines={1}
       ellipsizeMode="tail"
@@ -25,7 +24,6 @@ export default TaskListCard = props => (
       {decodeURIComponent(props.task.name)}
     </Text>
     <Text 
-      className="overview-description" 
       style={cardStyles.description}
       numberOfLines={1}
       ellipsizeMode="tail"

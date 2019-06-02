@@ -1,9 +1,11 @@
 import React from 'react';
 import { ScrollView, View, Text, TextInput, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
-import ColorPicker from '../components/ColorPicker';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+
 import { fonts, styles, colors } from '../styles';
+
+import ColorPicker from '../components/ColorPicker';
 
 export default class TasksUpdateLabelScreen extends React.Component {
   constructor(props) {

@@ -1,13 +1,12 @@
-// TaskLabels (this) -> display labels for each task
-// TasksLabel -> updatable/removable label
-// TasksSelectableLabel -> checkable label
-
 import React from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { fonts, styles } from '../styles';
 import TasksLabel from './TasksLabel';
 
+// TaskLabels (this) -> display labels for each task
+// TasksLabel -> updatable/removable label
+// TasksSelectableLabel -> checkable label
 export default class TaskLabels extends React.Component {
   constructor(props) {
     super(props);

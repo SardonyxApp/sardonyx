@@ -4,6 +4,7 @@ import { Icon } from 'react-native-elements';
 
 import { styles, fonts } from '../styles';
 
+// The author section in a task's detailed view
 export default TaskAuthor = props => (
   <View
     style={{

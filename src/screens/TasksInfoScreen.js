@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+
 import { colors } from '../styles';
 
 import TaskTitle from '../components/TaskTitle';
