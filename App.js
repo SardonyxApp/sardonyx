@@ -11,7 +11,7 @@ import { Font } from 'expo';
 
 import ManagebacStack from './src/ManagebacStack';
 import TasksStack from './src/TasksStack';
-import SettingsStack from './src/SettingsStack';
+import ProfileStack from './src/ProfileStack';
 import LoginCheckScreen from './src/screens/LoginCheckScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import LogoutScreen from './src/screens/LogoutScreen';
@@ -24,7 +24,7 @@ const AppStack = createMaterialBottomTabNavigator(
   {
     ManagebacTabs: ManagebacStack,
     TasksTabs: TasksStack,
-    SettingsTabs: SettingsStack
+    ProfileTabs: ProfileStack
   },
   {
     initialRouteName: 'ManagebacTabs',
@@ -97,7 +97,7 @@ export default class Root extends React.Component {
   render() {
     return (
       this.state.fontLoaded && (
-        <AppContainer persistenceKey={__DEV__ ? null : null} />
+        <AppContainer persistenceKey={__DEV__ ? 'NavigationStateDEV' : null} />
       )
     );
   }
