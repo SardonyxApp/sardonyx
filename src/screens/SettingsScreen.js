@@ -22,7 +22,7 @@ export default class SettingsScreen extends React.Component {
       data: [
         {
           title: 'Example Item',
-          description: 'I can\'t find a way to implement settings which affect the entire app, is Redux the way to go?'
+          description: 'I can\'t find a way to implement settings which affect the entire app, is Redux the way to go? I don\'t know.'
         }
       ]
     },
@@ -40,7 +40,7 @@ export default class SettingsScreen extends React.Component {
       data: [
         {
           title: 'Visit Website',
-          onPress: () => Linking.openURL('https://sardonyx.app')
+          onPress: () => Linking.openURL('https://sardonyx.app/?redirect=false')
         },
         {
           title: 'Privacy Policy',
