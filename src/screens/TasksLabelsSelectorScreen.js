@@ -9,8 +9,8 @@ export default class TasksLabelsSelectorScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      subject_id: this.props.navigation.getParam('task').subject_id,
-      category_id: this.props.navigation.getParam('task').category_id
+      subject_id: this.props.navigation.getParam('subject_id'),
+      category_id: this.props.navigation.getParam('category_id')
     }
 
     this._handleChange = this._handleChange.bind(this);
