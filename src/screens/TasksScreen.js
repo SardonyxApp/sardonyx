@@ -3,7 +3,7 @@ import { ScrollView, ActivityIndicator } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { colors } from '../styles';
 
-// import io from 'socket.io-client';
+import io from 'socket.io-client';
 import { Storage } from '../helpers';
 import { BASE_URL } from '../../env';
 
@@ -11,8 +11,7 @@ import HeaderIcon from '../components/HeaderIcon';
 import TasksFilter from '../components/TasksFilter';
 import TasksContainer from '../components/TasksContainer';
 
-// Disable sockets for now 
-// const socket = io.connect(BASE_URL);
+const socket = io.connect(BASE_URL);
 
 export default class TasksScreen extends React.Component {
   constructor(props) {
@@ -99,65 +98,32 @@ export default class TasksScreen extends React.Component {
         categories: this.state.categories
       })
       
-      // socket.emit('join room', responses[1].id);
+      socket.emit('join room', responses[1].id);
     }).catch(err => {
       alert('There was an error while retrieving information. If this error persists, please contact SardonyxApp.');
       console.error(err); 
     });
 
-    // Disable sockets for now 
-
-    // socket.on('tasks', () => {
-    //   fetch(`${BASE_URL}/app/tasks?tasklist=${this.state.tasklist.id}&full=true`)
-    //   .then(response => response.json())
-    //   .then(response => {
-    //     this.setState({ 
-    //       tasks: response 
-    //     });
-    //   });
-    // });
-
-    // socket.on('labels', type => {
-    //   fetch(`${BASE_URL}/app/${type}?tasklist=${this.state.tasklist.id}`)
-    //   .then(response => response.json())
-    //   .then(response => {
-    //     this.setState(() => {
-    //       const payload = {};
-    //       payload[type] = response;
-    //       return payload;
-    //     });
-    //   });
-    // });
-  }
-
-  // Fetch data to change tasklist 
-  async _handleSelectTasklist(tasklist) {
-    const token = await Storage.retrieveValue('sardonyxToken');
-    const sardonyxToken = { 'Sardonyx-Token': token };
-
-    Promise.all([
-      // Fetch user because the default filters change 
-      fetch(`${BASE_URL}/app/user?tasklist=${tasklist.id}`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
-      fetch(`${BASE_URL}/app/tasks?full=true&tasklist=${tasklist.id}`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
-      fetch(`${BASE_URL}/app/subjects?tasklist=${tasklist.id}`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
-      fetch(`${BASE_URL}/app/categories?tasklist=${tasklist.id}`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e))
-    ]).then(responses => {
-      // socket.emit('leave room', this.state.tasklist.id);
-
-      this.setState({
-        user: responses[0],
-        tasklist: tasklist,
-        tasks: responses[1],
-        subjects: responses[2],
-        categories: responses[3],
-        subjectsFilter: responses[0].subjects,
-        categoriesFilter: responses[0].categories
+    socket.on('tasks', () => {
+      fetch(`${BASE_URL}/app/tasks?tasklist=${this.state.tasklist.id}&full=true`, { headers: sardonyxToken })
+      .then(response => response.json())
+      .then(response => {
+        this.setState({ 
+          tasks: response 
+        });
       });
-      
-      // socket.emit('join room', tasklist.id);
-    }).catch(err => {
-      alert('There was an error while retrieving information. If this error persists, please contact SardonyxApp.');
-      console.error(err);
+    });
+
+    socket.on('labels', type => {
+      fetch(`${BASE_URL}/app/${type}?tasklist=${this.state.tasklist.id}`, { headers: sardonyxToken })
+      .then(response => response.json())
+      .then(response => {
+        this.setState(() => {
+          const payload = {};
+          payload[type] = response;
+          return payload;
+        });
+      });
     });
   }
 
@@ -226,7 +192,7 @@ export default class TasksScreen extends React.Component {
         onDeleteTask: this._handleDeleteTask
       });
     
-      // socket.emit('tasks', this.state.tasklist.id);
+      socket.emit('tasks', this.state.tasklist.id);
     }).catch(err => {
       alert('There was an error while creating a new task. If this error persists, please contact SardonyxApp.');
       console.error(err);
@@ -263,7 +229,7 @@ export default class TasksScreen extends React.Component {
         return { tasks: prevState.tasks.map(t => t.id === obj.id ? {...t, ...obj} : t) };
       });
 
-      // socket.emit('tasks', this.state.tasklist.id);
+      socket.emit('tasks', this.state.tasklist.id);
     }).catch(err => {
       alert('There was an error while editing a task. If this error persists, please contact SardonyxApp.');
       console.error(err);
@@ -288,7 +254,7 @@ export default class TasksScreen extends React.Component {
         };
       });
 
-      // socket.emit('tasks', this.state.tasklist.id);
+      socket.emit('tasks', this.state.tasklist.id);
     }).catch(err => {
       alert('There was an error while deleting a task. If this error persists, please contact SardonyxApp.');
       console.error(err);
@@ -328,7 +294,7 @@ export default class TasksScreen extends React.Component {
 
       this.props.navigation.popToTop();
 
-      // socket.emit('labels', type, this.state.tasklist.id);
+      socket.emit('labels', type, this.state.tasklist.id);
     }).catch(err => {
       alert('There was an error while creating a label. If this error persists, please contact SardonyxApp.');
       console.error(err);
@@ -368,7 +334,7 @@ export default class TasksScreen extends React.Component {
 
       this.props.navigation.pop();
 
-      // socket.emit('labels', type, this.state.tasklist.id);
+      socket.emit('labels', type, this.state.tasklist.id);
     }).catch(err => {
       alert('There was an error while editing a label. If this error persists, please contact SardonyxApp.');
       console.error(err);
@@ -399,7 +365,7 @@ export default class TasksScreen extends React.Component {
         categories: this.state.categories
       });
 
-      // socket.emit('labels', type, this.state.tasklist.id);
+      socket.emit('labels', type, this.state.tasklist.id);
     }).catch(err => {
       alert('There was an error while deleting a label. If this error persists, please contact SardonyxApp.');
       console.error(err);
