@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, ActivityIndicator } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { colors } from '../styles';
 
@@ -38,7 +38,7 @@ export default class TasksScreen extends React.Component {
       subjects: [],
       categories: [],
       subjectsFilter: [],
-      categoriesFilter: []
+      categoriesFilter: [],
     };
 
     this._handleFilter = this._handleFilter.bind(this);
@@ -449,6 +449,11 @@ export default class TasksScreen extends React.Component {
           categoriesFilter={this.state.categoriesFilter}
           onFilter={this._handleFilter}
           navigation={this.props.navigation}
+        />
+        <ActivityIndicator 
+          animating={this.state.tasklist.id === null} 
+          style={{ display: this.state.tasklist.id === null ? 'flex' : 'none' }} 
+          color={colors.primary}
         />
         <TasksContainer
           tasks={this.state.tasks}
