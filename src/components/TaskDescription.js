@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableWithoutFeedback, Linking, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 import { styles, fonts, colors } from '../styles';
@@ -42,6 +42,32 @@ export default class TaskDescription extends React.Component {
   }
 
   render() {
+    let description = [];
+    if (this.state.description) {
+      let arr = this.state.description.split(/(\n|\s)/); // Split using regex while retaining separators: ['text', ' ', 'text', '\n', ... ]
+      
+      // Insert any links
+      arr = arr.map((p, i) => {
+        if (p.match(/^https?:\/\/[^\s/$.?#&;][^\s]*$/)) {
+          return <Text onPress={() => Linking.openURL(p)} style={{ color: colors.blue }} key={`link-${i}`}>{p}</Text>
+        } else return p;
+      });
+
+      // Combine text pieces
+      arr.forEach(c => {
+        // If the last element of description array is string and the current element is string
+        if (description.length && typeof description[description.length - 1] === 'string' && typeof c === 'string' ) {
+          description[description.length - 1] += c;
+        } else {
+          description.push(c);
+        }
+        // The resulting array cannot be joined using Array.prototype.join because the Text component has to be preserved. 
+      });
+
+      // Wrap strings with Text tag
+      description = description.map((val, i) => typeof val === 'string' ? <Text key={`string-${i}`}>{val}</Text> : val);
+    }
+    
     return (
       <View style={descriptionStyles.container}>
         <Icon 
@@ -55,7 +81,7 @@ export default class TaskDescription extends React.Component {
               style={{ flex: 1 }}
             >
               <Text style={descriptionStyles.text}>
-                {this.state.description ? this.state.description : 'No description provided.'}
+                {this.state.description ? description : 'No description provided.'}
               </Text>
             </TouchableWithoutFeedback>
           : <View style={{ flex: 1, flexDirection: 'row' }}>
