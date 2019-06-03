@@ -64,7 +64,7 @@ export default class TaskLabels extends React.Component {
           }}
           key="subject"
           style={labelsStyles.label}
-          onUpdate={() => this.props.navigation.navigate('LabelsSelector', { ...this.props, onChange: this._handleChange })}
+          onUpdate={() => this.props.navigation.navigate('LabelsSelector', { ...this.props, ...this.state, onChange: this._handleChange })}
           updatable={true}
         />
       );
@@ -79,7 +79,7 @@ export default class TaskLabels extends React.Component {
           }}
           key="category"
           style={labelsStyles.label}
-          onUpdate={() => this.props.navigation.navigate('LabelsSelector', { ...this.props, onChange: this._handleChange })}
+          onUpdate={() => this.props.navigation.navigate('LabelsSelector', { ...this.props, ...this.state, onChange: this._handleChange })}
           updatable={true}
         />
       );
