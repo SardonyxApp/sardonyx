@@ -99,7 +99,6 @@ class StorageClass extends React.Component {
    * Musst catch error in the case of invalid credentials
    */
   async writeCredentials(credentials) {
-    console.log(credentials);
     if (credentials.cfduid && credentials.managebacSession && credentials.authenticityToken && credentials.login && credentials.password) {
       return Promise.all([
         SecureStore.setItemAsync('cfduid', credentials.cfduid),
