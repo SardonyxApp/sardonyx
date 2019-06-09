@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { fonts } from '../styles';
-
 import TaskListCard from './TaskListCard';
+import OverviewHeading from './OverviewHeading';
+import CalendarDate from './CalendarDate';
+import { fonts, colors } from '../styles';
 
 Date.prototype.getDayName = function() {
   const index = this.getDay();
@@ -39,12 +40,7 @@ export default class TasksContainer extends React.PureComponent {
           key={t.id}
         >
           <View style={containerStyles.side}>
-            <Text style={fonts.jost200}>
-              {i === 0 ? new Date(t.due).getDayName() : null}
-            </Text>
-            <Text style={fonts.jost200}>
-              {i === 0 ? new Date(t.due).getDate() : null}
-            </Text>
+            <CalendarDate type="mini" date={new Date(t.due)} bgColor={colors.primary} color={colors.primary} />
           </View>
           <TouchableOpacity
             style={containerStyles.touchableOpacity}
@@ -68,12 +64,7 @@ export default class TasksContainer extends React.PureComponent {
             key={t.id}
           >
             <View style={containerStyles.side}>
-              <Text style={fonts.jost200}>
-                {store === due.toDateString() ? null : due.getDayName()}
-              </Text>
-              <Text style={fonts.jost200}>
-                {store === due.toDateString() ? null : due.getDate()}
-              </Text>
+              <CalendarDate type="mini" date={due} bgColor={colors.primary} color={colors.primary} />
             </View>
             <TouchableOpacity
               style={containerStyles.touchableOpacity}
@@ -97,7 +88,7 @@ export default class TasksContainer extends React.PureComponent {
           style={containerStyles.container} 
           key={t.id}
         >
-          <View style={containerStyles.side}></View>
+          <View style={containerStyles.side} />
           <TouchableOpacity
             style={containerStyles.touchableOpacity}
             onPress={() => this.props.navigation.navigate('TaskInfo', { ...this.props, currentTask: t.id })}
@@ -121,12 +112,7 @@ export default class TasksContainer extends React.PureComponent {
             key={t.id}
           >
             <View style={containerStyles.side}>
-              <Text style={fonts.jost200}>
-                {store === due.toDateString() ? null : due.getMonthName()}
-              </Text>
-              <Text style={fonts.jost200}>
-                {store === due.toDateString() ? null : due.getDate()}
-              </Text>
+              <CalendarDate type="mini" date={due} bgColor={colors.primary} color={colors.primary}/>
             </View>
             <TouchableOpacity
               style={containerStyles.touchableOpacity}
@@ -144,22 +130,20 @@ export default class TasksContainer extends React.PureComponent {
 
     return (
       <View>
-        {todayTasks.length ? <Text style={containerStyles.subheading}>TODAY</Text> : null}
+        {todayTasks.length ? <OverviewHeading style={containerStyles.heading}>Today</OverviewHeading> : null}
         {todayTasks}
 
-        {upcomingTasks.length 
-          ? <Text style={containerStyles.subheading}>UPCOMING</Text>
-          : null }
+        {upcomingTasks.length ? (
+          <OverviewHeading style={containerStyles.heading}>Upcoming</OverviewHeading>
+        ) : null}
         {upcomingTasks}
 
-        {noDateTasks.length 
-          ? <Text style={containerStyles.subheading}>NO DATE SET</Text> 
-          : null}
+        {noDateTasks.length ? (
+          <OverviewHeading style={containerStyles.heading}>No Date Set</OverviewHeading>
+        ) : null}
         {noDateTasks}
 
-        {pastTasks.length 
-          ? <Text style={containerStyles.subheading}>PAST DUE</Text>
-          : null}
+        {pastTasks.length ? <OverviewHeading style={containerStyles.heading}>Past Due</OverviewHeading> : null}
         {pastTasks}
 
         {tasks.length ? null : <Text style={containerStyles.subheading}>NO TASKS FOUND</Text>}
@@ -169,6 +153,10 @@ export default class TasksContainer extends React.PureComponent {
 }
 
 const containerStyles = StyleSheet.create({
+  heading: {
+    marginTop: 32,
+    marginBottom: 0 // override default -16
+  },
   subheading: {
     ...fonts.jost400,
     fontSize: 16,
@@ -176,14 +164,14 @@ const containerStyles = StyleSheet.create({
   },
   container: {
     flexDirection: 'row',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    marginTop: 12
   },
   touchableOpacity: {
     flex: 1
   },
   side: {
-    width: 31,
-    marginTop: 12,
-    flex: 0
+    width: 25,
+    justifyContent: 'center'
   }
 });
