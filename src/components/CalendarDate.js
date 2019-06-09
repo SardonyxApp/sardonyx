@@ -25,18 +25,32 @@ export default class CalendarDate extends React.PureComponent {
   ];
 
   render() {
+    const styles =
+      this.props.type === 'mini' ? miniCalendarStyles : calendarStyles;
     return (
-      <View style={calendarStyles.container}>
-        <View style={calendarStyles.calendar}>
-          <View style={calendarStyles.month}>
-            <Text style={calendarStyles.monthText}>
+      <View style={styles.container}>
+        <View style={styles.calendar}>
+          <View
+            style={[
+              styles.month,
+              this.props.bgColor && {
+                backgroundColor: this.props.bgColor
+              }
+            ]}
+          >
+            <Text style={styles.monthText}>
               {this.shortMonthNames[this.props.date.getMonth()]}
             </Text>
           </View>
-          <View style={calendarStyles.date}>
-            <Text style={[calendarStyles.dateText, this.props.color && {
-              color: this.props.color
-            }]}>
+          <View style={styles.date}>
+            <Text
+              style={[
+                styles.dateText,
+                this.props.color && {
+                  color: this.props.color
+                }
+              ]}
+            >
               {this.props.date.getDate()}
             </Text>
           </View>
@@ -83,6 +97,48 @@ const calendarStyles = StyleSheet.create({
   dateText: {
     color: colors.blue,
     fontSize: 32,
+    ...fonts.jost500
+  }
+});
+
+const miniCalendarStyles = StyleSheet.create({
+  container: {
+    height: 50,
+    width: 50,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  calendar: {
+    height: 40,
+    width: 40,
+    borderRadius: 2,
+    backgroundColor: colors.white,
+    elevation: 1,
+    overflow: 'hidden'
+  },
+  month: {
+    height: 14,
+    width: 40,
+    top: 0,
+    backgroundColor: colors.blue,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  monthText: {
+    fontSize: 10,
+    color: colors.white,
+    textTransform: 'uppercase',
+    ...fonts.jost400
+  },
+  date: {
+    height: 26,
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  dateText: {
+    color: colors.blue,
+    fontSize: 22,
     ...fonts.jost500
   }
 });

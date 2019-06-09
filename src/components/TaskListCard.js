@@ -37,12 +37,13 @@ const cardStyles = StyleSheet.create({
   card: {
     ...styles.padding10,
     backgroundColor: '#fff',
-    borderRadius: 2,
-    marginTop: 12,
-    flex: 1
+    borderRadius: 4,
+    flex: 1,
+    elevation: 1,
+    paddingLeft: 32
   },
   title: {
-    ...fonts.jost300,
+    ...fonts.jost400,
     fontSize: 18
   },
   description: {
