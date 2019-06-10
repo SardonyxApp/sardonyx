@@ -10,15 +10,16 @@ import {
 } from 'react-native';
 
 import { Button } from 'react-native-elements';
-
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setManagebacOverview } from '../actions';
 import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
 import { styles, colors, preset, fonts } from '../styles';
 
-import KeyboardSpacer from 'react-native-keyboard-spacer';
-
-export default class Login extends React.Component {
+class Login extends React.Component {
   render() {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -123,19 +124,11 @@ class LoginForm extends React.Component {
           ), ...{ sardonyxToken: response.headers.map['sardonyx-token'] }};
           Storage.writeCredentials(credentials)
             .then(() => {
-              Storage.writeValue(
-                'managebacOverview',
-                response.headers.map['managebac-data']
-              )
-                .then(() => {
-                  this.toggleButton(); // Make button available again
-                  this.props.navigation.navigate('AppStack');
-                })
-                .catch(err => {
-                  this.props.navigation.navigate('Login', {
-                    errorMessage: 'There was an error while storing data. ' + error
-                  });
-                });
+              this.props.setManagebacOverview(
+                JSON.parse(response.headers.map['managebac-data'])
+              );
+              this.toggleButton(); // Make button available again
+              this.props.navigation.navigate('AppStack');
             })
             .catch(error => {
               this.toggleButton();
@@ -300,3 +293,17 @@ function ErrorMessage(props) {
   }
   return null;
 }
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      setManagebacOverview
+    },
+    dispatch
+  );
+
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Login);
