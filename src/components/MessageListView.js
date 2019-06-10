@@ -2,8 +2,7 @@ import React from 'react';
 
 import { Text, View, FlatList, StyleSheet, Image } from 'react-native';
 
-import { DangerZone } from 'expo';
-const { Lottie } = DangerZone;
+import Lottie from 'lottie-react-native';
 import { Icon } from 'react-native-elements';
 import HTMLView from 'react-native-htmlview';
 

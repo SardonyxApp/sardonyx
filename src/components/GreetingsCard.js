@@ -2,8 +2,7 @@ import React from 'react';
 
 import { View, StyleSheet, Dimensions, Text } from 'react-native';
 
-import { DangerZone } from 'expo';
-const { Lottie } = DangerZone;
+import Lottie from 'lottie-react-native';
 
 import { colors, fonts } from '../styles';
 
@@ -39,7 +38,6 @@ export default class GreetingsCard extends React.Component {
           loop={true}
           autoPlay={true}
           source={require('../assets/overview.json')}
-          cacheStrategy={'weak'}
         />
         <Text style={greetingsCardStyles.title} numberOfLines={1}>
           Hello{' '}

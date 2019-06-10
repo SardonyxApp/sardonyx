@@ -1,13 +1,15 @@
 import React from 'react';
+
 import {
   createSwitchNavigator,
   createStackNavigator,
   createAppContainer
 } from 'react-navigation';
-
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-
 import { Font } from 'expo';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import reducers from './src/reducers';
 
 import ManagebacStack from './src/ManagebacStack';
 import TasksStack from './src/TasksStack';
@@ -17,6 +19,9 @@ import LoginScreen from './src/screens/LoginScreen';
 import LogoutScreen from './src/screens/LogoutScreen';
 
 import { colors } from './src/styles';
+
+// Initialise the entire Redux Store with all reducers combined.
+const store = createStore(reducers);
 
 // The main app navigation stack.
 // Screens made later on (individual message screens, feed, or whatever) will be added here
@@ -97,7 +102,9 @@ export default class Root extends React.Component {
   render() {
     return (
       this.state.fontLoaded && (
-        <AppContainer persistenceKey={__DEV__ ? null : null} />
+        <Provider store={store}>
+          <AppContainer />
+        </Provider>
       )
     );
   }

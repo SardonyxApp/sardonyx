@@ -11,7 +11,7 @@ import React from 'react';
  * Interface with SecureStore
  */
 
-import { SecureStore } from 'expo';
+import * as SecureStore from 'expo-secure-store';
 
 class StorageClass extends React.Component {
   /**
