@@ -3,6 +3,9 @@ import React from 'react';
 import { ScrollView, RefreshControl, StyleSheet } from 'react-native';
 
 import { Icon } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setManagebacOverview } from '../actions';
 import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
@@ -14,7 +17,7 @@ import RoundIconCarousel from '../components/RoundIconCarousel';
 import CASExpandableCard from '../components/CASExpandableCard';
 import { colors } from '../styles';
 
-export default class ManagebacOverviewScreen extends React.PureComponent {
+class ManagebacOverviewScreen extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -54,18 +57,16 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
   }
 
   componentDidMount() {
-    this._getOverviewData().then(data => {
-      this.setState({
-        refreshing: false,
-        upcomingEvents: data.deadlines,
-        classList: data.classes,
-        groupList: data.groups,
-        userInfo: data.user
-      });
-      this.props.navigation.setParams({
-        refreshPage: this._onRefresh,
-        notificationCount: data.notificationCount
-      });
+    this.setState({
+      refreshing: false,
+      upcomingEvents: this.props.overview.deadlines,
+      groupList: this.props.overview.groups,
+      classList: this.props.overview.classes,
+      userInfo: this.props.overview.user
+    });
+    this.props.navigation.setParams({
+      refreshPage: this._onRefresh,
+      notificationCount: this.props.overview.notificationCount
     });
   }
 
@@ -88,28 +89,19 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
               mode: 'no-cors'
             }).then(response => {
               if (response.status === 200) {
-                Storage.writeValue(
-                  'managebacOverview',
-                  response.headers.map['managebac-data']
-                )
-                  .then(() => {
-                    const data = JSON.parse(
-                      response.headers.map['managebac-data']
-                    );
-                    this.setState({
-                      refreshing: false,
-                      upcomingEvents: data.deadlines,
-                      classList: data.classes,
-                      groupList: data.groups,
-                      userInfo: data.user
-                    });
+                this.props.setManagebacOverview(
+                  JSON.parse(response.headers.map['managebac-data'])
+                );
+                this.setState(
+                  {
+                    refreshing: false
+                  },
+                  () => {
                     this.props.navigation.setParams({
-                      notificationCount: data.notificationCount
+                      notificationCount: this.props.overview.notificationCount
                     });
-                  })
-                  .catch(err => {
-                    console.warn(err);
-                  });
+                  }
+                );
                 return;
               }
             });
@@ -119,22 +111,6 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           });
       }
     );
-  }
-
-  /**
-   * Asynchronous function that returns a Promise for getting overview data.
-   * @return {Promise}
-   */
-  _getOverviewData() {
-    return new Promise(resolve => {
-      Storage.retrieveValue('managebacOverview')
-        .then(data => {
-          resolve(JSON.parse(data));
-        })
-        .catch(err => {
-          console.warn(err);
-        });
-    });
   }
 
   render() {
@@ -147,7 +123,7 @@ export default class ManagebacOverviewScreen extends React.PureComponent {
           />
         }
       >
-        <GreetingsCard name={this.state.userInfo.name} />
+        <GreetingsCard name={this.props.overview.user.name} />
         <OverviewHeading>Upcoming</OverviewHeading>
         <UpcomingCarousel
           upcomingEvents={this.state.upcomingEvents}
@@ -187,3 +163,21 @@ const overviewStyles = StyleSheet.create({
     marginBottom: 16
   }
 });
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      setManagebacOverview
+    },
+    dispatch
+  );
+
+const mapStateToProps = state => {
+  const overview = state.managebac.overview;
+  return { overview };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ManagebacOverviewScreen);

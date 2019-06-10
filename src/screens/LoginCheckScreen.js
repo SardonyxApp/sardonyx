@@ -3,12 +3,15 @@ import React from 'react';
 import { View, Text, StatusBar, ActivityIndicator } from 'react-native';
 
 import Lottie from 'lottie-react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setManagebacOverview } from '../actions';
 import { BASE_URL } from '../../env.json';
 
 import { Storage } from '../helpers';
 import { styles, colors, fonts } from '../styles';
 
-export default class LoginCheckScreen extends React.Component {
+class LoginCheckScreen extends React.Component {
   constructor(props) {
     super(props);
     Storage.retrieveCredentials()
@@ -43,16 +46,10 @@ export default class LoginCheckScreen extends React.Component {
           };
           Storage.writeCredentials(credentials)
             .then(() => {
-              Storage.writeValue(
-                'managebacOverview',
-                response.headers.map['managebac-data']
-              )
-                .then(() => {
-                  this.props.navigation.navigate('AppStack');
-                })
-                .catch(err => {
-                  console.warn(err);
-                });
+              this.props.setManagebacOverview(
+                JSON.parse(response.headers.map['managebac-data'])
+              );
+              this.props.navigation.navigate('AppStack');
             })
             .catch(err => {
               console.warn(err);
@@ -121,3 +118,21 @@ export default class LoginCheckScreen extends React.Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      setManagebacOverview
+    },
+    dispatch
+  );
+
+const mapStateToProps = state => {
+  const managebac = state.managebac;
+  return { managebac };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LoginCheckScreen);

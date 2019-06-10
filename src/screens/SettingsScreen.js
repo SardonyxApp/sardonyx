@@ -79,30 +79,6 @@ class SettingsScreen extends React.Component {
     };
   };
 
-  componentDidMount() {
-    this._getOverviewData().then(data => {
-      this.setState({
-        userInfo: data.user
-      });
-    });
-  }
-
-  /**
-   * Asynchronous function that returns a Promise for getting overview data.
-   * @return {Promise}
-   */
-  _getOverviewData() {
-    return new Promise(resolve => {
-      Storage.retrieveValue('managebacOverview')
-        .then(data => {
-          resolve(JSON.parse(data));
-        })
-        .catch(err => {
-          console.warn(err);
-        });
-    });
-  }
-
   _handleLogout() {
     this.props.navigation.navigate('Logout');
   }
@@ -136,16 +112,16 @@ class SettingsScreen extends React.Component {
         <View style={[settingsStyles.item, settingsStyles.profileRow]}>
           <Image
             source={
-              this.state.userInfo.avatar
+              this.props.user.avatar
                 ? {
-                    uri: this.state.userInfo.avatar
+                    uri: this.props.user.avatar
                   }
                 : require('../logos/Icon.png')
             }
             style={settingsStyles.profileIcon}
           />
           <Text style={settingsStyles.profileName}>
-            {this.state.userInfo.name}
+            {this.props.user.name}
           </Text>
         </View>
         <SectionList
@@ -210,9 +186,11 @@ const settingsStyles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
+  console.log(state.managebac);
   const settings = state.settings;
-  return { settings };
-}
+  const user = state.managebac.overview.user;
+  return { settings, user };
+};
 
-export default connect(mapStateToProps)(SettingsScreen)
+export default connect(mapStateToProps)(SettingsScreen);
