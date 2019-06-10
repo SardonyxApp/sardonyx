@@ -10,10 +10,21 @@ const SETTINGS_INITIAL_STATE = {
 
 const settingsReducer = (state = SETTINGS_INITIAL_STATE, action) => {
   switch (action.type) {
+    case 'SETTINGS_SET':
+      const newState = {
+        ...state
+      };
+      console.log(action.settings)
+      setPath(newState, action.settings[0], action.settings[1]);
+      return newState;
     default:
       return state;
   }
 };
+
+const setPath = (object, path, value) => path
+   .split('.')
+   .reduce((o,p,i) => o[p] = path.split('.').length === ++i ? value : o[p] || {}, object)
 
 const MANAGEBAC_INITIAL_STATE = {
   overview: {}

@@ -3,3 +3,8 @@ export const setManagebacOverview = managebacResponse => ({
   type: 'MANAGEBAC_SET_OVERVIEW',
   overview: {...managebacResponse}
 });
+
+export const setSettings = (key, value) => ({
+  type: 'SETTINGS_SET',
+  settings: [key, value]
+});
