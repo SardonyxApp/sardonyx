@@ -10,11 +10,12 @@ import {
   StyleSheet
 } from 'react-native';
 
-import { TouchableRipple } from 'react-native-paper';
+import { TouchableRipple, Switch } from 'react-native-paper';
+import { bindActionCreators } from 'redux';
+import { setSettings } from '../actions';
 import { connect } from 'react-redux';
 
-import { Storage } from '../helpers';
-import { colors, fonts, styles } from '../styles';
+import { colors, fonts } from '../styles';
 
 class SettingsScreen extends React.Component {
   settingsSections = [
@@ -22,9 +23,10 @@ class SettingsScreen extends React.Component {
       title: 'General',
       data: [
         {
-          title: 'Example Item',
-          description:
-            "I can't find a way to implement settings which affect the entire app, is Redux the way to go? I don't know."
+          title: 'Animations on Overview',
+          description: 'Enable to show stick figure animations in the ManageBac Overview page.',
+          type: 'checkbox',
+          redux: 'general.showOverviewAnimation'
         }
       ]
     },
@@ -63,6 +65,7 @@ class SettingsScreen extends React.Component {
       userInfo: {}
     };
     this._handleLogout = this._handleLogout.bind(this);
+    this._renderRow = this._renderRow.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -83,16 +86,58 @@ class SettingsScreen extends React.Component {
     this.props.navigation.navigate('Logout');
   }
 
+  _objectKeyByString(o, s) {
+    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+    s = s.replace(/^\./, ''); // strip a leading dot
+    var a = s.split('.');
+    for (var i = 0, n = a.length; i < n; ++i) {
+      var k = a[i];
+      if (k in o) {
+        o = o[k];
+      } else {
+        return;
+      }
+    }
+    return o;
+  }
+
   _renderRow({ item }) {
     return (
       <View style={settingsStyles.itemContainer}>
         <TouchableRipple onPress={item.onPress}>
-          <View style={settingsStyles.item}>
-            <Text style={settingsStyles.title}>{item.title}</Text>
-            {item.description ? (
-              <Text style={settingsStyles.description}>{item.description}</Text>
-            ) : null}
-          </View>
+          {item.type === 'checkbox' ? (
+            <View style={[settingsStyles.item, settingsStyles.checkboxItem]}>
+              <View style={settingsStyles.nonCheckboxContainer}>
+                <Text style={settingsStyles.title}>{item.title}</Text>
+                {item.description ? (
+                  <Text style={settingsStyles.description}>
+                    {item.description}
+                  </Text>
+                ) : null}
+              </View>
+              <View style={settingsStyles.checkboxContainer}>
+                <Switch
+                  color={colors.primary}
+                  value={this._objectKeyByString(this.props.settings, item.redux)}
+                  onValueChange={() => {
+                    this.props.setSettings(
+                      item.redux,
+                      !this._objectKeyByString(this.props.settings, item.redux)
+                    );
+                  }}
+                />
+              </View>
+            </View>
+          ) : (
+            <View style={settingsStyles.item}>
+              <Text style={settingsStyles.title}>{item.title}</Text>
+              {item.description ? (
+                <Text style={settingsStyles.description}>
+                  {item.description}
+                </Text>
+              ) : null}
+            </View>
+          )}
         </TouchableRipple>
       </View>
     );
@@ -120,9 +165,7 @@ class SettingsScreen extends React.Component {
             }
             style={settingsStyles.profileIcon}
           />
-          <Text style={settingsStyles.profileName}>
-            {this.props.user.name}
-          </Text>
+          <Text style={settingsStyles.profileName}>{this.props.user.name}</Text>
         </View>
         <SectionList
           style={settingsStyles.page}
@@ -175,6 +218,16 @@ const settingsStyles = StyleSheet.create({
     paddingVertical: 16,
     justifyContent: 'center'
   },
+  checkboxItem: {
+    flexDirection: 'row'
+  },
+  checkboxContainer: {
+    marginLeft: 16,
+    justifyContent: 'center'
+  },
+  nonCheckboxContainer: {
+    flex: 1
+  },
   title: {
     fontSize: 16,
     ...fonts.jost500,
@@ -186,11 +239,21 @@ const settingsStyles = StyleSheet.create({
   }
 });
 
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      setSettings
+    },
+    dispatch
+  );
+
 const mapStateToProps = state => {
-  console.log(state.managebac);
   const settings = state.settings;
   const user = state.managebac.overview.user;
   return { settings, user };
 };
 
-export default connect(mapStateToProps)(SettingsScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SettingsScreen);

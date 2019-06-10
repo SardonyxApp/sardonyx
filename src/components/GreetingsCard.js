@@ -3,18 +3,21 @@ import React from 'react';
 import { View, StyleSheet, Dimensions, Text } from 'react-native';
 
 import Lottie from 'lottie-react-native';
+import { connect } from 'react-redux';
 
 import { colors, fonts } from '../styles';
 
-export default class GreetingsCard extends React.Component {
+class GreetingsCard extends React.Component {
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.animation.play();
-    }, 200);
+    if(this.props.showOverviewAnimation) {
+      setTimeout(() => {
+        this.animation.play();
+      }, 200);
+    }
   }
 
   _getFirstName(text) {
@@ -25,7 +28,7 @@ export default class GreetingsCard extends React.Component {
   render() {
     return (
       <View style={greetingsCardStyles.container}>
-        <Lottie
+        {this.props.showOverviewAnimation ? <Lottie
           style={{
             width: Dimensions.get('window').width,
             height: (Dimensions.get('window').width / 1080) * 300,
@@ -36,9 +39,9 @@ export default class GreetingsCard extends React.Component {
             this.animation = animation;
           }}
           loop={true}
-          autoPlay={true}
+          autoPlay={this.props.showOverviewAnimation}
           source={require('../assets/overview.json')}
-        />
+        /> : null}
         <Text style={greetingsCardStyles.title} numberOfLines={1}>
           Hello{' '}
           <Text style={greetingsCardStyles.name}>
@@ -68,3 +71,10 @@ const greetingsCardStyles = StyleSheet.create({
     ...fonts.jost500
   }
 });
+
+const mapStateToProps = state => {
+  const showOverviewAnimation = state.settings.general.showOverviewAnimation;
+  return { showOverviewAnimation };
+};
+
+export default connect(mapStateToProps)(GreetingsCard);
