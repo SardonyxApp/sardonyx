@@ -1,14 +1,8 @@
 import React from 'react';
 
-import {
-  View,
-  Text,
-  StatusBar,
-  ActivityIndicator
-} from 'react-native';
+import { View, Text, StatusBar, ActivityIndicator } from 'react-native';
 
-import { DangerZone } from 'expo';
-const { Lottie } = DangerZone;
+import Lottie from 'lottie-react-native';
 import { BASE_URL } from '../../env.json';
 
 import { Storage } from '../helpers';
@@ -43,9 +37,10 @@ export default class LoginCheckScreen extends React.Component {
       .then(response => {
         if (response.status === 200) {
           // Validation succeeded
-          const credentials = { ...JSON.parse(
-            response.headers.map['login-token'] || '{}'
-          ), ...{ sardonyxToken: response.headers.map['sardonyx-token'] }};
+          const credentials = {
+            ...JSON.parse(response.headers.map['login-token'] || '{}'),
+            ...{ sardonyxToken: response.headers.map['sardonyx-token'] }
+          };
           Storage.writeCredentials(credentials)
             .then(() => {
               Storage.writeValue(
@@ -109,7 +104,7 @@ export default class LoginCheckScreen extends React.Component {
         <Lottie
           style={{
             width: 100,
-            height: 100,
+            height: 100
           }}
           ref={animation => {
             this.animation = animation;

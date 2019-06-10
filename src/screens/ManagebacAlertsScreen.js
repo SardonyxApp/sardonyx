@@ -10,8 +10,7 @@ import {
   Dimensions
 } from 'react-native';
 
-import { DangerZone } from 'expo';
-const { Lottie } = DangerZone;
+import Lottie from 'lottie-react-native';
 import moment from 'moment';
 import { BASE_URL } from '../../env';
 

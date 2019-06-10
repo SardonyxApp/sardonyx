@@ -11,7 +11,8 @@ import {
   RefreshControl,
   Alert,
   Vibration,
-  InteractionManager
+  InteractionManager,
+  Platform
 } from 'react-native';
 
 import { Haptic } from 'expo';
@@ -26,7 +27,6 @@ import PreloadImage from '../components/PreloadImage';
 import { Storage } from '../helpers';
 import { fonts, colors } from '../styles';
 import ExperienceUneditableWarning from '../components/ExperienceUneditableWarning';
-import { Platform } from 'expo-core';
 
 export default class ManagebacViewCASReflectionsScreen extends React.Component {
   isMounted = false;

@@ -11,18 +11,20 @@ import {
 } from 'react-native';
 
 import { TouchableRipple } from 'react-native-paper';
+import { connect } from 'react-redux';
 
 import { Storage } from '../helpers';
 import { colors, fonts, styles } from '../styles';
 
-export default class SettingsScreen extends React.Component {
+class SettingsScreen extends React.Component {
   settingsSections = [
     {
       title: 'General',
       data: [
         {
           title: 'Example Item',
-          description: 'I can\'t find a way to implement settings which affect the entire app, is Redux the way to go? I don\'t know.'
+          description:
+            "I can't find a way to implement settings which affect the entire app, is Redux the way to go? I don't know."
         }
       ]
     },
@@ -207,3 +209,10 @@ const settingsStyles = StyleSheet.create({
     color: colors.darkBackground
   }
 });
+
+const mapStateToProps = (state) => {
+  const settings = state.settings;
+  return { settings };
+}
+
+export default connect(mapStateToProps)(SettingsScreen)
