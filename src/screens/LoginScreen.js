@@ -37,7 +37,10 @@ class Login extends React.Component {
             <Text style={[styles.p, styles.alignCenter, fonts.jost400]}>
               Login with ManageBac
             </Text>
-            <LoginForm navigation={this.props.navigation} />
+            <LoginForm 
+              navigation={this.props.navigation} 
+              setManagebacOverview={this.props.setManagebacOverview}
+            />
             <ErrorMessage
               error={this.props.navigation.getParam('errorMessage', null)}
             />
