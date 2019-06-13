@@ -26,7 +26,8 @@ const labelStyles = StyleSheet.create({
     margin: 4,
     borderRadius: 4,
     padding: 12,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   labelName: {
     ...fonts.jost400,

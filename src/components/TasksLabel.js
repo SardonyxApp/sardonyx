@@ -32,7 +32,7 @@ export default class TasksLabel extends React.PureComponent {
           <Text style={labelStyles.labelName}>{this.props.label.name}</Text>
           {this.props.removable 
           ? <Icon 
-              size={12}
+              size={16}
               color="white"
               name="close"
               type="material"
