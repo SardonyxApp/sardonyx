@@ -42,7 +42,53 @@ const managebacReducer = (state = MANAGEBAC_INITIAL_STATE, action) => {
   }
 };
 
+const LABELS_INITIAL_STATE = { 
+  subjects: [],
+  categories: [],
+  loaded: false
+};
+
+// User default labels
+const userLabelsReducer = (state = LABELS_INITIAL_STATE, action) => {
+  switch(action.type) {
+    case 'SET_USER_LABELS':
+      return {
+        subjects: action.subjects,
+        categories: action.categories,
+        loaded: true
+      };
+    case 'ADD_USER_LABELS':
+      return {
+        ...state,
+        [action.labelType]: state[action.labelType].concat(action.id)
+      };
+    case 'REMOVE_USER_LABELS':
+      return {
+        ...state,
+        [action.labelType]: state[action.labelType].filter(l => l !== action.id)
+      };
+    default: 
+      return state;
+  }
+}
+
+// Tasklist labels
+const labelsReducer = (state = LABELS_INITIAL_STATE, action) => {
+  switch(action.type) {
+    case 'SET_LABELS': 
+      return {
+        subjects: action.subjects,
+        categories: action.categories,
+        loaded: true
+      };
+    default: 
+      return state;
+  }
+};
+
 export default combineReducers({
   settings: settingsReducer,
-  managebac: managebacReducer
+  managebac: managebacReducer,
+  userLabels: userLabelsReducer,
+  labels: labelsReducer
 });
