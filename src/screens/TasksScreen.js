@@ -2,6 +2,9 @@ import React from 'react';
 import { ScrollView, ActivityIndicator } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { colors } from '../styles';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setUserLabels, setLabels } from '../actions';
 
 import io from 'socket.io-client';
 import { Storage } from '../helpers';
@@ -13,7 +16,7 @@ import TasksContainer from '../components/TasksContainer';
 
 const socket = io.connect(BASE_URL);
 
-export default class TasksScreen extends React.Component {
+class TasksScreen extends React.Component {
   constructor(props) {
     super(props);
 
@@ -24,9 +27,7 @@ export default class TasksScreen extends React.Component {
         teacher: false,
         name: '', 
         email: '',
-        tasklist_id: '',
-        subjects: [],
-        categories: []
+        tasklist_id: ''
       },
       tasklist: { // Store information about current tasklist 
         id: null,
@@ -47,7 +48,6 @@ export default class TasksScreen extends React.Component {
     this._handleCreateLabel = this._handleCreateLabel.bind(this);
     this._handleUpdateLabel = this._handleUpdateLabel.bind(this);
     this._handleDeleteLabel = this._handleDeleteLabel.bind(this);
-    this._handleUpdateUserLabel = this._handleUpdateUserLabel.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -88,6 +88,9 @@ export default class TasksScreen extends React.Component {
         subjectsFilter: responses[0].subjects,
         categoriesFilter: responses[0].categories,
       });
+
+      this.props.setUserLabels(responses[0].subjects, responses[0].categories);
+      this.props.setLabels(responses[3], responses[4]);
 
       this.props.navigation.setParams({ 
         onCreateTask: this._handleCreateTask, 
@@ -287,6 +290,8 @@ export default class TasksScreen extends React.Component {
         return payload;
       });
 
+      this.props.setLabels(this.state.subjects, this.state.categories);
+
       this.props.navigation.setParams({
         subjects: this.state.subjects,
         categories: this.state.categories
@@ -327,6 +332,8 @@ export default class TasksScreen extends React.Component {
         return payload;
       });
 
+      this.props.setLabels(this.state.subjects, this.state.categories);
+
       this.props.navigation.setParams({
         subjects: this.state.subjects,
         categories: this.state.categories
@@ -360,6 +367,8 @@ export default class TasksScreen extends React.Component {
         return payload;
       });
 
+      this.props.setLabels(this.state.subjects, this.state.categories);
+
       this.props.navigation.setParams({
         subjects: this.state.subjects,
         categories: this.state.categories
@@ -372,30 +381,7 @@ export default class TasksScreen extends React.Component {
     })
   }
 
-  /**
-   * @description Add or delete a user's default label
-   * @param {String} type 
-   * @param {Number} id 
-   */
-  async _handleUpdateUserLabel(type, id) {
-    const method = this.state.user[type].includes(id) ? 'DELETE' : 'POST';
-    const token = await Storage.retrieveValue('sardonyxToken');
-    fetch(`${BASE_URL}/app/user/${type}?id=${id}`, {
-      method,
-      headers: {
-        'Sardonyx-Token': token 
-      }
-    }).then(() => {
-      this.setState(prevState => {
-        const user = prevState.user;
-        user[type] = method === 'POST' ? user[type].concat([id]) : user[type].filter(l => l !== id);
-        return { user };
-      });
-    }).catch(err => {
-      alert('There was an error while updating default labels. If this error persists, please contact SardonyxApp.');
-      console.error(err);
-    }) 
-  }
+  // For handleUpdateUserLabel, see componentDidMount of SettingsEditUserLabelsScreen
 
   render() {
     return (
@@ -435,3 +421,15 @@ export default class TasksScreen extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const userLabels = state.userLabels;
+  return { userLabels };
+};
+
+const mapDispatchToProps = dispatch => bindActionCreators({ setUserLabels, setLabels }, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TasksScreen);

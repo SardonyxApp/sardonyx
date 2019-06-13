@@ -34,6 +34,10 @@ class SettingsScreen extends React.Component {
       title: 'Account',
       data: [
         {
+          title: 'Default tasklist labels',
+          onPress: () => this._handleNavigateToUserLabels()
+        },
+        {
           title: 'Sign out',
           onPress: () => this._handleLogout()
         }
@@ -65,6 +69,7 @@ class SettingsScreen extends React.Component {
       userInfo: {}
     };
     this._handleLogout = this._handleLogout.bind(this);
+    this._handleNavigateToUserLabels = this._handleNavigateToUserLabels.bind(this);
     this._renderRow = this._renderRow.bind(this);
   }
 
@@ -84,6 +89,10 @@ class SettingsScreen extends React.Component {
 
   _handleLogout() {
     this.props.navigation.navigate('Logout');
+  }
+
+  _handleNavigateToUserLabels() {
+    this.props.navigation.navigate('EditUserLabels');
   }
 
   _objectKeyByString(o, s) {
