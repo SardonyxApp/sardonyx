@@ -4,7 +4,8 @@ import { combineReducers } from 'redux';
 
 const SETTINGS_INITIAL_STATE = {
   general: {
-    showOverviewAnimation: true
+    showOverviewAnimation: true,
+    firstScreenManagebac: false
   }
 };
 
