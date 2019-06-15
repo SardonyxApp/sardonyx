@@ -7,7 +7,8 @@ import {
   Text,
   View,
   Image,
-  StyleSheet
+  StyleSheet,
+  Picker
 } from 'react-native';
 
 import { TouchableRipple, Switch } from 'react-native-paper';
@@ -24,19 +25,20 @@ class SettingsScreen extends React.Component {
       data: [
         {
           title: 'Animations on Overview',
-          description: 'Enable to show stick figure animations in the ManageBac Overview page.',
+          description:
+            'Enable to show stick figure animations in the ManageBac Overview page.',
           type: 'checkbox',
           redux: 'general.showOverviewAnimation'
+        },
+        {
+          title: 'Default tasklist labels',
+          onPress: () => this._handleNavigateToUserLabels()
         }
       ]
     },
     {
       title: 'Account',
       data: [
-        {
-          title: 'Default tasklist labels',
-          onPress: () => this._handleNavigateToUserLabels()
-        },
         {
           title: 'Sign out',
           onPress: () => this._handleLogout()
@@ -69,7 +71,9 @@ class SettingsScreen extends React.Component {
       userInfo: {}
     };
     this._handleLogout = this._handleLogout.bind(this);
-    this._handleNavigateToUserLabels = this._handleNavigateToUserLabels.bind(this);
+    this._handleNavigateToUserLabels = this._handleNavigateToUserLabels.bind(
+      this
+    );
     this._renderRow = this._renderRow.bind(this);
   }
 
@@ -110,33 +114,37 @@ class SettingsScreen extends React.Component {
     return o;
   }
 
+  _renderCheckboxRow(item) {
+    return (
+      <View style={[settingsStyles.item, settingsStyles.checkboxItem]}>
+        <View style={settingsStyles.nonCheckboxContainer}>
+          <Text style={settingsStyles.title}>{item.title}</Text>
+          {item.description ? (
+            <Text style={settingsStyles.description}>{item.description}</Text>
+          ) : null}
+        </View>
+        <View style={settingsStyles.checkboxContainer}>
+          <Switch
+            color={colors.primary}
+            value={this._objectKeyByString(this.props.settings, item.redux)}
+            onValueChange={() => {
+              this.props.setSettings(
+                item.redux,
+                !this._objectKeyByString(this.props.settings, item.redux)
+              );
+            }}
+          />
+        </View>
+      </View>
+    );
+  }
+
   _renderRow({ item }) {
     return (
       <View style={settingsStyles.itemContainer}>
         <TouchableRipple onPress={item.onPress}>
           {item.type === 'checkbox' ? (
-            <View style={[settingsStyles.item, settingsStyles.checkboxItem]}>
-              <View style={settingsStyles.nonCheckboxContainer}>
-                <Text style={settingsStyles.title}>{item.title}</Text>
-                {item.description ? (
-                  <Text style={settingsStyles.description}>
-                    {item.description}
-                  </Text>
-                ) : null}
-              </View>
-              <View style={settingsStyles.checkboxContainer}>
-                <Switch
-                  color={colors.primary}
-                  value={this._objectKeyByString(this.props.settings, item.redux)}
-                  onValueChange={() => {
-                    this.props.setSettings(
-                      item.redux,
-                      !this._objectKeyByString(this.props.settings, item.redux)
-                    );
-                  }}
-                />
-              </View>
-            </View>
+            this._renderCheckboxRow(item)
           ) : (
             <View style={settingsStyles.item}>
               <Text style={settingsStyles.title}>{item.title}</Text>
