@@ -80,7 +80,7 @@ export default class TaskDescription extends React.Component {
               onPress={this._handleFocus} 
               style={{ flex: 1 }}
             >
-              <Text style={descriptionStyles.text}>
+              <Text style={[descriptionStyles.text, { paddingVertical: 8 }]}>
                 {this.state.description ? description : 'No description provided.'}
               </Text>
             </TouchableWithoutFeedback>
@@ -113,7 +113,6 @@ const descriptionStyles = StyleSheet.create({
   text: {
     ...fonts.jost300,
     fontSize: 16,
-    paddingHorizontal: 8,
     flex: 1
   }
 });
