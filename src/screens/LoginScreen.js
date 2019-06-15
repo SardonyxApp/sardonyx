@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   TouchableWithoutFeedback,
+  Linking,
   Keyboard
 } from 'react-native';
 
@@ -267,8 +268,7 @@ function DisclaimerMessage() {
           fonts.jost300
         ]}
       >
-        By signing in, you are agreeing to our Terms of Service and Privacy
-        Policy.
+        By signing in, you are agreeing to our <Text onPress={() => Linking.openURL(BASE_URL + '/terms')} style={{ color: colors.primary }}>Terms of Service</Text> and <Text onPress={() => Linking.openURL(BASE_URL + '/privacy')} style={{ color: colors.primary }}>Privacy Policy</Text>.
       </Text>
       <Text
         style={[
