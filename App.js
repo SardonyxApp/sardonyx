@@ -8,8 +8,8 @@ import {
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { Font } from 'expo';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import reducers from './src/reducers';
+import configureStore from './configureStore';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import ManagebacStack from './src/ManagebacStack';
 import TasksStack from './src/TasksStack';
@@ -20,8 +20,7 @@ import LogoutScreen from './src/screens/LogoutScreen';
 
 import { colors } from './src/styles';
 
-// Initialise the entire Redux Store with all reducers combined.
-const store = createStore(reducers);
+const { store, persistor } = configureStore();
 
 // The main app navigation stack.
 // Screens made later on (individual message screens, feed, or whatever) will be added here
@@ -32,7 +31,7 @@ const AppStack = createMaterialBottomTabNavigator(
     SettingsTabs: SettingsStack
   },
   {
-    initialRouteName: store.getState().settings.general.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs',
+    initialRouteName: 'ManagebacTabs',
     shifting: true,
     activeColor: colors.primary,
     inactiveColor: colors.inactive,
@@ -103,7 +102,9 @@ export default class Root extends React.Component {
     return (
       this.state.fontLoaded && (
         <Provider store={store}>
-          <AppContainer />
+          <PersistGate loading={null} persistor={persistor}>
+            <AppContainer />
+          </PersistGate>
         </Provider>
       )
     );
