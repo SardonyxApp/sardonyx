@@ -14,7 +14,6 @@ const settingsReducer = (state = SETTINGS_INITIAL_STATE, action) => {
       const newState = {
         ...state
       };
-      console.log(action.settings)
       setPath(newState, action.settings[0], action.settings[1]);
       return newState;
     default:
