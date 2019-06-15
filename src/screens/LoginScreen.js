@@ -151,6 +151,11 @@ class LoginForm extends React.Component {
             this.props.navigation.navigate('Login', {
               errorMessage: 'Validation failed due to a network error.'
             });
+          else if (response.status === 503) 
+            this.props.navigation.navigate('Login', {
+              errorMessage:
+                'Could not access Sardonyx because Managebac is under maintenance. Please try again later.'
+            });
           else
             this.props.navigation.navigate('Login', {
               errorMessage:
