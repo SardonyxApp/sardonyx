@@ -172,6 +172,7 @@ const containerStyles = StyleSheet.create({
   },
   side: {
     width: 25,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    zIndex: 1
   }
 });
