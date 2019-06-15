@@ -16,7 +16,7 @@ class GreetingsCard extends React.Component {
     if(this.props.showOverviewAnimation) {
       setTimeout(() => {
         this.animation.play();
-      }, 200);
+      }, 100);
     }
   }
 

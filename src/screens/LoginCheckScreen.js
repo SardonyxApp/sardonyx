@@ -25,7 +25,9 @@ class LoginCheckScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.animation.play();
+    setTimeout(() => {
+      this.animation.play();
+    }, 100);
   }
 
   check(credentials = '{}') {
@@ -110,7 +112,6 @@ class LoginCheckScreen extends React.Component {
           autoPlay={true}
           source={require('../logos/animatedLogo.json')}
         />
-        {/* <Image source={require('../logos/Icon.png')} style={styles.logoIcon} /> */}
         <Text style={fonts.jost400}>Recovering session if it exists...</Text>
         <ActivityIndicator color={colors.primary} />
         <StatusBar hidden={true} />
