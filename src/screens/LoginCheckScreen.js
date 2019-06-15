@@ -112,7 +112,7 @@ class LoginCheckScreen extends React.Component {
           autoPlay={true}
           source={require('../logos/animatedLogo.json')}
         />
-        <Text style={fonts.jost400}>Recovering session if it exists...</Text>
+        <Text style={fonts.jost400}>Logging in...</Text>
         <ActivityIndicator color={colors.primary} />
         <StatusBar hidden={true} />
       </View>
