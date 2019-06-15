@@ -38,7 +38,7 @@ class SettingsScreen extends React.Component {
           redux: 'general.firstScreenManagebac'
         },
         {
-          title: 'Default tasklist labels',
+          title: 'Configure d tasklist labels',
           onPress: () => this._handleNavigateToUserLabels()
         }
       ]
@@ -226,7 +226,7 @@ const settingsStyles = StyleSheet.create({
     ...fonts.jost500
   },
   sectionHeader: {
-    marginTop: 4
+    marginTop: 6
   },
   sectionHeaderText: {
     fontSize: 14,
