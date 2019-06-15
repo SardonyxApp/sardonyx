@@ -31,6 +31,13 @@ class SettingsScreen extends React.Component {
           redux: 'general.showOverviewAnimation'
         },
         {
+          title: 'Start app on ManageBac',
+          description:
+            'Enable to launch the app on the ManageBac page instead of Tasks. (applies from next launch)',
+          type: 'checkbox',
+          redux: 'general.firstScreenManagebac'
+        },
+        {
           title: 'Default tasklist labels',
           onPress: () => this._handleNavigateToUserLabels()
         }

@@ -32,7 +32,7 @@ const AppStack = createMaterialBottomTabNavigator(
     SettingsTabs: SettingsStack
   },
   {
-    initialRouteName: 'ManagebacTabs',
+    initialRouteName: store.getState().settings.general.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs',
     shifting: true,
     activeColor: colors.primary,
     inactiveColor: colors.inactive,
