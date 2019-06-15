@@ -74,8 +74,8 @@ export default class TasksUpdateLabelScreen extends React.Component {
 
   render() {
     return (
-      <ScrollView style={{ flex: 1 }}>
-        <ScrollView style={updateStyles.container} >
+      <ScrollView contentContainerStyle={updateStyles.primaryContainer}>
+        <ScrollView contentContainerStyle={updateStyles.secondaryContainer}>
           <View>
             <Text style={updateStyles.heading}>Name</Text>
             <TextInput 
@@ -130,9 +130,12 @@ export default class TasksUpdateLabelScreen extends React.Component {
 }
 
 const updateStyles = StyleSheet.create({
-  container: {
-    padding: 8,
+  primaryContainer: {
+    flex: 1,
     backgroundColor: colors.lightBackground
+  },
+  secondaryContainer: {
+    padding: 8
   },
   heading: {
     ...fonts.jost400,
