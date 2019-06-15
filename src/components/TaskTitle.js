@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableWithoutFeedback, StyleSheet, Platform } from 'react-native';
 
-import { fonts } from '../styles';
+import { fonts, colors } from '../styles';
 
 export default class TaskTitle extends React.Component {
   constructor(props) {
@@ -34,7 +34,7 @@ export default class TaskTitle extends React.Component {
   render() {
     return this.state.focused ? (
       <View
-        style={{ borderBottomWidth: 2, borderBottomColor: '#2977b6', flex: 1, marginRight: 8 }}
+        style={titleStyles.inputContainer}
       >
         <TextInput 
           style={titleStyles.text}
@@ -47,23 +47,37 @@ export default class TaskTitle extends React.Component {
         />
       </View>
     ) : (
-      <TouchableWithoutFeedback 
-        onPress={() => this.setState({ focused: true })} 
-        style={{ flex: 1 }}
-      >
-        <Text 
-          style={[titleStyles.text, { marginRight: 8 }]}
-          numberOfLines={1}
-          ellipsizeMode={'tail'}
+      <View style={titleStyles.textContainer}>
+        <TouchableWithoutFeedback 
+          onPress={() => this.setState({ focused: true })} 
         >
-          {this.state.title}
-        </Text>
-      </TouchableWithoutFeedback>
+          <Text 
+            style={[titleStyles.text, { marginRight: 8 }]}
+            numberOfLines={1}
+            ellipsizeMode={'tail'}
+          >
+            {this.state.title}
+          </Text>
+        </TouchableWithoutFeedback>
+      </View>
+      
     )
   }
 }
 
 const titleStyles = StyleSheet.create({
+  inputContainer: {
+    borderBottomWidth: 2,
+    borderBottomColor: colors.blue,
+    flex: 1,
+    marginRight: 8,
+    marginLeft: Platform.OS === 'ios' ? 24 : 0
+  },
+  textContainer: {
+    flex: 1,
+    marginRight: 8,
+    marginLeft: Platform.OS === 'ios' ? 24 : 0
+  }, 
   text: {
     ...fonts.jost400,
     color: 'white',
