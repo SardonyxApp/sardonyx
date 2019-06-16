@@ -30,7 +30,7 @@ export default class ManagebacEditCASScreen extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style={{padding: 16}}>
         <Text>This page is still a work-in-progress. At this time, use the PC version of ManageBac to edit your CAS experiences.</Text>
       </View>
     );

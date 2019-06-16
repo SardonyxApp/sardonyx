@@ -87,24 +87,24 @@ class ManagebacOverviewScreen extends React.PureComponent {
                 'Login-Token': credentials
               },
               mode: 'no-cors'
-            }).then(response => {
-              if (response.status === 200) {
-                this.props.setManagebacOverview(
-                  JSON.parse(response.headers.map['managebac-data'])
-                );
-                this.setState(
-                  {
-                    refreshing: false
-                  },
-                  () => {
-                    this.props.navigation.setParams({
-                      notificationCount: this.props.overview.notificationCount
-                    });
-                  }
-                );
-                return;
-              }
-            });
+            })
+              .then(r => r.json().then(data => ({ response: r, data: data })))
+              .then(({ response, data }) => {
+                if (response.status === 200) {
+                  this.props.setManagebacOverview(data);
+                  this.setState(
+                    {
+                      refreshing: false
+                    },
+                    () => {
+                      this.props.navigation.setParams({
+                        notificationCount: this.props.overview.notificationCount
+                      });
+                    }
+                  );
+                  return;
+                }
+              });
           })
           .catch(err => {
             console.warn(err);

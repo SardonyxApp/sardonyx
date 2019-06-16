@@ -118,7 +118,8 @@ class LoginForm extends React.Component {
       body: formData,
       mode: 'no-cors'
     })
-      .then(response => {
+      .then(r => r.json().then(data => ({ response: r, data: data })))
+      .then(({ response, data }) => {
         if (response.status === 200) {
           // store response tokens
           const credentials = {
@@ -127,9 +128,7 @@ class LoginForm extends React.Component {
           };
           Storage.writeCredentials(credentials)
             .then(() => {
-              this.props.setManagebacOverview(
-                JSON.parse(response.headers.map['managebac-data'])
-              );
+              this.props.setManagebacOverview(data);
               this.toggleButton(); // Make button available again
               this.props.navigation.navigate(
                 this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'

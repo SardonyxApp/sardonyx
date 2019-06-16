@@ -87,25 +87,28 @@ export default class ManagebacMessageThreadScreen extends React.Component {
             'Login-Token': credentials
           },
           mode: 'no-cors'
-        })
+        }).then(r => r.json().then(data => ({ response: r, data: data })))
       );
     });
 
     Promise.all(promises)
-      .then(responses => {
+      .then(responses => ({
+        // Convert to array of each
+        responses: responses.map(response => response.response),
+        datas: responses.map(response => response.data)
+      }))
+      .then(({ responses, datas }) => {
         if (!this._isMounted) return;
-        responses.forEach(response => {
+        responses.forEach((response, index) => {
           if (response.status === 200) {
-            const parsedManagebacResponse = JSON.parse(
-              response.headers.map['managebac-data']
-            );
+            const data = datas[index];
             // Copy the object, and start updating it
             const stateMessageData = { ...this.state.messageData };
             id = response.url.substring(response.url.lastIndexOf('/') + 1);
             // Update the comments from boolean "true" to array of subcomments
             stateMessageData.comments.forEach(item => {
               if (item.id == id) {
-                item.comments = parsedManagebacResponse.replyOfReply;
+                item.comments = data.replyOfReply;
               }
             });
             this.setState({
@@ -133,27 +136,26 @@ export default class ManagebacMessageThreadScreen extends React.Component {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        this.setState(
-          {
-            messageData: parsedManagebacResponse.message[0]
-          },
-          () => {
-            this._fetchMessageSubCommentsData(credentials);
-          }
-        );
-        return;
-      } else if (response.status === 404) {
-        Alert.alert('Not Found', 'Message could not be found.', []);
-        this.props.navigation.goBack();
-        return;
-      }
-    });
+    })
+      .then(r => r.json().then(data => ({ response: r, data: data })))
+      .then(({ response, data }) => {
+        if (!this._isMounted) return;
+        if (response.status === 200) {
+          this.setState(
+            {
+              messageData: data.message[0]
+            },
+            () => {
+              this._fetchMessageSubCommentsData(credentials);
+            }
+          );
+          return;
+        } else if (response.status === 404) {
+          Alert.alert('Not Found', 'Message could not be found.', []);
+          this.props.navigation.goBack();
+          return;
+        }
+      });
   }
 
   /**

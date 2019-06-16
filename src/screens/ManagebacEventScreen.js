@@ -63,22 +63,26 @@ export default class ManagebacEventScreen extends React.Component {
                 'Login-Token': credentials
               },
               mode: 'no-cors'
-            }).then(response => {
-              if (!this._isMounted) return;
-              if (response.status === 200) {
-                this.setState({
-                  refreshing: false,
-                  upcomingEventData: JSON.parse(
-                    response.headers.map['managebac-data']
-                  ).assignment
-                });
-                return;
-              } else if (response.status === 404) {
-                Alert.alert('Not Found', 'Your Event could not be found.', []);
-                this.props.navigation.goBack();
-                return;
-              }
-            });
+            })
+              .then(r => r.json().then(data => ({ response: r, data: data })))
+              .then(({ response, data }) => {
+                if (!this._isMounted) return;
+                if (response.status === 200) {
+                  this.setState({
+                    refreshing: false,
+                    upcomingEventData: data.assignment
+                  });
+                  return;
+                } else if (response.status === 404) {
+                  Alert.alert(
+                    'Not Found',
+                    'Your Event could not be found.',
+                    []
+                  );
+                  this.props.navigation.goBack();
+                  return;
+                }
+              });
           })
           .catch(err => {
             console.warn(err);
@@ -187,7 +191,7 @@ export default class ManagebacEventScreen extends React.Component {
           <HTMLView
             value={
               'details' in this.state.upcomingEventData
-                ? (this.state.upcomingEventData.details || 'No details provided.')
+                ? this.state.upcomingEventData.details || 'No details provided.'
                 : '<p />'
             }
             stylesheet={htmlStyles}

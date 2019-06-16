@@ -116,23 +116,22 @@ export default class ManagebacGroupScreen extends React.Component {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        this.setState({
-          refreshing: false,
-          groupUpcomingEventsData: parsedManagebacResponse.deadlines
-        });
-        return;
-      } else if (response.status === 404) {
-        Alert.alert('Not Found', 'Group could not be found.', []);
-        this.props.navigation.goBack();
-        return;
-      }
-    });
+    })
+      .then(r => r.json().then(data => ({ response: r, data: data })))
+      .then(({ response, data }) => {
+        if (!this._isMounted) return;
+        if (response.status === 200) {
+          this.setState({
+            refreshing: false,
+            groupUpcomingEventsData: data.deadlines
+          });
+          return;
+        } else if (response.status === 404) {
+          Alert.alert('Not Found', 'Group could not be found.', []);
+          this.props.navigation.goBack();
+          return;
+        }
+      });
   }
 
   /**
@@ -149,28 +148,27 @@ export default class ManagebacGroupScreen extends React.Component {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        // Place messages from a paeg into its own array inside messages[]
-        // This will be concat-ed when sending to MessageListView, don't worry
-        // Keeping it like an array makes it possible to count the currently loaded page count.
-        let messages = this.state.groupMessagesData;
-        messages[page - 1] = parsedManagebacResponse.messages;
-        this.setState({
-          fetchingMessages: false,
-          groupMessagesData: messages,
-          groupMessagesTotalPages: parsedManagebacResponse.numberOfPages
-        });
-        return;
-      } else {
-        Alert.alert('Error', 'Messages could not be loaded.', []);
-        return;
-      }
-    });
+    })
+      .then(r => r.json().then(data => ({ response: r, data: data })))
+      .then(({ response, data }) => {
+        if (!this._isMounted) return;
+        if (response.status === 200) {
+          // Place messages from a paeg into its own array inside messages[]
+          // This will be concat-ed when sending to MessageListView, don't worry
+          // Keeping it like an array makes it possible to count the currently loaded page count.
+          let messages = this.state.groupMessagesData;
+          messages[page - 1] = data.messages;
+          this.setState({
+            fetchingMessages: false,
+            groupMessagesData: messages,
+            groupMessagesTotalPages: data.numberOfPages
+          });
+          return;
+        } else {
+          Alert.alert('Error', 'Messages could not be loaded.', []);
+          return;
+        }
+      });
   }
 
   render() {
