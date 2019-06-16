@@ -45,7 +45,9 @@ class LoginCheckScreen extends React.Component {
               this.props.setManagebacOverview(
                 JSON.parse(response.headers.map['managebac-data'])
               );
-              this.props.navigation.navigate(this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs');
+              this.props.navigation.navigate(
+                this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'
+              );
             })
             .catch(err => {
               console.warn(err);
@@ -123,9 +125,8 @@ const mapDispatchToProps = dispatch =>
   );
 
 const mapStateToProps = state => {
-  const managebac = state.managebac;
   const firstScreenManagebac = state.settings.general.firstScreenManagebac;
-  return { managebac, firstScreenManagebac };
+  return { firstScreenManagebac };
 };
 
 export default connect(
