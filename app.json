@@ -20,6 +20,12 @@
     },
     "updates": {
       "fallbackToCacheTimeout": 0
+    },
+    "ios": {
+      "bundleIdentifier": "app.sardonyx"
+    },
+    "android": {
+      "package": "app.sardonyx"
     }
   }
 }
