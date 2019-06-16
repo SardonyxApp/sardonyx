@@ -95,17 +95,15 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
         mode: 'no-cors'
       }
     )
-      .then(response => {
+      .then(r => r.json().then(data => ({ response: r, data: data })))
+      .then(({ response, data }) => {
         if (!this._isMounted) return;
         if (response.status === 200) {
-          const parsedManagebacResponse = JSON.parse(
-            response.headers.map['managebac-data']
-          );
           this.setState({
             refreshing: false,
-            reflectionsData: parsedManagebacResponse.reflections,
+            reflectionsData: data.reflections,
             numberOfLines: Array(
-              parsedManagebacResponse.reflections.length
+              data.reflections.length
             ).fill(10)
           });
           return;

@@ -32,13 +32,12 @@ export default class CASExpandableCard extends ExpandableCard {
           },
           mode: 'no-cors'
         })
-          .then(response => {
-            if(!_isMounted) return;
+          .then(r => r.json().then(data => ({ response: r, data: data })))
+          .then(({ response, data }) => {
+            if (!_isMounted) return;
             if (response.status === 200) {
               this.setState({
-                casExperiences: JSON.parse(
-                  response.headers.map['managebac-data']
-                )
+                casExperiences: data
               });
               return;
             }
@@ -117,7 +116,7 @@ export default class CASExpandableCard extends ExpandableCard {
             onPress={() =>
               this._navigateToCASScreen(
                 item.link,
-                item.reflectionCount, 
+                item.reflectionCount,
                 decodeURI(item.title)
               )
             }

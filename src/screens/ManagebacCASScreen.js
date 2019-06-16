@@ -44,7 +44,7 @@ export default class ManagebacCASScreen extends React.Component {
     this._isMounted = false;
   }
 
-  static navigationOptions = ({ navigation }) => { 
+  static navigationOptions = ({ navigation }) => {
     return {
       title: `${navigation.state.params.title}`,
       headerRight: navigation.state.params.editable ? (
@@ -87,7 +87,7 @@ export default class ManagebacCASScreen extends React.Component {
 
   /**
    * Sends a GET request to the API, sets State, and show Alert on error.
-   * @param {String} credentials 
+   * @param {String} credentials
    */
   _fetchExperienceData(credentials) {
     fetch(BASE_URL + this.props.navigation.getParam('apiLink', '/404'), {
@@ -97,15 +97,14 @@ export default class ManagebacCASScreen extends React.Component {
       },
       mode: 'no-cors'
     })
-      .then(response => {
+      .then(r => r.json().then(data => ({ response: r, data: data })))
+      .then(({ response, data }) => {
         if (!this._isMounted) return;
         if (response.status === 200) {
           this.setState(
             {
               refreshing: false,
-              casExperienceData: JSON.parse(
-                response.headers.map['managebac-data']
-              ).cas
+              casExperienceData: data.cas
             },
             this._setEditableParam
           );

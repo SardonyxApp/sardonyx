@@ -33,7 +33,8 @@ class LoginCheckScreen extends React.Component {
       },
       mode: 'no-cors'
     })
-      .then(response => {
+      .then(r => r.json().then(data => ({ response: r, data: data })))
+      .then(({ response, data }) => {
         if (response.status === 200) {
           // Validation succeeded
           const credentials = {
@@ -42,9 +43,7 @@ class LoginCheckScreen extends React.Component {
           };
           Storage.writeCredentials(credentials)
             .then(() => {
-              this.props.setManagebacOverview(
-                JSON.parse(response.headers.map['managebac-data'])
-              );
+              this.props.setManagebacOverview(data);
               this.props.navigation.navigate(
                 this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'
               );

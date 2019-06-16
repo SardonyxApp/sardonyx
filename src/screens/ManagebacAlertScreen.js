@@ -80,19 +80,18 @@ export default class ManagebacAlertScreen extends React.Component {
         },
         mode: 'no-cors'
       }
-    ).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        this.setState({
-          refreshing: false,
-          notificationData: parsedManagebacResponse.notification
-        });
-        return;
-      }
-    });
+    )
+      .then(r => r.json().then(data => ({ response: r, data: data })))
+      .then(({ response, data }) => {
+        if (!this._isMounted) return;
+        if (response.status === 200) {
+          this.setState({
+            refreshing: false,
+            notificationData: data.notification
+          });
+          return;
+        }
+      });
   }
 
   render() {
@@ -119,7 +118,9 @@ export default class ManagebacAlertScreen extends React.Component {
             Sent on:{' '}
             <Text style={alertStyles.bold}>
               {'date' in this.state.notificationData
-                ? moment(this.state.notificationData.date).format('dddd, MMM Do YYYY, H:mm')
+                ? moment(this.state.notificationData.date).format(
+                    'dddd, MMM Do YYYY, H:mm'
+                  )
                 : ''}
             </Text>
           </Text>

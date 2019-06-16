@@ -63,6 +63,7 @@ export default class ManagebacClassScreen extends React.Component {
         Storage.retrieveCredentials()
           .then(credentials => {
             this._fetchClassOverviewData(credentials);
+            console.log('hi');
             this._fetchClassMessagesData(credentials);
           })
           .catch(err => {
@@ -117,26 +118,25 @@ export default class ManagebacClassScreen extends React.Component {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        this.setState({
-          refreshing: false,
-          classUpcomingEventsData: parsedManagebacResponse.upcoming,
-          classCompletedEventsData: parsedManagebacResponse.completed
-        });
-        return;
-      } else if (response.status === 404) {
-        Alert.alert('Not Found', 'Class could not be found.', []);
-        this.props.navigation.goBack();
-        return;
-      }
-    });
+    })
+      .then(r => r.json().then(data => ({ response: r, data: data })))
+      .then(({ response, data }) => {
+        if (!this._isMounted) return;
+        if (response.status === 200) {
+          this.setState({
+            refreshing: false,
+            classUpcomingEventsData: data.upcoming,
+            classCompletedEventsData: data.completed
+          });
+          return;
+        } else if (response.status === 404) {
+          Alert.alert('Not Found', 'Class could not be found.', []);
+          this.props.navigation.goBack();
+          return;
+        }
+      });
   }
-  
+
   /**
    * Called on load, and on scroll to bottom. Asynchronously sets the state using newest messages.
    * @param {String} credentials
@@ -151,28 +151,27 @@ export default class ManagebacClassScreen extends React.Component {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        // Place messages from a paeg into its own array inside messages[]
-        // This will be concat-ed when sending to MessageListView, don't worry
-        // Keeping it like an array makes it possible to count the currently loaded page count.
-        let messages = this.state.classMessagesData;
-        messages[page - 1] = parsedManagebacResponse.messages;
-        this.setState({
-          fetchingMessages: false,
-          classMessagesData: messages,
-          classMessagesTotalPages: parsedManagebacResponse.numberOfPages
-        });
-        return;
-      } else {
-        Alert.alert('Error', 'Messages could not be loaded.', []);
-        return;
-      }
-    });
+    })
+      .then(r => r.json().then(data => ({ response: r, data: data })))
+      .then(({ response, data }) => {
+        if (!this._isMounted) return;
+        if (response.status === 200) {
+          // Place messages from a paeg into its own array inside messages[]
+          // This will be concat-ed when sending to MessageListView, don't worry
+          // Keeping it like an array makes it possible to count the currently loaded page count.
+          let messages = this.state.classMessagesData;
+          messages[page - 1] = data.messages;
+          this.setState({
+            fetchingMessages: false,
+            classMessagesData: messages,
+            classMessagesTotalPages: data.numberOfPages
+          });
+          return;
+        } else {
+          Alert.alert('Error', 'Messages could not be loaded.', []);
+          return;
+        }
+      });
   }
 
   render() {

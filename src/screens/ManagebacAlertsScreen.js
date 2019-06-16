@@ -115,24 +115,23 @@ export default class ManagebacAlertsScreen extends React.Component {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        let notifications = this.state.notificationsData;
-        notifications[page - 1] = parsedManagebacResponse.notifications;
-        this.setState({
-          refreshing: false,
-          fetchingMessages: false,
-          notificationsData: notifications,
-          notificationsTotalPages: parsedManagebacResponse.numberOfPages,
-          notificationsLoadedPages: page
-        });
-        return;
-      }
-    });
+    })
+      .then(r => r.json().then(data => ({ response: r, data: data })))
+      .then(({ response, data }) => {
+        if (!this._isMounted) return;
+        if (response.status === 200) {
+          let notifications = this.state.notificationsData;
+          notifications[page - 1] = data.notifications;
+          this.setState({
+            refreshing: false,
+            fetchingMessages: false,
+            notificationsData: notifications,
+            notificationsTotalPages: data.numberOfPages,
+            notificationsLoadedPages: page
+          });
+          return;
+        }
+      });
   }
 
   _onPress(pressedItem) {
