@@ -11,7 +11,7 @@
     "platforms": ["ios", "android"],
     "githubUrl": "https://github.com/SardonyxApp/sardonyx",
     "orientation": "portrait",
-    "primaryColor": "#d17b46",
+    "primaryColor": "#ffffff",
     "icon": "./src/logos/Icon.png",
     "splash": {
       "backgroundColor": "#eeeeee",
