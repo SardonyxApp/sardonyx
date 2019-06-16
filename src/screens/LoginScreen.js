@@ -24,9 +24,7 @@ class Login extends React.Component {
   render() {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View
-          style={[styles.alignChildrenCenter, { flex: 1 }]}
-        >
+        <View style={[styles.alignChildrenCenter, { flex: 1 }]}>
           <View style={preset.loginBox}>
             <Image
               source={require('../logos/Icon.png')}
@@ -38,8 +36,8 @@ class Login extends React.Component {
             <Text style={[styles.p, styles.alignCenter, fonts.jost400]}>
               Login with ManageBac
             </Text>
-            <LoginForm 
-              navigation={this.props.navigation} 
+            <LoginForm
+              navigation={this.props.navigation}
               setManagebacOverview={this.props.setManagebacOverview}
             />
             <ErrorMessage
@@ -123,16 +121,19 @@ class LoginForm extends React.Component {
       .then(response => {
         if (response.status === 200) {
           // store response tokens
-          const credentials = { ...JSON.parse(
-            response.headers.map['login-token'] || '{}'
-          ), ...{ sardonyxToken: response.headers.map['sardonyx-token'] }};
+          const credentials = {
+            ...JSON.parse(response.headers.map['login-token'] || '{}'),
+            ...{ sardonyxToken: response.headers.map['sardonyx-token'] }
+          };
           Storage.writeCredentials(credentials)
             .then(() => {
               this.props.setManagebacOverview(
                 JSON.parse(response.headers.map['managebac-data'])
               );
               this.toggleButton(); // Make button available again
-              this.props.navigation.navigate('AppStack');
+              this.props.navigation.navigate(
+                this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'
+              );
             })
             .catch(error => {
               this.toggleButton();
@@ -151,7 +152,7 @@ class LoginForm extends React.Component {
             this.props.navigation.navigate('Login', {
               errorMessage: 'Validation failed due to a network error.'
             });
-          else if (response.status === 503) 
+          else if (response.status === 503)
             this.props.navigation.navigate('Login', {
               errorMessage:
                 'Could not access Sardonyx because Managebac is under maintenance. Please try again later.'
@@ -273,7 +274,21 @@ function DisclaimerMessage() {
           fonts.jost300
         ]}
       >
-        By signing in, you are agreeing to our <Text onPress={() => Linking.openURL(BASE_URL + '/terms')} style={{ color: colors.primary }}>Terms of Service</Text> and <Text onPress={() => Linking.openURL(BASE_URL + '/privacy')} style={{ color: colors.primary }}>Privacy Policy</Text>.
+        By signing in, you are agreeing to our{' '}
+        <Text
+          onPress={() => Linking.openURL(BASE_URL + '/terms')}
+          style={{ color: colors.primary }}
+        >
+          Terms of Service
+        </Text>{' '}
+        and{' '}
+        <Text
+          onPress={() => Linking.openURL(BASE_URL + '/privacy')}
+          style={{ color: colors.primary }}
+        >
+          Privacy Policy
+        </Text>
+        .
       </Text>
       <Text
         style={[
@@ -310,8 +325,12 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
+const mapStateToProps = state => {
+  const firstScreenManagebac = state.settings.general.firstScreenManagebac;
+  return { firstScreenManagebac };
+};
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Login);
