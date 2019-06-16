@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+
+import { TouchableRipple } from 'react-native-paper';
 
 import { fonts, colors } from '../styles';
 
@@ -13,11 +15,11 @@ export default class CTAButton extends React.PureComponent {
     return (
       <View style={[buttonStyles.container, this.props.style]}>
         <View style={buttonStyles.buttonOuter}>
-          <TouchableHighlight onPress={this.props.onPress}>
+          <TouchableRipple onPress={this.props.onPress}>
             <View style={buttonStyles.button}>
               <Text style={buttonStyles.text}>{this.props.children}</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableRipple>
         </View>
       </View>
     );
@@ -32,12 +34,12 @@ const buttonStyles = StyleSheet.create({
   buttonOuter: {
     overflow: 'hidden',
     borderRadius: 30,
-    elevation: 3
+    elevation: 10,
+    backgroundColor: colors.primary
   },
   button: {
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: colors.primary,
+    paddingVertical: 10
   },
   text: {
     color: 'white',
