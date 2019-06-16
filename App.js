@@ -16,7 +16,6 @@ import TasksStack from './src/TasksStack';
 import SettingsStack from './src/SettingsStack';
 import LoginCheckScreen from './src/screens/LoginCheckScreen';
 import LoginScreen from './src/screens/LoginScreen';
-import LogoutScreen from './src/screens/LogoutScreen';
 
 import { colors } from './src/styles';
 
@@ -41,21 +40,6 @@ const AppStack = createMaterialBottomTabNavigator(
   }
 );
 
-// The login navigation stack
-// Login authentication is an entirely different process and should be treated with a different
-// navigation stack using a switchNavigator
-const LoginStack = createStackNavigator(
-  {
-    Login: LoginScreen,
-    Logout: LogoutScreen
-  },
-  {
-    defaultNavigationOptions: {
-      header: null // Hide the default empty header bar for all child elements
-    }
-  }
-);
-
 // https://reactnavigation.org/docs/en/auth-flow.html
 // Switch navigators make sure the app nav stack and auth nav stack are two different things
 // and that you can't back-button into one another
@@ -66,7 +50,7 @@ const AppContainer = createAppContainer(
       //  identifiers that can be navigated to from anywhere in the app
       LoginCheck: LoginCheckScreen,
       AppStack: AppStack, // navigators can contain navigators
-      LoginStack: LoginStack
+      Login: LoginScreen
     },
     {
       initialRouteName: 'LoginCheck'

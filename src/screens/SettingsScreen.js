@@ -8,7 +8,7 @@ import {
   View,
   Image,
   StyleSheet,
-  Picker
+  Alert
 } from 'react-native';
 
 import { TouchableRipple, Switch } from 'react-native-paper';
@@ -16,6 +16,7 @@ import { bindActionCreators } from 'redux';
 import { setSettings } from '../actions';
 import { connect } from 'react-redux';
 
+import { Storage } from '../helpers';
 import { colors, fonts } from '../styles';
 
 class SettingsScreen extends React.Component {
@@ -38,7 +39,9 @@ class SettingsScreen extends React.Component {
           redux: 'general.firstScreenManagebac'
         },
         {
-          title: 'Configure d tasklist labels',
+          title: 'Configure default tasklist labels',
+          description:
+            'Select the labels to filter the tasklist for by default. (applies from next launch)',
           onPress: () => this._handleNavigateToUserLabels()
         }
       ]
@@ -48,7 +51,7 @@ class SettingsScreen extends React.Component {
       data: [
         {
           title: 'Sign out',
-          onPress: () => this._handleLogout()
+          onPress: () => this._confirmLogout()
         }
       ]
     },
@@ -98,8 +101,29 @@ class SettingsScreen extends React.Component {
     };
   };
 
+  _confirmLogout() {
+    Alert.alert('', 'Are you sure you want to log out?', [
+      {
+        text: 'No!'
+      },
+      {
+        text: 'Log me out please.',
+        onPress: this._handleLogout
+      }
+    ]);
+  }
+
   _handleLogout() {
-    this.props.navigation.navigate('Logout');
+    Storage.deleteCredentials()
+      .then(() => {
+        this.props.navigation.navigate('Login', {
+          errorMessage: null
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        Alert.alert('', 'There was an error while logging out: ' + err);
+      });
   }
 
   _handleNavigateToUserLabels() {
