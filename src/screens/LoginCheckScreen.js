@@ -24,12 +24,6 @@ class LoginCheckScreen extends React.Component {
       });
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.animation.play();
-    }, 100);
-  }
-
   check(credentials = '{}') {
     // Check for existing session
     fetch(BASE_URL + '/api/validate', {
