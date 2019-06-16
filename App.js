@@ -2,7 +2,6 @@ import React from 'react';
 
 import {
   createSwitchNavigator,
-  createStackNavigator,
   createAppContainer
 } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
