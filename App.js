@@ -6,7 +6,7 @@ import {
   createAppContainer
 } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-import { Font } from 'expo';
+import * as Font from 'expo-font';
 import { Provider } from 'react-redux';
 import configureStore from './configureStore';
 import { PersistGate } from 'redux-persist/integration/react';
