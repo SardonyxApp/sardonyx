@@ -171,6 +171,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * @param {Integer} index
    */
   _showMenu(index) {
+    if(!this.props.navigation.state.params.editable) return;
     if (Platform.OS === 'android') {
       Vibration.vibrate(50);
     } else if (Platform.OS === 'ios') {
