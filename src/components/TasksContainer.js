@@ -160,12 +160,13 @@ const containerStyles = StyleSheet.create({
   subheading: {
     ...fonts.jost400,
     fontSize: 16,
-    marginTop: 16
+    paddingHorizontal: 16
   },
   container: {
     flexDirection: 'row',
     alignItems: 'stretch',
-    marginTop: 12
+    marginTop: 12,
+    paddingHorizontal: 16
   },
   touchableOpacity: {
     flex: 1
