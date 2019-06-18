@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, ActivityIndicator } from 'react-native';
+import { ScrollView, ActivityIndicator, InteractionManager } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { colors } from '../styles';
 import { connect } from 'react-redux';
@@ -67,64 +67,66 @@ class TasksScreen extends React.Component {
 
   // Safely fetch data after initial render 
   async componentDidMount() {
-    const token = await Storage.retrieveValue('sardonyxToken');
-    const sardonyxToken = { 'Sardonyx-Token': token };
+    InteractionManager.runAfterInteractions(async () => {
+      const token = await Storage.retrieveValue('sardonyxToken');
+      const sardonyxToken = { 'Sardonyx-Token': token };
 
-    // Fetch common data 
-    Promise.all([
-      // TODO: clean up the promise chains 
-      fetch(`${BASE_URL}/app/user`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
-      fetch(`${BASE_URL}/app/tasklist`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
-      fetch(`${BASE_URL}/app/tasks?full=true`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
-      fetch(`${BASE_URL}/app/subjects`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
-      fetch(`${BASE_URL}/app/categories`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e))
-    ]).then(responses => {
-      this.setState({
-        user: responses[0],
-        tasklist: responses[1],
-        tasks: responses[2],
-        subjects: responses[3],
-        categories: responses[4],
-        subjectsFilter: responses[0].subjects,
-        categoriesFilter: responses[0].categories,
+      // Fetch common data 
+      Promise.all([
+        // TODO: clean up the promise chains 
+        fetch(`${BASE_URL}/app/user`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
+        fetch(`${BASE_URL}/app/tasklist`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
+        fetch(`${BASE_URL}/app/tasks?full=true`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
+        fetch(`${BASE_URL}/app/subjects`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
+        fetch(`${BASE_URL}/app/categories`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e))
+      ]).then(responses => {
+        this.setState({
+          user: responses[0],
+          tasklist: responses[1],
+          tasks: responses[2],
+          subjects: responses[3],
+          categories: responses[4],
+          subjectsFilter: responses[0].subjects,
+          categoriesFilter: responses[0].categories,
+        });
+
+        this.props.setUserLabels(responses[0].subjects, responses[0].categories);
+        this.props.setLabels(responses[3], responses[4]);
+
+        this.props.navigation.setParams({ 
+          onCreateTask: this._handleCreateTask, 
+          onCreateLabel: this._handleCreateLabel,
+          onUpdateLabel: this._handleUpdateLabel,
+          onDeleteLabel: this._handleDeleteLabel,
+          subjects: this.state.subjects,
+          categories: this.state.categories
+        })
+
+        socket.emit('join room', responses[1].id);
+      }).catch(err => {
+        alert('There was an error while retrieving information. If this error persists, please contact SardonyxApp.');
+        console.error(err); 
       });
 
-      this.props.setUserLabels(responses[0].subjects, responses[0].categories);
-      this.props.setLabels(responses[3], responses[4]);
-
-      this.props.navigation.setParams({ 
-        onCreateTask: this._handleCreateTask, 
-        onCreateLabel: this._handleCreateLabel,
-        onUpdateLabel: this._handleUpdateLabel,
-        onDeleteLabel: this._handleDeleteLabel,
-        subjects: this.state.subjects,
-        categories: this.state.categories
-      })
-      
-      socket.emit('join room', responses[1].id);
-    }).catch(err => {
-      alert('There was an error while retrieving information. If this error persists, please contact SardonyxApp.');
-      console.error(err); 
-    });
-
-    socket.on('tasks', () => {
-      fetch(`${BASE_URL}/app/tasks?tasklist=${this.state.tasklist.id}&full=true`, { headers: sardonyxToken })
-      .then(response => response.json())
-      .then(response => {
-        this.setState({ 
-          tasks: response 
+      socket.on('tasks', () => {
+        fetch(`${BASE_URL}/app/tasks?tasklist=${this.state.tasklist.id}&full=true`, { headers: sardonyxToken })
+        .then(response => response.json())
+        .then(response => {
+          this.setState({ 
+            tasks: response 
+          });
         });
       });
-    });
 
-    socket.on('labels', type => {
-      fetch(`${BASE_URL}/app/${type}?tasklist=${this.state.tasklist.id}`, { headers: sardonyxToken })
-      .then(response => response.json())
-      .then(response => {
-        this.setState(() => {
-          const payload = {};
-          payload[type] = response;
-          return payload;
+      socket.on('labels', type => {
+        fetch(`${BASE_URL}/app/${type}?tasklist=${this.state.tasklist.id}`, { headers: sardonyxToken })
+        .then(response => response.json())
+        .then(response => {
+          this.setState(() => {
+            const payload = {};
+            payload[type] = response;
+            return payload;
+          });
         });
       });
     });
@@ -386,9 +388,6 @@ class TasksScreen extends React.Component {
   render() {
     return (
       <ScrollView
-        contentContainerStyle={{
-          padding: 12
-        }}
         style={{ 
           flex: 1, 
           backgroundColor: colors.lightBackground
