@@ -26,7 +26,6 @@ export default class TasksLabel extends React.PureComponent {
       >
         <View 
           className="label"
-          color="white"
           style={[labelStyles.label, this.props.style, { backgroundColor: this.props.label.color }]} 
         >
           <Text style={labelStyles.labelName}>{this.props.label.name}</Text>
@@ -38,6 +37,7 @@ export default class TasksLabel extends React.PureComponent {
               type="material"
               containerStyle={labelStyles.icon}
               onPress={() => this.props.onRemove(this.props.label.id)}
+              underlayColor={this.props.label.color}
             />
           : null}
         </View>
