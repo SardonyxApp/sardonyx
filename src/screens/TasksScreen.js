@@ -39,9 +39,11 @@ class TasksScreen extends React.Component {
       categories: [],
       subjectsFilter: [],
       categoriesFilter: [],
+      displayPastTasks: false
     };
 
     this._handleFilter = this._handleFilter.bind(this);
+    this._handleLoadAll = this._handleLoadAll.bind(this);
     this._handleCreateTask = this._handleCreateTask.bind(this);
     this._handleUpdateTask = this._handleUpdateTask.bind(this);
     this._handleDeleteTask = this._handleDeleteTask.bind(this);
@@ -142,6 +144,26 @@ class TasksScreen extends React.Component {
       const obj = {};
       obj[type] = prevState[type].includes(id) ? prevState[type].filter(l => l !== id) : prevState[type].concat([id]);
       return obj;
+    });
+  }
+
+  /**
+   * @description Load all tasks (including past)
+   */
+  async _handleLoadAll() {
+    const token = await Storage.retrieveValue('sardonyxToken');
+    const sardonyxToken = { 'Sardonyx-Token': token };
+    fetch(`${BASE_URL}/app/tasks?all=true&full=true`, { headers: sardonyxToken })
+    .then(response => response.json())
+    .then(response => {
+      this.setState({
+        tasks: response,
+        displayPastTasks: true
+      });
+    })
+    .catch(err => {
+      alert('There was an error while retrieving information. If this error persists, please contact SardonyxApp.');
+      console.error(err);
     });
   }
 
@@ -412,7 +434,9 @@ class TasksScreen extends React.Component {
           categories={this.state.categories}
           subjectsFilter={this.state.subjectsFilter}
           categoriesFilter={this.state.categoriesFilter}
+          displayPastTasks={this.state.displayPastTasks}
           navigation={this.props.navigation}
+          onLoadAll={this._handleLoadAll}
           onUpdateTask={this._handleUpdateTask}
           onDeleteTask={this._handleDeleteTask}
         />

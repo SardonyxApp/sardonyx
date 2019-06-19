@@ -20,36 +20,24 @@ export default class CASExpandableCard extends ExpandableCard {
     this._navigateToCASScreen = this._navigateToCASScreen.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     _isMounted = true;
 
-    Storage.retrieveCredentials()
-      .then(credentials => {
-        fetch(BASE_URL + '/api/cas', {
-          method: 'GET',
-          headers: {
-            'Login-Token': credentials
-          },
-          mode: 'no-cors'
-        })
-          .then(r => r.json().then(data => ({ response: r, data: data })))
-          .then(({ response, data }) => {
-            if (!_isMounted) return;
-            if (response.status === 200) {
-              this.setState({
-                casExperiences: data
-              });
-              return;
-            }
-          })
-          .catch(error => {
-            console.warn(error);
-            return;
-          });
-      })
-      .catch(err => {
-        console.warn(err);
+    const credentials = await Storage.retrieveCredentials();
+    const response = await fetch(BASE_URL + '/api/cas', {
+      method: 'GET',
+      headers: {
+        'Login-Token': credentials
+      },
+      mode: 'no-cors'
+    });
+    if(!_isMounted) return;
+    if (response.status === 200) {
+      this.setState({
+        casExperiences: await response.json()
       });
+      return;
+    }
   }
 
   componentWillUnmount() {

@@ -108,30 +108,28 @@ export default class ManagebacGroupScreen extends React.Component {
    * Called on load, and on pull-to-refresh. Asynchronously sets the state using newest group data.
    * @param {String} credentials
    */
-  _fetchGroupOverviewData(credentials) {
+  async _fetchGroupOverviewData(credentials) {
     let url = this.props.navigation.getParam('link', '/404');
-    fetch(BASE_URL + url, {
+    const response = await fetch(BASE_URL + url, {
       method: 'GET',
       headers: {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    })
-      .then(r => r.json().then(data => ({ response: r, data: data })))
-      .then(({ response, data }) => {
-        if (!this._isMounted) return;
-        if (response.status === 200) {
-          this.setState({
-            refreshing: false,
-            groupUpcomingEventsData: data.deadlines
-          });
-          return;
-        } else if (response.status === 404) {
-          Alert.alert('Not Found', 'Group could not be found.', []);
-          this.props.navigation.goBack();
-          return;
-        }
+    });
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      this.setState({
+        refreshing: false,
+        groupUpcomingEventsData: parsedManagebacResponse.deadlines
       });
+      return;
+    } else if (response.status === 404) {
+      Alert.alert('Not Found', 'Group could not be found.', []);
+      this.props.navigation.goBack();
+      return;
+    }
   }
 
   /**
@@ -139,36 +137,34 @@ export default class ManagebacGroupScreen extends React.Component {
    * @param {String} credentials
    * @param {Integer} page
    */
-  _fetchGroupMessagesData(credentials, page = 1) {
+  async _fetchGroupMessagesData(credentials, page = 1) {
     let url = this.props.navigation.getParam('link', '/404');
     url = url.replace('/overview', '/messages');
-    fetch(BASE_URL + url + '?pageParam=' + page.toString(), {
+    const response = await fetch(BASE_URL + url + '?pageParam=' + page.toString(), {
       method: 'GET',
       headers: {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    })
-      .then(r => r.json().then(data => ({ response: r, data: data })))
-      .then(({ response, data }) => {
-        if (!this._isMounted) return;
-        if (response.status === 200) {
-          // Place messages from a paeg into its own array inside messages[]
-          // This will be concat-ed when sending to MessageListView, don't worry
-          // Keeping it like an array makes it possible to count the currently loaded page count.
-          let messages = this.state.groupMessagesData;
-          messages[page - 1] = data.messages;
-          this.setState({
-            fetchingMessages: false,
-            groupMessagesData: messages,
-            groupMessagesTotalPages: data.numberOfPages
-          });
-          return;
-        } else {
-          Alert.alert('Error', 'Messages could not be loaded.', []);
-          return;
-        }
+    });
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      // Place messages from a paeg into its own array inside messages[]
+      // This will be concat-ed when sending to MessageListView, don't worry
+      // Keeping it like an array makes it possible to count the currently loaded page count.
+      let messages = this.state.groupMessagesData;
+      messages[page - 1] = parsedManagebacResponse.messages;
+      this.setState({
+        fetchingMessages: false,
+        groupMessagesData: messages,
+        groupMessagesTotalPages: parsedManagebacResponse.numberOfPages
       });
+      return;
+    } else {
+      Alert.alert('Error', 'Messages could not be loaded.', []);
+      return;
+    }
   }
 
   render() {
