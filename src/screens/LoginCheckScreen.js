@@ -105,7 +105,7 @@ class LoginCheckScreen extends React.Component {
           }}
           loop={true}
           autoPlay={true}
-          source={require('../logos/animatedLogo.json')}
+          source={require('../assets/logos/animatedLogo.json')}
         />
         <Text style={fonts.jost400}>Logging in...</Text>
         <ActivityIndicator color={colors.primary} />

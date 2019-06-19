@@ -27,7 +27,7 @@ class Login extends React.Component {
         <View style={[styles.alignChildrenCenter, { flex: 1 }]}>
           <View style={preset.loginBox}>
             <Image
-              source={require('../logos/Icon.png')}
+              source={require('../assets/logos/Icon.png')}
               style={styles.logoIcon}
             />
             <Text style={[styles.h1, styles.alignCenter, fonts.jost300]}>

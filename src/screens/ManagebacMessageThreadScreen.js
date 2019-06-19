@@ -167,6 +167,7 @@ export default class ManagebacMessageThreadScreen extends React.Component {
     let url = this.props.navigation.getParam('link', '/404');
     if (level === 1) url += '/reply';
     if (level === 2) url += '/reply/' + id;
+    console.log(this.state.newCommentContent);
     Storage.retrieveCredentials()
       .then(credentials => {
         fetch(BASE_URL + url, {
@@ -222,7 +223,7 @@ export default class ManagebacMessageThreadScreen extends React.Component {
                     ? {
                         uri: comment.avatar
                       }
-                    : require('../logos/Icon.png')
+                    : require('../assets/logos/Icon.png')
                 }
                 style={messageThreadStyles.image}
               />
@@ -312,7 +313,7 @@ export default class ManagebacMessageThreadScreen extends React.Component {
                     ? {
                         uri: this.state.messageData.avatar
                       }
-                    : require('../logos/Icon.png')
+                    : require('../assets/logos/Icon.png')
                 }
                 style={messageThreadStyles.image}
               />

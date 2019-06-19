@@ -209,7 +209,7 @@ class SettingsScreen extends React.Component {
                 ? {
                     uri: this.props.user.avatar
                   }
-                : require('../logos/Icon.png')
+                : require('../assets/logos/Icon.png')
             }
             style={settingsStyles.profileIcon}
           />
