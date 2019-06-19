@@ -41,9 +41,10 @@ class LoginCheckScreen extends React.Component {
             ...{ sardonyxToken: response.headers.map['sardonyx-token'] }
           };
           Storage.writeCredentials(credentials)
-            .then(() => {
+            .then(() => response.json())
+            .then(data => {
               this.props.setManagebacOverview(
-                JSON.parse(response.headers.map['managebac-data'])
+                data
               );
               this.props.navigation.navigate(
                 this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'
