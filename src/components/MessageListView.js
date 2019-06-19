@@ -51,7 +51,7 @@ export default class MessageListView extends React.Component {
                 ? {
                     uri: item.avatar
                   }
-                : require('../logos/Icon.png')
+                : require('../assets/logos/Icon.png')
             }
             style={messageListStyles.image}
           />

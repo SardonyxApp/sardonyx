@@ -12,11 +12,11 @@
     "githubUrl": "https://github.com/SardonyxApp/sardonyx",
     "orientation": "portrait",
     "primaryColor": "#ffffff",
-    "icon": "./src/logos/Icon.png",
+    "icon": "./src/assets/logos/appIcon.png",
     "splash": {
       "backgroundColor": "#eeeeee",
       "resizeMode": "contain",
-      "image": "./src/logos/splash.png"
+      "image": "./src/assets/logos/splash.png"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
