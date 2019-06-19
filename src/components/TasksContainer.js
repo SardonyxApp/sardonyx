@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Button } from 'react-native-elements';
 
 import TaskListCard from './TaskListCard';
 import OverviewHeading from './OverviewHeading';
 import CalendarDate from './CalendarDate';
-import { fonts, colors } from '../styles';
+import { fonts, colors, styles } from '../styles';
 
 Date.prototype.getDayName = function() {
   const index = this.getDay();
@@ -147,6 +148,18 @@ export default class TasksContainer extends React.PureComponent {
         {pastTasks}
 
         {tasks.length ? null : <Text style={containerStyles.subheading}>NO TASKS FOUND</Text>}
+        
+        {this.props.displayPastTasks 
+          ? null 
+          : <Button 
+              onPress={this.props.onLoadAll} 
+              title="Load more tasks" 
+              type="solid"
+              buttonStyle={{ backgroundColor: colors.primary }}
+              containerStyle={styles.padding20}
+              titleStyle={fonts.jost400}
+            />
+          }
       </View>
     );
   }
