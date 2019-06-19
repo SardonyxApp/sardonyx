@@ -68,8 +68,8 @@ export default class ManagebacAlertScreen extends React.Component {
    * Fetches details about a single notification.
    * @param {String} credentials
    */
-  _fetchNotificationData(credentials) {
-    fetch(
+ async _fetchNotificationData(credentials) {
+    const response = await fetch(
       BASE_URL +
         '/api/notification/' +
         this.props.navigation.getParam('id', '404'),
@@ -80,18 +80,17 @@ export default class ManagebacAlertScreen extends React.Component {
         },
         mode: 'no-cors'
       }
-    )
-      .then(r => r.json().then(data => ({ response: r, data: data })))
-      .then(({ response, data }) => {
-        if (!this._isMounted) return;
-        if (response.status === 200) {
-          this.setState({
-            refreshing: false,
-            notificationData: data.notification
-          });
-          return;
-        }
+    );
+
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      this.setState({
+        refreshing: false,
+        notificationData: parsedManagebacResponse.notification
       });
+      return;
+    }
   }
 
   render() {

@@ -82,8 +82,8 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * Requests /api/cas/:id for the list of reflections. Sets the state on success.
    * @param {String} credentials
    */
-  _fetchReflectionsData(credentials) {
-    fetch(
+  async _fetchReflectionsData(credentials) {
+    const response = await fetch(
       `${BASE_URL}/api/cas/${
         this.props.navigation.state.params.id
       }/reflections`,
@@ -94,33 +94,27 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
         },
         mode: 'no-cors'
       }
-    )
-      .then(r => r.json().then(data => ({ response: r, data: data })))
-      .then(({ response, data }) => {
-        if (!this._isMounted) return;
-        if (response.status === 200) {
-          this.setState({
-            refreshing: false,
-            reflectionsData: data.reflections,
-            numberOfLines: Array(
-              data.reflections.length
-            ).fill(10)
-          });
-          return;
-        } else {
-          Alert.alert(
-            'Internal Error',
-            'Error ' + response.status.toString() + ': Invalid Response.',
-            []
-          );
-          this.props.navigation.goBack();
-          return;
-        }
-      })
-      .catch(error => {
-        console.warn(error);
-        return;
+    );
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      this.setState({
+        refreshing: false,
+        reflectionsData: parsedManagebacResponse.reflections,
+        numberOfLines: Array(
+          parsedManagebacResponse.reflections.length
+        ).fill(10)
       });
+      return;
+    } else {
+      Alert.alert(
+        'Internal Error',
+        'Error ' + response.status.toString() + ': Invalid Response.',
+        []
+      );
+      this.props.navigation.goBack();
+      return;
+    }
   }
 
   /**
