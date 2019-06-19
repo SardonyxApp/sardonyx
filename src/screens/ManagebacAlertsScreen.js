@@ -108,31 +108,28 @@ export default class ManagebacAlertsScreen extends React.Component {
    * Requests /api/notification for the list of notifications. Sets the state on success.
    * @param {String} credentials
    */
-  _fetchNotificationsData(credentials, page = 1) {
-    fetch(BASE_URL + '/api/notification?pageId=' + page, {
+ async _fetchNotificationsData(credentials, page = 1) {
+    const response = await fetch(BASE_URL + '/api/notification?pageId=' + page, {
       method: 'GET',
       headers: {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        let notifications = this.state.notificationsData;
-        notifications[page - 1] = parsedManagebacResponse.notifications;
-        this.setState({
-          refreshing: false,
-          fetchingMessages: false,
-          notificationsData: notifications,
-          notificationsTotalPages: parsedManagebacResponse.numberOfPages,
-          notificationsLoadedPages: page
-        });
-        return;
-      }
     });
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      let notifications = this.state.notificationsData;
+      notifications[page - 1] = parsedManagebacResponse.notifications;
+      this.setState({
+        refreshing: false,
+        fetchingMessages: false,
+        notificationsData: notifications,
+        notificationsTotalPages: parsedManagebacResponse.numberOfPages,
+        notificationsLoadedPages: page
+      });
+      return;
+    }
   }
 
   _onPress(pressedItem) {

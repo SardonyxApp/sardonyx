@@ -78,37 +78,31 @@ class ManagebacOverviewScreen extends React.PureComponent {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            fetch(BASE_URL + '/api/dashboard', {
-              method: 'GET',
-              headers: {
-                'Login-Token': credentials
-              },
-              mode: 'no-cors'
-            }).then(response => {
-              if (response.status === 200) {
-                this.props.setManagebacOverview(
-                  JSON.parse(response.headers.map['managebac-data'])
-                );
-                this.setState(
-                  {
-                    refreshing: false
-                  },
-                  () => {
-                    this.props.navigation.setParams({
-                      notificationCount: this.props.overview.notificationCount
-                    });
-                  }
-                );
-                return;
-              }
-            });
-          })
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        const response = await fetch(BASE_URL + '/api/dashboard', {
+          method: 'GET',
+          headers: {
+            'Login-Token': credentials
+          },
+          mode: 'no-cors'
+        });
+        if (response.status === 200) {
+          this.props.setManagebacOverview(
+            await response.json()
+          );
+          this.setState(
+            {
+              refreshing: false
+            },
+            () => {
+              this.props.navigation.setParams({
+                notificationCount: this.props.overview.notificationCount
+              });
+            }
+          );
+          return;
+        }
       }
     );
   }

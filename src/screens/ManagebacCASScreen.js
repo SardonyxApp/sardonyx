@@ -89,41 +89,34 @@ export default class ManagebacCASScreen extends React.Component {
    * Sends a GET request to the API, sets State, and show Alert on error.
    * @param {String} credentials 
    */
-  _fetchExperienceData(credentials) {
-    fetch(BASE_URL + this.props.navigation.getParam('apiLink', '/404'), {
+  async _fetchExperienceData(credentials) {
+    const response = await fetch(BASE_URL + this.props.navigation.getParam('apiLink', '/404'), {
       method: 'GET',
       headers: {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    })
-      .then(response => {
-        if (!this._isMounted) return;
-        if (response.status === 200) {
-          this.setState(
-            {
-              refreshing: false,
-              casExperienceData: JSON.parse(
-                response.headers.map['managebac-data']
-              ).cas
-            },
-            this._setEditableParam
-          );
-          return;
-        } else if (response.status === 404) {
-          Alert.alert(
-            'Not Found',
-            'Your CAS experience could not be found.',
-            []
-          );
-          this.props.navigation.goBack();
-          return;
-        }
-      })
-      .catch(error => {
-        console.warn(error);
-        return;
-      });
+    });
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const data = await response.json();
+      this.setState(
+        {
+          refreshing: false,
+          casExperienceData: data.cas
+        },
+        this._setEditableParam
+      );
+      return;
+    } else if (response.status === 404) {
+      Alert.alert(
+        'Not Found',
+        'Your CAS experience could not be found.',
+        []
+      );
+      this.props.navigation.goBack();
+      return;
+    }
   }
 
   /**

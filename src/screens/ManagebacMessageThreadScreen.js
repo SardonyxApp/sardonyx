@@ -94,11 +94,9 @@ export default class ManagebacMessageThreadScreen extends React.Component {
     Promise.all(promises)
       .then(responses => {
         if (!this._isMounted) return;
-        responses.forEach(response => {
+        responses.forEach(async (response) => {
           if (response.status === 200) {
-            const parsedManagebacResponse = JSON.parse(
-              response.headers.map['managebac-data']
-            );
+            const parsedManagebacResponse = await response.json();
             // Copy the object, and start updating it
             const stateMessageData = { ...this.state.messageData };
             id = response.url.substring(response.url.lastIndexOf('/') + 1);
@@ -125,35 +123,32 @@ export default class ManagebacMessageThreadScreen extends React.Component {
    * Sends a GET request to the API, sets State, and show Alert on error.
    * @param {String} credentials
    */
-  _fetchMessageThreadData(credentials) {
+  async _fetchMessageThreadData(credentials) {
     let url = this.props.navigation.getParam('link', '/404');
-    fetch(BASE_URL + url, {
+    const response = await fetch(BASE_URL + url, {
       method: 'GET',
       headers: {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        this.setState(
-          {
-            messageData: parsedManagebacResponse.message[0]
-          },
-          () => {
-            this._fetchMessageSubCommentsData(credentials);
-          }
-        );
-        return;
-      } else if (response.status === 404) {
-        Alert.alert('Not Found', 'Message could not be found.', []);
-        this.props.navigation.goBack();
-        return;
-      }
-    });
+    })
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      this.setState(
+        {
+          messageData: parsedManagebacResponse.message[0]
+        },
+        () => {
+          this._fetchMessageSubCommentsData(credentials);
+        }
+      );
+      return;
+    } else if (response.status === 404) {
+      Alert.alert('Not Found', 'Message could not be found.', []);
+      this.props.navigation.goBack();
+      return;
+    }
   }
 
   /**

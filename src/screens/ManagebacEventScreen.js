@@ -54,35 +54,28 @@ export default class ManagebacEventScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            fetch(BASE_URL + this.props.navigation.getParam('link', '/404'), {
-              method: 'GET',
-              headers: {
-                'Login-Token': credentials
-              },
-              mode: 'no-cors'
-            }).then(response => {
-              if (!this._isMounted) return;
-              if (response.status === 200) {
-                this.setState({
-                  refreshing: false,
-                  upcomingEventData: JSON.parse(
-                    response.headers.map['managebac-data']
-                  ).assignment
-                });
-                return;
-              } else if (response.status === 404) {
-                Alert.alert('Not Found', 'Your Event could not be found.', []);
-                this.props.navigation.goBack();
-                return;
-              }
-            });
-          })
-          .catch(err => {
-            console.warn(err);
+      async () => {
+        const credentials = await Storage.retrieveCredentials()
+        const response = await fetch(BASE_URL + this.props.navigation.getParam('link', '/404'), {
+          method: 'GET',
+          headers: {
+            'Login-Token': credentials
+          },
+          mode: 'no-cors'
+        });
+        if (!this._isMounted) return;
+        if (response.status === 200) {
+          const data = await response.json();
+          this.setState({
+            refreshing: false,
+            upcomingEventData: data.assignment
           });
+          return;
+        } else if (response.status === 404) {
+          Alert.alert('Not Found', 'Your Event could not be found.', []);
+          this.props.navigation.goBack();
+          return;
+        }
       }
     );
   }
