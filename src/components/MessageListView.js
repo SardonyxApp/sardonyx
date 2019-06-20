@@ -19,21 +19,15 @@ export default class MessageListView extends React.Component {
     this._renderMessage = this._renderMessage.bind(this);
   }
 
-  componentDidMount() {
-    // For some reason this.animation.play() doesn't work when immediately called
-    // Weird, because it works in LoginCheckScreen
-    setTimeout(() => {
-      if(this.props.loading) { 
-          this.animation.play();
-      }
-    }, 50);
-  }
-
   _navigateToMessageThreadScreen(item) {
     this.props.navigation.navigate('MessageThread', {
       ...item,
       title: decodeURI(item.title)
     });
+  }
+
+  componentDidUpdate(oldProps) {
+    if (oldProps.messages.length !== this.props.messages.length) this.animation && this.animation.play();
   }
 
   /**
@@ -102,17 +96,23 @@ export default class MessageListView extends React.Component {
         renderItem={this._renderMessage}
         keyExtractor={(item, index) => item.id.toString()}
         ListFooterComponent={
-          this.props.loading ? <View style={messageListStyles.lottieContainer}>
-            <Lottie
-              style={messageListStyles.lottie}
-              ref={animation => {
-                this.animation = animation;
-              }}
-              loop={true}
-              autoPlay={true}
-              source={require('../assets/loader.json')}
-            />
-          </View> : <View style={messageListStyles.messageContainer}><Text>Nothing here!</Text></View>
+          this.props.messages.length !== 0 ? (
+            <View style={messageListStyles.lottieContainer}>
+              <Lottie
+                style={messageListStyles.lottie}
+                ref={animation => {
+                  this.animation = animation;
+                }}
+                loop={true}
+                autoPlay={true}
+                source={require('../assets/loader.json')}
+              />
+            </View>
+          ) : (
+            <View style={messageListStyles.messageContainer}>
+              <Text>{this.props.loading ? 'Loading...' : 'Nothing here!'}</Text>
+            </View>
+          )
         }
       />
     );
@@ -194,7 +194,7 @@ const messageListStyles = StyleSheet.create({
 
 const htmlStyles = StyleSheet.create({
   text: {
-    fontSize: 12,
+    fontSize: 13,
     color: colors.black
   },
   p: {
