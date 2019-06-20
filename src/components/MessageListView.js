@@ -5,6 +5,7 @@ import { Text, View, FlatList, StyleSheet, Image } from 'react-native';
 import Lottie from 'lottie-react-native';
 import { Icon } from 'react-native-elements';
 import HTMLView from 'react-native-htmlview';
+import moment from 'moment';
 
 import { fonts, colors } from '../styles';
 import { TouchableRipple } from 'react-native-paper';
@@ -27,7 +28,8 @@ export default class MessageListView extends React.Component {
   }
 
   componentDidUpdate(oldProps) {
-    if (oldProps.messages.length !== this.props.messages.length) this.animation && this.animation.play();
+    if (oldProps.messages.length !== this.props.messages.length)
+      this.animation && this.animation.play();
   }
 
   /**
@@ -36,6 +38,7 @@ export default class MessageListView extends React.Component {
    * @return {React.Component}
    */
   _renderMessage({ item, index }) {
+    if(index === 0) console.log(item.date)
     return (
       <View style={messageListStyles.messageContainer}>
         <View style={messageListStyles.imageContainer}>
@@ -52,7 +55,10 @@ export default class MessageListView extends React.Component {
         </View>
         <View style={messageListStyles.text}>
           <Text style={messageListStyles.author}>
-            {item.author} <Text style={messageListStyles.subtext}>wrote</Text>
+            {item.author}{' '}
+            <Text style={messageListStyles.subtext}>
+              wrote {moment(item.date).fromNow()}
+            </Text>
           </Text>
           <View style={messageListStyles.titleFlex}>
             <Text style={messageListStyles.title}>{decodeURI(item.title)}</Text>
