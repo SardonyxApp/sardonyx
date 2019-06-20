@@ -170,9 +170,9 @@ export default class ManagebacClassScreen extends React.Component {
         }
         onScroll={event => {
           let windowHeight = Dimensions.get('window').height,
-            height = event.nativeEvent.contentSize.height,
-            offset = event.nativeEvent.contentOffset.y;
-          if (windowHeight + offset >= height) {
+              height = event.nativeEvent.contentSize.height,
+              offset = event.nativeEvent.contentOffset.y;
+          if (windowHeight + offset >= height - 500) {
             // Thank you GitHub
             // https://github.com/facebook/react-native/issues/2299
             this._fetchNextMessages();
