@@ -209,7 +209,7 @@ export default class ManagebacMessageThreadScreen extends React.Component {
                     ? {
                         uri: comment.avatar
                       }
-                    : require('../assets/logos/Icon.png')
+                    : require('../assets/logos/Icon-128.png')
                 }
                 style={messageThreadStyles.image}
               />
@@ -301,7 +301,7 @@ export default class ManagebacMessageThreadScreen extends React.Component {
                     ? {
                         uri: this.state.messageData.avatar
                       }
-                    : require('../assets/logos/Icon.png')
+                    : require('../assets/logos/Icon-128.png')
                 }
                 style={messageThreadStyles.image}
               />
