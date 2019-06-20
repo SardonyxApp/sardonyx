@@ -64,13 +64,14 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
     InteractionManager.runAfterInteractions(async () => {
       // Retrieve the draft is any exists, and set the value.
       const drafts = await Storage.retrieveValue('reflectionDrafts');
-      if (!drafts) return;
-      drafts = JSON.parse(drafts);
-      if (this.props.navigation.getParam('id', null) in drafts) {
-        this.setState({
-          reflectionValue:
-          drafts[this.props.navigation.getParam('id', null)].value
-        });
+      if (drafts) {
+        drafts = JSON.parse(drafts);
+        if (this.props.navigation.getParam('id', null) in drafts) {
+          this.setState({
+            reflectionValue:
+            drafts[this.props.navigation.getParam('id', null)].value
+          });
+        }
       }
       
       // Register the willBlur event so we can save the draft upon closing
