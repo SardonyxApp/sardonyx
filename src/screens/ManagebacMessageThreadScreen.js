@@ -14,6 +14,7 @@ import {
 import { Icon } from 'react-native-elements';
 import { TouchableRipple } from 'react-native-paper';
 import HTMLView from 'react-native-htmlview';
+import moment from 'moment';
 import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
@@ -61,7 +62,7 @@ export default class ManagebacMessageThreadScreen extends React.Component {
         refreshing: true
       },
       async () => {
-        this._fetchMessageThreadData(await Storage.retrieveCredentials())
+        this._fetchMessageThreadData(await Storage.retrieveCredentials());
       }
     );
   }
@@ -132,7 +133,7 @@ export default class ManagebacMessageThreadScreen extends React.Component {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    })
+    });
     if (!this._isMounted) return;
     if (response.status === 200) {
       const parsedManagebacResponse = await response.json();
@@ -214,7 +215,9 @@ export default class ManagebacMessageThreadScreen extends React.Component {
             </View>
             <View style={messageThreadStyles.messageTextInfo}>
               <Text style={messageThreadStyles.author}>{comment.author}</Text>
-              <Text>{comment.date}</Text>
+              <Text>
+                {moment(comment.date).format('dddd, MMM Do YYYY, H:mm')}
+              </Text>
             </View>
             {level !== 3 ? (
               <View style={messageThreadStyles.replyButtonContainer}>
@@ -310,8 +313,12 @@ export default class ManagebacMessageThreadScreen extends React.Component {
               </Text>
               <Text>
                 {'date' in this.state.messageData
-                  ? this.state.messageData.date
-                  : this.props.navigation.getParam('date')}
+                  ? moment(this.state.messageData.date).format(
+                      'dddd, MMM Do YYYY, H:mm'
+                    )
+                  : moment(this.props.navigation.getParam('date')).format(
+                      'dddd, MMM Do YYYY, H:mm'
+                    )}
               </Text>
             </View>
             <View style={messageThreadStyles.replyButtonContainer}>
@@ -423,7 +430,7 @@ const messageThreadStyles = StyleSheet.create({
   replyButtonContainer: {
     backgroundColor: colors.white,
     elevation: 4,
-    borderRadius: 15,
+    borderRadius: 30,
     overflow: 'hidden',
     flexDirection: 'row',
     justifyContent: 'center'
