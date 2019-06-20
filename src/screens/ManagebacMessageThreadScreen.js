@@ -163,14 +163,13 @@ export default class ManagebacMessageThreadScreen extends React.Component {
     let url = this.props.navigation.getParam('link', '/404');
     if (level === 1) url += '/reply';
     if (level === 2) url += '/reply/' + id;
-    console.log(this.state.newCommentContent);
     const credentials = await Storage.retrieveCredentials();
-    const response = await fetch(BASE_URL + url, {
+    await fetch(BASE_URL + url, {
       method: 'POST',
       headers: {
         'Login-Token': credentials,
         'Message-Data': JSON.stringify({
-          body: this.state.newCommentContent,
+          body: encodeURI(this.state.newCommentContent),
           notifyViaEmail: 0,
           privateMessage: 0
         })
