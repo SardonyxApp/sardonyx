@@ -170,7 +170,7 @@ export default class ManagebacGroupScreen extends React.Component {
           let windowHeight = Dimensions.get('window').height,
             height = event.nativeEvent.contentSize.height,
             offset = event.nativeEvent.contentOffset.y;
-          if (windowHeight + offset >= height) {
+          if (windowHeight + offset >= height - 500) {
             // Thank you GitHub
             // https://github.com/facebook/react-native/issues/2299
             this._fetchNextMessages();
