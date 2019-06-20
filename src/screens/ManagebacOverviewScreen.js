@@ -1,6 +1,11 @@
 import React from 'react';
 
-import { ScrollView, RefreshControl, StyleSheet } from 'react-native';
+import {
+  ScrollView,
+  RefreshControl,
+  StyleSheet,
+  InteractionManager
+} from 'react-native';
 
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -57,16 +62,18 @@ class ManagebacOverviewScreen extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.setState({
-      refreshing: false,
-      upcomingEvents: this.props.overview.deadlines,
-      groupList: this.props.overview.groups,
-      classList: this.props.overview.classes,
-      userInfo: this.props.overview.user
-    });
-    this.props.navigation.setParams({
-      refreshPage: this._onRefresh,
-      notificationCount: this.props.overview.notificationCount
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({
+        refreshing: false,
+        upcomingEvents: this.props.overview.deadlines,
+        groupList: this.props.overview.groups,
+        classList: this.props.overview.classes,
+        userInfo: this.props.overview.user
+      });
+      this.props.navigation.setParams({
+        refreshPage: this._onRefresh,
+        notificationCount: this.props.overview.notificationCount
+      });
     });
   }
 
