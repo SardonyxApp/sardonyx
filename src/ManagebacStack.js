@@ -3,7 +3,6 @@ import React from 'react';
 import { Text } from 'react-native';
 
 import { createStackNavigator } from 'react-navigation';
-
 import { Icon } from 'react-native-elements';
 
 import ManagebacAlertsScreen from './screens/ManagebacAlertsScreen';
@@ -17,6 +16,7 @@ import ManagebacEditCASReflectionScreen from './screens/ManagebacEditCASReflecti
 import ManagebacViewCASReflectionsScreen from './screens/ManagebacViewCASReflectionsScreen';
 import ManagebacClassScreen from './screens/ManagebacClassScreen';
 import ManagebacGroupScreen from './screens/ManagebacGroupScreen';
+import ManagebacMessageEditorScreen from './screens/ManagebacMessageEditorScreen';
 import ManagebacMessageThreadScreen from './screens/ManagebacMessageThreadScreen';
 
 import { colors, fonts } from './styles';
@@ -35,6 +35,7 @@ const ManagebacStack = createStackNavigator(
     ViewCASReflections: ManagebacViewCASReflectionsScreen,
     ClassItem: ManagebacClassScreen,
     GroupItem: ManagebacGroupScreen,
+    MessageEditor: ManagebacMessageEditorScreen,
     MessageThread: ManagebacMessageThreadScreen
   },
   {

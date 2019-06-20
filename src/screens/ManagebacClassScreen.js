@@ -8,12 +8,15 @@ import {
   Dimensions
 } from 'react-native';
 
+import { Icon } from 'react-native-elements';
 import { BASE_URL } from '../../env';
 
+import HeaderIcon from '../components/HeaderIcon';
 import UpcomingCarousel from '../components/UpcomingCarousel';
 import OverviewHeading from '../components/OverviewHeading';
 import MessageListView from '../components/MessageListView';
 import { Storage } from '../helpers';
+import { colors } from '../styles';
 
 export default class ManagebacClassScreen extends React.Component {
   isMounted = false;
@@ -38,6 +41,9 @@ export default class ManagebacClassScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
+    this.props.navigation.setParams({
+      refreshPage: this._onRefresh
+    });
     InteractionManager.runAfterInteractions(this._onRefresh);
   }
 
@@ -47,7 +53,24 @@ export default class ManagebacClassScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: `${navigation.state.params.title}`
+      title: `${navigation.state.params.title}`,
+      headerRight: (
+        <HeaderIcon
+          onPress={() => {
+            navigation.navigate('MessageEditor', {
+              onGoBack: navigation.state.params.refreshPage,
+              type: 'class',
+              id: navigation.state.params.id
+            });
+          }}
+        >
+          <Icon
+            name="message-draw"
+            type="material-community"
+            color={colors.white}
+          />
+        </HeaderIcon>
+      )
     };
   };
 
@@ -85,7 +108,7 @@ export default class ManagebacClassScreen extends React.Component {
         fetchingMessages: true
       },
       async () => {
-        const credentials = await Storage.retrieveCredentials()
+        const credentials = await Storage.retrieveCredentials();
         this._fetchClassMessagesData(
           credentials,
           this.state.classMessagesData.length + 1
@@ -110,7 +133,7 @@ export default class ManagebacClassScreen extends React.Component {
     });
     if (!this._isMounted) return;
     if (response.status === 200) {
-      const parsedManagebacResponse = await response.json()
+      const parsedManagebacResponse = await response.json();
       this.setState({
         refreshing: false,
         classUpcomingEventsData: parsedManagebacResponse.upcoming,
@@ -132,13 +155,16 @@ export default class ManagebacClassScreen extends React.Component {
   async _fetchClassMessagesData(credentials, page = 1) {
     let url = this.props.navigation.getParam('link', '/404');
     url = url.replace('/overview', '/messages');
-    const response = await fetch(BASE_URL + url + '?pageParam=' + page.toString(), {
-      method: 'GET',
-      headers: {
-        'Login-Token': credentials
-      },
-      mode: 'no-cors'
-    });
+    const response = await fetch(
+      BASE_URL + url + '?pageParam=' + page.toString(),
+      {
+        method: 'GET',
+        headers: {
+          'Login-Token': credentials
+        },
+        mode: 'no-cors'
+      }
+    );
     if (!this._isMounted) return;
     if (response.status === 200) {
       const parsedManagebacResponse = await response.json();
@@ -170,8 +196,8 @@ export default class ManagebacClassScreen extends React.Component {
         }
         onScroll={event => {
           let windowHeight = Dimensions.get('window').height,
-              height = event.nativeEvent.contentSize.height,
-              offset = event.nativeEvent.contentOffset.y;
+            height = event.nativeEvent.contentSize.height,
+            offset = event.nativeEvent.contentOffset.y;
           if (windowHeight + offset >= height - 500) {
             // Thank you GitHub
             // https://github.com/facebook/react-native/issues/2299
