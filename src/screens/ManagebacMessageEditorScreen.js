@@ -223,7 +223,6 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
               editable={this.state.editable}
               multiline={true}
               blurOnSubmit={false}
-              autoFocus={true}
               textAlignVertical={'top'}
               selectionColor={colors.darkBlue}
               underlineColorAndroid={'rgba(0,0,0,0)'}
