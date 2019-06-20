@@ -13,6 +13,7 @@ import {
 
 import { Icon } from 'react-native-elements';
 import { TouchableRipple } from 'react-native-paper';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import HTMLView from 'react-native-htmlview';
 import moment from 'moment';
 import { BASE_URL } from '../../env';
@@ -372,6 +373,7 @@ export default class ManagebacMessageThreadScreen extends React.Component {
           this.state.messageData.comments.map(item => {
             return this._renderComment(item);
           })}
+        <KeyboardSpacer topSpacing={-150} />
       </ScrollView>
     );
   }
