@@ -109,68 +109,62 @@ class LoginForm extends React.Component {
     });
   }
 
-  sendForm(formData) {
-    fetch(BASE_URL + '/api/login', {
+  async sendForm(formData) {
+    const response = await fetch(BASE_URL + '/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data'
       },
       body: formData,
       mode: 'no-cors'
-    })
-      .then(r => r.json().then(data => ({ response: r, data: data })))
-      .then(({ response, data }) => {
-        if (response.status === 200) {
-          // store response tokens
-          const credentials = {
-            ...JSON.parse(response.headers.map['login-token'] || '{}'),
-            ...{ sardonyxToken: response.headers.map['sardonyx-token'] }
-          };
-          Storage.writeCredentials(credentials)
-            .then(() => {
-              this.props.setManagebacOverview(data);
-              this.toggleButton(); // Make button available again
-              this.props.navigation.navigate(
-                this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'
-              );
-            })
-            .catch(error => {
-              this.toggleButton();
-              this.props.navigation.navigate('Login', {
-                errorMessage: 'There was an error while storing login. ' + error
-              });
-            });
-        } else {
-          this.toggleButton();
-          if (response.status === 401)
-            this.props.navigation.navigate('Login', {
-              errorMessage:
-                'Your username and password did not match. Please retry.'
-            });
-          else if (response.status === 404)
-            this.props.navigation.navigate('Login', {
-              errorMessage: 'Validation failed due to a network error.'
-            });
-          else if (response.status === 503)
-            this.props.navigation.navigate('Login', {
-              errorMessage:
-                'Could not access Sardonyx because Managebac is under maintenance. Please try again later.'
-            });
-          else
-            this.props.navigation.navigate('Login', {
-              errorMessage:
-                'Validation failed due to an unknown error. Error code: ' +
-                response.status
-            });
-        }
-      })
-      .catch(error => {
+    }).catch(error => {
+      this.toggleButton();
+      this.props.navigation.navigate('Login', {
+        errorMessage:
+          'There was an error while processing your login. Please retry. ' +
+          error
+      });
+    });
+    if (response.status === 200) {
+      // store response tokens
+      const credentials = {
+        ...JSON.parse(response.headers.map['login-token'] || '{}'),
+        ...{ sardonyxToken: response.headers.map['sardonyx-token'] }
+      };
+      try {
+        Storage.writeCredentials(credentials);
+        this.props.setManagebacOverview(await response.json());
+        this.toggleButton(); // Make button available again
+        this.props.navigation.navigate(
+          this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'
+        );
+      } catch (e) {
         this.toggleButton();
         this.props.navigation.navigate('Login', {
-          errorMessage:
-            'There was an error while processing your login. Please retry. ' +
-            error
+          errorMessage: 'There was an error while storing login. ' + error
         });
+      }
+      return;
+    }
+    this.toggleButton();
+    if (response.status === 401)
+      this.props.navigation.navigate('Login', {
+        errorMessage: 'Your username and password did not match. Please retry.'
+      });
+    else if (response.status === 404)
+      this.props.navigation.navigate('Login', {
+        errorMessage: 'Validation failed due to a network error.'
+      });
+    else if (response.status === 503)
+      this.props.navigation.navigate('Login', {
+        errorMessage:
+          'Could not access Sardonyx because Managebac is under maintenance. Please try again later.'
+      });
+    else
+      this.props.navigation.navigate('Login', {
+        errorMessage:
+          'Validation failed due to an unknown error. Error code: ' +
+          response.status
       });
   }
 

@@ -61,23 +61,18 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
     this.props.navigation.setParams({ sendReflection: this._sendReflection });
 
     // Wait until all transitions/animations complete until running
-    InteractionManager.runAfterInteractions(() => {
+    InteractionManager.runAfterInteractions(async () => {
       // Retrieve the draft is any exists, and set the value.
-      Storage.retrieveValue('reflectionDrafts')
-        .then(drafts => {
-          if (!drafts) return;
-          drafts = JSON.parse(drafts);
-          if (this.props.navigation.getParam('id', null) in drafts) {
-            this.setState({
-              reflectionValue:
-                drafts[this.props.navigation.getParam('id', null)].value
-            });
-          }
-        })
-        .catch(err => {
-          console.warn(err);
+      const drafts = await Storage.retrieveValue('reflectionDrafts');
+      if (!drafts) return;
+      drafts = JSON.parse(drafts);
+      if (this.props.navigation.getParam('id', null) in drafts) {
+        this.setState({
+          reflectionValue:
+          drafts[this.props.navigation.getParam('id', null)].value
         });
-
+      }
+      
       // Register the willBlur event so we can save the draft upon closing
       this.props.navigation.addListener('willBlur', this._onWillBlur);
 
@@ -93,43 +88,33 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
   /**
    * Remove the key/value pair for this CAS id draft in Storage (if it exists).
    */
-  _discardDraft() {
-    Storage.retrieveValue('reflectionDrafts')
-      .then(drafts => {
-        if (!drafts) return;
-        drafts = JSON.parse(drafts);
-        delete drafts[this.props.navigation.getParam('id', null)];
-        Storage.writeValue('reflectionDrafts', JSON.stringify(drafts)).catch(
-          err => {
-            console.warn(err);
-          }
-        );
-      })
-      .catch(err => {
+  async _discardDraft() {
+    const drafts = await Storage.retrieveValue('reflectionDrafts')
+    if (!drafts) return;
+    drafts = JSON.parse(drafts);
+    delete drafts[this.props.navigation.getParam('id', null)];
+    Storage.writeValue('reflectionDrafts', JSON.stringify(drafts)).catch(
+      err => {
         console.warn(err);
-      });
+      }
+    );
   }
 
   /**
    * Save the current value of the textbox to Storage under the CAS id key.
    */
-  _saveDraft() {
-    Storage.retrieveValue('reflectionDrafts')
-      .then(drafts => {
-        if (!drafts) drafts = '{}';
-        drafts = JSON.parse(drafts);
-        drafts[this.props.navigation.state.params.id] = {
-          value: this.state.reflectionValue
-        };
-        Storage.writeValue('reflectionDrafts', JSON.stringify(drafts)).catch(
-          err => {
-            console.warn(err);
-          }
-        );
-      })
-      .catch(err => {
+  async _saveDraft() {
+    const drafts = await Storage.retrieveValue('reflectionDrafts');
+    if (!drafts) drafts = '{}';
+    drafts = JSON.parse(drafts);
+    drafts[this.props.navigation.state.params.id] = {
+      value: this.state.reflectionValue
+    };
+    Storage.writeValue('reflectionDrafts', JSON.stringify(drafts)).catch(
+      err => {
         console.warn(err);
-      });
+      }
+    );
   }
 
   _onWillBlur() {
@@ -177,39 +162,29 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
         editable: false,
         sending: true // Maybe use this for loading animation? Currently used to check if draft message should be shown
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            fetch(
-              `${BASE_URL}/api/cas/${
-                this.props.navigation.state.params.id
-              }/reflections`,
-              {
-                method: 'POST',
-                headers: {
-                  'Login-Token': credentials,
-                  'Reflection-Data': JSON.stringify({
-                    body: encodeURI(this.state.reflectionValue)
-                  })
-                },
-                mode: 'no-cors'
-              }
-            )
-              .then(response => {
-                // Remove the drafts if any exist
-                this._discardDraft();
-                if (this.props.navigation.getParam('onGoBack', null) !== null) {
-                  this.props.navigation.state.params.onGoBack();
-                }
-                this.props.navigation.goBack();
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        const response = await fetch(
+          `${BASE_URL}/api/cas/${
+            this.props.navigation.state.params.id
+          }/reflections`,
+          {
+            method: 'POST',
+            headers: {
+              'Login-Token': credentials,
+              'Reflection-Data': JSON.stringify({
+                body: encodeURI(this.state.reflectionValue)
               })
-              .catch(err => {
-                console.log(err);
-              });
-          })
-          .catch(err => {
-            console.warn(err);
-          });
+            },
+            mode: 'no-cors'
+          }
+        );
+        // Remove the drafts if any exist
+        this._discardDraft();
+        if (this.props.navigation.getParam('onGoBack', null) !== null) {
+          this.props.navigation.state.params.onGoBack();
+        }
+        this.props.navigation.goBack();
       }
     );
   }

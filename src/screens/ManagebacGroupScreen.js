@@ -59,15 +59,10 @@ export default class ManagebacGroupScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            this._fetchGroupOverviewData(credentials);
-            this._fetchGroupMessagesData(credentials);
-          })
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        this._fetchGroupOverviewData(credentials);
+        this._fetchGroupMessagesData(credentials);
       }
     );
   }
@@ -89,17 +84,12 @@ export default class ManagebacGroupScreen extends React.Component {
       {
         fetchingMessages: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            this._fetchGroupMessagesData(
-              credentials,
-              this.state.groupMessagesData.length + 1
-            );
-          })
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        this._fetchGroupMessagesData(
+          credentials,
+          this.state.groupMessagesData.length + 1
+        );
       }
     );
   }
@@ -150,7 +140,7 @@ export default class ManagebacGroupScreen extends React.Component {
     if (!this._isMounted) return;
     if (response.status === 200) {
       const parsedManagebacResponse = await response.json();
-      // Place messages from a paeg into its own array inside messages[]
+      // Place messages from a page into its own array inside messages[]
       // This will be concat-ed when sending to MessageListView, don't worry
       // Keeping it like an array makes it possible to count the currently loaded page count.
       let messages = this.state.groupMessagesData;

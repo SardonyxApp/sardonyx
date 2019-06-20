@@ -54,12 +54,8 @@ export default class ManagebacAlertScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(this._fetchNotificationData)
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        this._fetchNotificationData(await Storage.retrieveCredentials());
       }
     );
   }

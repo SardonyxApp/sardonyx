@@ -24,72 +24,63 @@ class LoginCheckScreen extends React.Component {
       });
   }
 
-  check(credentials = '{}') {
+  async check(credentials = '{}') {
     // Check for existing session
-    fetch(BASE_URL + '/api/validate', {
+    const response = await fetch(BASE_URL + '/api/validate', {
       method: 'GET',
       headers: {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    })
-      .then(r => r.json().then(data => ({ response: r, data: data })))
-      .then(({ response, data }) => {
-        if (response.status === 200) {
-          // Validation succeeded
-          const credentials = {
-            ...JSON.parse(response.headers.map['login-token'] || '{}'),
-            ...{ sardonyxToken: response.headers.map['sardonyx-token'] }
-          };
-          Storage.writeCredentials(credentials)
-            .then(() => {
-              this.props.setManagebacOverview(data);
-              this.props.navigation.navigate(
-                this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'
-              );
-            })
-            .catch(err => {
-              console.warn(err);
-            });
-          return;
-        }
+    }).catch(error => {
+      // promise rejected
+      this.props.navigation.navigate('Login', {
+        errorMessage: 'There was an error while validating. ' + error
+      });
+      return;
+    });
+    if (response.status === 200) {
+      // Validation succeeded
+      const credentials = {
+        ...JSON.parse(response.headers.map['login-token'] || '{}'),
+        ...{ sardonyxToken: response.headers.map['sardonyx-token'] }
+      };
+      Storage.writeCredentials(credentials);
+      this.props.setManagebacOverview(await response.json());
+      this.props.navigation.navigate(
+        this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'
+      );
+      return;
+    }
 
-        if (response.status === 401) {
-          /* 
+    if (response.status === 401) {
+      /* 
         Validation failed: unauthorized
         Produce no error message because this is initial login
         Navigate directly to LoginScreen instead of LoginStack, because
         1. User should be led to LoginPage instead of default page of LoginStack
         2. errorMessage doesn't propagate through stacks
         */
-          this.props.navigation.navigate('Login', {
-            errorMessage: null
-          });
-          return;
-        }
-
-        if (response.status === 404) {
-          // Network error
-          this.props.navigation.navigate('Login', {
-            errorMessage: 'Validation failed due to a network error.'
-          });
-          return;
-        }
-
-        // Other error code
-        this.props.navigation.navigate('Login', {
-          errorMessage:
-            'Validation failed due to an unknown error. Error code: ' +
-            response.status
-        });
-      })
-      .catch(error => {
-        // promise rejected
-        this.props.navigation.navigate('Login', {
-          errorMessage: 'There was an error while validating. ' + error
-        });
-        return;
+      this.props.navigation.navigate('Login', {
+        errorMessage: null
       });
+      return;
+    }
+
+    if (response.status === 404) {
+      // Network error
+      this.props.navigation.navigate('Login', {
+        errorMessage: 'Validation failed due to a network error.'
+      });
+      return;
+    }
+
+    // Other error code
+    this.props.navigation.navigate('Login', {
+      errorMessage:
+        'Validation failed due to an unknown error. Error code: ' +
+        response.status
+    });
   }
 
   render() {

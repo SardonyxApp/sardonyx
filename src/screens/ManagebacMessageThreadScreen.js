@@ -60,12 +60,8 @@ export default class ManagebacMessageThreadScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(this._fetchMessageThreadData)
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        this._fetchMessageThreadData(await Storage.retrieveCredentials())
       }
     );
   }
@@ -161,36 +157,26 @@ export default class ManagebacMessageThreadScreen extends React.Component {
    * @param {Integer} level
    * @param {Integer} id
    */
-  _sendNewComment(level, id) {
+  async _sendNewComment(level, id) {
     let url = this.props.navigation.getParam('link', '/404');
     if (level === 1) url += '/reply';
     if (level === 2) url += '/reply/' + id;
     console.log(this.state.newCommentContent);
-    Storage.retrieveCredentials()
-      .then(credentials => {
-        fetch(BASE_URL + url, {
-          method: 'POST',
-          headers: {
-            'Login-Token': credentials,
-            'Message-Data': JSON.stringify({
-              body: this.state.newCommentContent,
-              notifyViaEmail: 0,
-              privateMessage: 0
-            })
-          },
-          mode: 'no-cors'
+    const credentials = await Storage.retrieveCredentials();
+    const response = await fetch(BASE_URL + url, {
+      method: 'POST',
+      headers: {
+        'Login-Token': credentials,
+        'Message-Data': JSON.stringify({
+          body: this.state.newCommentContent,
+          notifyViaEmail: 0,
+          privateMessage: 0
         })
-          .then(response => {
-            if (!this._isMounted) return;
-            this._onRefresh();
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      })
-      .catch(err => {
-        console.warn(err);
-      });
+      },
+      mode: 'no-cors'
+    });
+    if (!this._isMounted) return;
+    this._onRefresh();
   }
 
   /**
