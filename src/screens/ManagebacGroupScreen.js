@@ -41,6 +41,9 @@ export default class ManagebacGroupScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
+    this.props.navigation.setParams({
+      refreshPage: this._onRefresh
+    });
     InteractionManager.runAfterInteractions(this._onRefresh);
   }
 
@@ -55,6 +58,7 @@ export default class ManagebacGroupScreen extends React.Component {
         <HeaderIcon
           onPress={() => {
             navigation.navigate('MessageEditor', {
+              onGoBack: navigation.state.params.refreshPage,
               type: 'group',
               id: navigation.state.params.id
             });
