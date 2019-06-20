@@ -88,19 +88,13 @@ class ManagebacOverviewScreen extends React.PureComponent {
           mode: 'no-cors'
         });
         if (response.status === 200) {
-          this.props.setManagebacOverview(
-            await response.json()
-          );
-          this.setState(
-            {
-              refreshing: false
-            },
-            () => {
-              this.props.navigation.setParams({
-                notificationCount: this.props.overview.notificationCount
-              });
-            }
-          );
+          this.props.setManagebacOverview(await response.json());
+          this.setState({
+            refreshing: false
+          });
+          this.props.navigation.setParams({
+            notificationCount: this.props.overview.notificationCount
+          });
           return;
         }
       }

@@ -22,11 +22,11 @@ export default class MessageListView extends React.Component {
   componentDidMount() {
     // For some reason this.animation.play() doesn't work when immediately called
     // Weird, because it works in LoginCheckScreen
-    if(this.props.messages.length !== 0) { 
-      setTimeout(() => {
-        this.animation.play();
-      }, 50);
-    }
+    setTimeout(() => {
+      if(this.props.loading) { 
+          this.animation.play();
+      }
+    }, 50);
   }
 
   _navigateToMessageThreadScreen(item) {
@@ -102,7 +102,7 @@ export default class MessageListView extends React.Component {
         renderItem={this._renderMessage}
         keyExtractor={(item, index) => item.id.toString()}
         ListFooterComponent={
-          this.props.messages.length !== 0 ? <View style={messageListStyles.lottieContainer}>
+          this.props.loading ? <View style={messageListStyles.lottieContainer}>
             <Lottie
               style={messageListStyles.lottie}
               ref={animation => {
@@ -112,7 +112,7 @@ export default class MessageListView extends React.Component {
               autoPlay={true}
               source={require('../assets/loader.json')}
             />
-          </View> : <View style={messageListStyles.messageContainer}><Text>No messages exist.</Text></View>
+          </View> : <View style={messageListStyles.messageContainer}><Text>Nothing here!</Text></View>
         }
       />
     );

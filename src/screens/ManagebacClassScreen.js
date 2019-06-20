@@ -59,16 +59,10 @@ export default class ManagebacClassScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            this._fetchClassOverviewData(credentials);
-            console.log('hi');
-            this._fetchClassMessagesData(credentials);
-          })
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        this._fetchClassOverviewData(credentials);
+        this._fetchClassMessagesData(credentials);
       }
     );
   }
@@ -90,17 +84,12 @@ export default class ManagebacClassScreen extends React.Component {
       {
         fetchingMessages: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            this._fetchClassMessagesData(
-              credentials,
-              this.state.classMessagesData.length + 1
-            );
-          })
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        const credentials = await Storage.retrieveCredentials()
+        this._fetchClassMessagesData(
+          credentials,
+          this.state.classMessagesData.length + 1
+        );
       }
     );
   }

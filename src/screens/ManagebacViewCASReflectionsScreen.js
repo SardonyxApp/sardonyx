@@ -15,7 +15,7 @@ import {
   Platform
 } from 'react-native';
 
-import { Haptic } from 'expo';
+import * as Haptics from 'expo-haptics';
 import HTMLView from 'react-native-htmlview';
 import { Appbar } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
@@ -24,9 +24,9 @@ import { BASE_URL } from '../../env';
 
 import HeaderIcon from '../components/HeaderIcon';
 import PreloadImage from '../components/PreloadImage';
+import ExperienceUneditableWarning from '../components/ExperienceUneditableWarning';
 import { Storage } from '../helpers';
 import { fonts, colors } from '../styles';
-import ExperienceUneditableWarning from '../components/ExperienceUneditableWarning';
 
 export default class ManagebacViewCASReflectionsScreen extends React.Component {
   isMounted = false;
@@ -101,9 +101,9 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
       this.setState({
         refreshing: false,
         reflectionsData: parsedManagebacResponse.reflections,
-        numberOfLines: Array(
-          parsedManagebacResponse.reflections.length
-        ).fill(10)
+        numberOfLines: Array(parsedManagebacResponse.reflections.length).fill(
+          10
+        )
       });
       return;
     } else {
@@ -125,12 +125,8 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(this._fetchReflectionsData)
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        this._fetchReflectionsData(await Storage.retrieveCredentials());
       }
     );
   }
@@ -165,12 +161,8 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * @param {Integer} index
    */
   _showMenu(index) {
-    if(!this.props.navigation.state.params.editable) return;
-    if (Platform.OS === 'android') {
-      Vibration.vibrate(50);
-    } else if (Platform.OS === 'ios') {
-      Haptic.selection();
-    }
+    if (!this.props.navigation.state.params.editable) return;
+    Haptics.selectionAsync();
     this.setState({
       menuVisible: true,
       menuFocusedOn: this.state.reflectionsData[index].id
@@ -218,12 +210,9 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
         menuVisible: false,
         menuFocusedOn: null
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => this._requestDeleteReflection(credentials, id))
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        this._requestDeleteReflection(credentials, id);
       }
     );
   }
@@ -233,8 +222,8 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * @param {String} credentials
    * @param {Integer} id
    */
-  _requestDeleteReflection(credentials, id) {
-    fetch(
+  async _requestDeleteReflection(credentials, id) {
+    const response = await fetch(
       `${BASE_URL}/api/cas/${
         this.props.navigation.state.params.id
       }/reflections/${id.toString()}`,
@@ -245,15 +234,9 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
         },
         mode: 'no-cors'
       }
-    )
-      .then(response => {
-        if (!this._isMounted) return;
-        this._onRefresh();
-      })
-      .catch(error => {
-        console.warn(error);
-        return;
-      });
+    );
+    if (!this._isMounted) return;
+    this._onRefresh();
   }
 
   /**

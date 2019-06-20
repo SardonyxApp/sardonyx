@@ -62,12 +62,8 @@ export default class ManagebacAlertsScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(this._fetchNotificationsData)
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        this._fetchNotificationsData(await Storage.retrieveCredentials());
       }
     );
   }
@@ -89,17 +85,12 @@ export default class ManagebacAlertsScreen extends React.Component {
       {
         fetchingMessages: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            this._fetchNotificationsData(
-              credentials,
-              this.state.notificationsLoadedPages + 1
-            );
-          })
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        this._fetchNotificationsData(
+          credentials,
+          this.state.notificationsLoadedPages + 1
+        );
       }
     );
   }

@@ -23,15 +23,10 @@ export default class ManagebacEditCASScreen extends React.Component {
     };
   };
 
-  /**
-   * Called on load, and on pull-to-refresh. Asynchronously sets the state using newest class data.
-   */
-  _onRefresh() { }
-
   render() {
     return (
       <View style={{padding: 16}}>
-        <Text>This page is still a work-in-progress. At this time, use the PC version of ManageBac to edit your CAS experiences.</Text>
+        <Text>At this time, editing a CAS experience's description isn't possible in this app. Please use the PC version of ManageBac to edit your CAS experiences.</Text>
       </View>
     );
   }

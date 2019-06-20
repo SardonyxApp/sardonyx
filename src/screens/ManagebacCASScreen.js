@@ -127,12 +127,8 @@ export default class ManagebacCASScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(this._fetchExperienceData)
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        this._fetchExperienceData(await Storage.retrieveCredentials());
       }
     );
   }
