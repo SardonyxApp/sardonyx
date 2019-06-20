@@ -8,12 +8,15 @@ import {
   Dimensions
 } from 'react-native';
 
+import { Icon } from 'react-native-elements';
 import { BASE_URL } from '../../env';
 
+import HeaderIcon from '../components/HeaderIcon';
 import UpcomingCarousel from '../components/UpcomingCarousel';
 import OverviewHeading from '../components/OverviewHeading';
 import MessageListView from '../components/MessageListView';
 import { Storage } from '../helpers';
+import { colors } from '../styles';
 
 export default class ManagebacGroupScreen extends React.Component {
   isMounted = false;
@@ -47,7 +50,23 @@ export default class ManagebacGroupScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: `${navigation.state.params.title}`
+      title: `${navigation.state.params.title}`,
+      headerRight: (
+        <HeaderIcon
+          onPress={() => {
+            navigation.navigate('MessageEditor', {
+              type: 'group',
+              id: navigation.state.params.id
+            });
+          }}
+        >
+          <Icon
+            name="message-draw"
+            type="material-community"
+            color={colors.white}
+          />
+        </HeaderIcon>
+      )
     };
   };
 
@@ -130,13 +149,16 @@ export default class ManagebacGroupScreen extends React.Component {
   async _fetchGroupMessagesData(credentials, page = 1) {
     let url = this.props.navigation.getParam('link', '/404');
     url = url.replace('/overview', '/messages');
-    const response = await fetch(BASE_URL + url + '?pageParam=' + page.toString(), {
-      method: 'GET',
-      headers: {
-        'Login-Token': credentials
-      },
-      mode: 'no-cors'
-    });
+    const response = await fetch(
+      BASE_URL + url + '?pageParam=' + page.toString(),
+      {
+        method: 'GET',
+        headers: {
+          'Login-Token': credentials
+        },
+        mode: 'no-cors'
+      }
+    );
     if (!this._isMounted) return;
     if (response.status === 200) {
       const parsedManagebacResponse = await response.json();
