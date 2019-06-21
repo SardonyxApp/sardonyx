@@ -8,12 +8,12 @@ import {
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
+import { Badge } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setManagebacOverview } from '../actions';
 import { BASE_URL } from '../../env';
 
-import { Storage } from '../helpers';
 import HeaderIcon from '../components/HeaderIcon';
 import GreetingsCard from '../components/GreetingsCard';
 import OverviewHeading from '../components/OverviewHeading';
@@ -21,6 +21,7 @@ import UpcomingCarousel from '../components/UpcomingCarousel';
 import RoundIconCarousel from '../components/RoundIconCarousel';
 import CASExpandableCard from '../components/CASExpandableCard';
 import { colors } from '../styles';
+import { Storage } from '../helpers';
 
 class ManagebacOverviewScreen extends React.PureComponent {
   constructor(props) {
@@ -56,6 +57,12 @@ class ManagebacOverviewScreen extends React.PureComponent {
             }
             color={colors.white}
           />
+          {navigation.state.params &&
+          navigation.state.params.notificationCount ? (
+            <Badge style={overviewStyles.badgeIcon} size={16}>
+              {navigation.state.params.notificationCount}
+            </Badge>
+          ) : null}
         </HeaderIcon>
       )
     };
@@ -154,6 +161,11 @@ class ManagebacOverviewScreen extends React.PureComponent {
 }
 
 const overviewStyles = StyleSheet.create({
+  badgeIcon: {
+    position: 'absolute',
+    top: -4,
+    backgroundColor: colors.primary
+  },
   lastElementPadding: {
     marginBottom: 16
   }
