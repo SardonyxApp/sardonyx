@@ -77,10 +77,10 @@ class ManagebacOverviewScreen extends React.PureComponent {
         classList: this.props.overview.classes,
         userInfo: this.props.overview.user
       });
-      this.props.navigation.setParams({
-        refreshPage: this._onRefresh,
-        notificationCount: this.props.overview.notificationCount
-      });
+    });
+    this.props.navigation.setParams({
+      refreshPage: this._onRefresh,
+      notificationCount: this.props.overview.notificationCount
     });
   }
 
@@ -164,7 +164,7 @@ const overviewStyles = StyleSheet.create({
   badgeIcon: {
     position: 'absolute',
     top: -4,
-    backgroundColor: colors.primary
+    backgroundColor: colors.lightError
   },
   lastElementPadding: {
     marginBottom: 16
