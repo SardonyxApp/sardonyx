@@ -241,6 +241,7 @@ const alertsStyles = StyleSheet.create({
     fontSize: 12
   },
   lottieContainer: {
+    paddingTop: 16,
     paddingHorizontal: 16,
     flex: 1,
     alignItems: 'center',
