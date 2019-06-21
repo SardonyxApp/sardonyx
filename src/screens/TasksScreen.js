@@ -111,7 +111,7 @@ class TasksScreen extends React.Component {
       });
 
       socket.on('tasks', () => {
-        fetch(`${BASE_URL}/app/tasks?tasklist=${this.state.tasklist.id}&full=true`, { headers: sardonyxToken })
+        fetch(`${BASE_URL}/app/tasks?tasklist=${this.state.tasklist.id}&full=true${this.state.displayPastTasks ? '&all=true' : ''}`, { headers: sardonyxToken })
         .then(response => response.json())
         .then(response => {
           this.setState({ 
