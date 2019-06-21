@@ -18,7 +18,7 @@ import HeaderIcon from '../components/HeaderIcon';
 import { Storage } from '../helpers';
 import { colors } from '../styles';
 
-export default class ManagebacAddCASReflectionScreen extends React.Component {
+export default class ManagebacMessageEditorScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -172,7 +172,7 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
             method: 'POST',
             headers: {
               'Login-Token': credentials,
-              'Reflection-Data': JSON.stringify({
+              'Message-Data': JSON.stringify({
                 topic: encodeURI(this.state.messageSubjectValue),
                 body: encodeURI(this.state.messageBodyValue),
                 notifyByEmail: 0,
