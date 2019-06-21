@@ -5,10 +5,10 @@ import { Text, View, FlatList, StyleSheet, Image } from 'react-native';
 import Lottie from 'lottie-react-native';
 import { Icon } from 'react-native-elements';
 import HTMLView from 'react-native-htmlview';
+import { TouchableRipple } from 'react-native-paper';
 import moment from 'moment';
 
 import { fonts, colors } from '../styles';
-import { TouchableRipple } from 'react-native-paper';
 
 export default class MessageListView extends React.Component {
   constructor(props) {
@@ -38,7 +38,6 @@ export default class MessageListView extends React.Component {
    * @return {React.Component}
    */
   _renderMessage({ item, index }) {
-    if(index === 0) console.log(item.date)
     return (
       <View style={messageListStyles.messageContainer}>
         <View style={messageListStyles.imageContainer}>

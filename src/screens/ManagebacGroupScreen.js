@@ -1,22 +1,22 @@
 import React from 'react';
 
 import {
+  View,
   ScrollView,
   RefreshControl,
   Alert,
   InteractionManager,
-  Dimensions
+  Dimensions,
+  StyleSheet
 } from 'react-native';
 
-import { Icon } from 'react-native-elements';
 import { BASE_URL } from '../../env';
 
-import HeaderIcon from '../components/HeaderIcon';
 import UpcomingCarousel from '../components/UpcomingCarousel';
 import OverviewHeading from '../components/OverviewHeading';
 import MessageListView from '../components/MessageListView';
+import CTAButton from '../components/CTAButton';
 import { Storage } from '../helpers';
-import { colors } from '../styles';
 
 export default class ManagebacGroupScreen extends React.Component {
   isMounted = false;
@@ -41,9 +41,6 @@ export default class ManagebacGroupScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this.props.navigation.setParams({
-      refreshPage: this._onRefresh
-    });
     InteractionManager.runAfterInteractions(this._onRefresh);
   }
 
@@ -53,24 +50,7 @@ export default class ManagebacGroupScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: `${navigation.state.params.title}`,
-      headerRight: (
-        <HeaderIcon
-          onPress={() => {
-            navigation.navigate('MessageEditor', {
-              onGoBack: navigation.state.params.refreshPage,
-              type: 'group',
-              id: navigation.state.params.id
-            });
-          }}
-        >
-          <Icon
-            name="message-draw"
-            type="material-community"
-            color={colors.white}
-          />
-        </HeaderIcon>
-      )
+      title: `${navigation.state.params.title}`
     };
   };
 
@@ -185,39 +165,66 @@ export default class ManagebacGroupScreen extends React.Component {
 
   render() {
     return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh}
-          />
-        }
-        onScroll={event => {
-          let windowHeight = Dimensions.get('window').height,
-            height = event.nativeEvent.contentSize.height,
-            offset = event.nativeEvent.contentOffset.y;
-          if (windowHeight + offset >= height - 500) {
-            // Thank you GitHub
-            // https://github.com/facebook/react-native/issues/2299
-            this._fetchNextMessages();
+      <View style={groupStyles.page}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
           }
-        }}
-      >
-        <UpcomingCarousel
-          upcomingEvents={this.state.groupUpcomingEventsData}
-          completedEvents={this.state.groupCompletedEventsData}
-          allGroupsAndClasses={[this.props.navigation.state.params]}
-          navigation={this.props.navigation}
-        />
-        {/** OverviewHeading has a default marginBottom of -16px */}
-        <OverviewHeading style={{ marginBottom: 0 }}>Messages</OverviewHeading>
-        <MessageListView
-          messages={[].concat(...this.state.groupMessagesData)}
-          onScrollEnd={this._fetchNextMessages}
-          loading={this.state.fetchingMessages}
-          navigation={this.props.navigation}
-        />
-      </ScrollView>
+          onScroll={event => {
+            let windowHeight = Dimensions.get('window').height,
+              height = event.nativeEvent.contentSize.height,
+              offset = event.nativeEvent.contentOffset.y;
+            if (windowHeight + offset >= height - 500) {
+              // Thank you GitHub
+              // https://github.com/facebook/react-native/issues/2299
+              this._fetchNextMessages();
+            }
+          }}
+        >
+          <UpcomingCarousel
+            upcomingEvents={this.state.groupUpcomingEventsData}
+            completedEvents={this.state.groupCompletedEventsData}
+            allGroupsAndClasses={[this.props.navigation.state.params]}
+            navigation={this.props.navigation}
+          />
+          {/** OverviewHeading has a default marginBottom of -16px */}
+          <OverviewHeading style={{ marginBottom: 0 }}>
+            Messages
+          </OverviewHeading>
+          <MessageListView
+            messages={[].concat(...this.state.groupMessagesData)}
+            onScrollEnd={this._fetchNextMessages}
+            loading={this.state.fetchingMessages}
+            navigation={this.props.navigation}
+          />
+        </ScrollView>
+        <CTAButton
+          style={groupStyles.cta}
+          onPress={() => {
+            this.props.navigation.navigate('MessageEditor', {
+              onGoBack: this._onRefresh,
+              type: 'class',
+              id: this.props.navigation.state.params.id
+            });
+          }}
+        >
+          New Message
+        </CTAButton>
+      </View>
     );
   }
 }
+
+const groupStyles = StyleSheet.create({
+  page: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  cta: {
+    position: 'absolute',
+    bottom: 16
+  }
+});

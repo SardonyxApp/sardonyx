@@ -139,9 +139,9 @@ const alertStyles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     backgroundColor: colors.lightBlue2,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: colors.gray2
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.gray2,
+    elevation: 2
   },
   bold: {
     fontWeight: 'bold'
