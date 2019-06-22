@@ -10,15 +10,15 @@ import {
   FlatList,
   RefreshControl,
   Alert,
-  Vibration,
   InteractionManager,
-  Platform
+  Animated
 } from 'react-native';
 
 import * as Haptics from 'expo-haptics';
 import HTMLView from 'react-native-htmlview';
 import { Appbar } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
+import Carousel from 'react-native-snap-carousel';
 import moment from 'moment';
 import { BASE_URL } from '../../env';
 
@@ -37,7 +37,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
       refreshing: true,
       reflectionsData: [],
       numberOfLines: [],
-      menuVisible: false,
+      menuVisibility: new Animated.Value(0),
       menuFocusedOn: null
     };
     this._fetchReflectionsData = this._fetchReflectionsData.bind(this);
@@ -163,8 +163,12 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
   _showMenu(index) {
     if (!this.props.navigation.state.params.editable) return;
     Haptics.selectionAsync();
+    Animated.timing(this.state.menuVisibility, {
+      toValue: 1,
+      duration: 75,
+      useNativeDriver: true
+    }).start();
     this.setState({
-      menuVisible: true,
       menuFocusedOn: this.state.reflectionsData[index].id
     });
   }
@@ -173,8 +177,12 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * Hides AppBar.
    */
   _hideMenu() {
+    Animated.timing(this.state.menuVisibility, {
+      toValue: 0,
+      duration: 75,
+      useNativeDriver: true
+    }).start();
     this.setState({
-      menuVisible: false,
       menuFocusedOn: null
     });
   }
@@ -204,10 +212,14 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * @param {Integer} id
    */
   _deleteItem(id) {
+    Animated.timing(this.state.menuVisibility, {
+      toValue: 0,
+      duration: 75,
+      useNativeDriver: true
+    }).start();
     this.setState(
       {
         refreshing: true,
-        menuVisible: false,
         menuFocusedOn: null
       },
       async () => {
@@ -278,6 +290,22 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
     );
   }
 
+  _renderPhotoCarouselItem({ item, index }) {
+    return (
+      <View style={reflectionListStyles.itemContent}>
+        <Text style={reflectionListStyles.imageCaptionText}>
+          {decodeURI(item.title)}
+        </Text>
+        <View style={{ elevation: 2 }}>
+          <PreloadImage
+            style={reflectionListStyles.image}
+            sourceUri={item.link}
+          />
+        </View>
+      </View>
+    );
+  }
+
   /**
    * Renders each reflection/evidence data. Has separate rendering functions for photo and reflection.
    * @param {Object}
@@ -343,15 +371,26 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
                 : {}
             ]}
           >
-            <View style={reflectionListStyles.itemContent}>
-              <Text style={reflectionListStyles.imageCaptionText}>
-                {decodeURI(item.photos[0].title)}
-              </Text>
-              <PreloadImage
-                style={reflectionListStyles.image}
-                sourceUri={item.photos[0].link}
-              />
-            </View>
+            <Carousel
+              data={item.photos}
+              renderItem={this._renderPhotoCarouselItem}
+              sliderWidth={Dimensions.get('window').width - 64}
+              itemWidth={300}
+              enableSnap={false}
+              enableMomentum={true}
+              decelerationRate={0.99}
+              activeSlideAlignment={'start'}
+              inactiveSlideScale={1}
+              inactiveSlideOpacity={1}
+              contentContainerCustomStyle={
+                item.photos.length > 1
+                  ? {
+                      overflow: 'hidden',
+                      width: 300 * item.photos.length
+                    }
+                  : undefined
+              }
+            />
           </View>
         </View>
       );
@@ -383,23 +422,31 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
             extraData={this.state}
           />
         </ScrollView>
-        {this.state.menuVisible ? (
-          <Appbar style={reflectionListStyles.appBar}>
-            <Appbar.Action
-              icon="delete"
-              onPress={() => this._confirmDelete(this.state.menuFocusedOn)}
-            />
-            <Appbar.Action
-              icon="edit"
-              onPress={() => this._editItem(this.state.menuFocusedOn)}
-            />
-            <Appbar.Action
-              style={reflectionListStyles.appBarClose}
-              icon="close"
-              onPress={this._hideMenu}
-            />
-          </Appbar>
-        ) : null}
+        <Appbar
+          style={[
+            reflectionListStyles.appBar,
+            {
+              opacity: this.state.menuVisibility.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 1]
+              })
+            }
+          ]}
+        >
+          <Appbar.Action
+            icon="delete"
+            onPress={() => this._confirmDelete(this.state.menuFocusedOn)}
+          />
+          <Appbar.Action
+            icon="edit"
+            onPress={() => this._editItem(this.state.menuFocusedOn)}
+          />
+          <Appbar.Action
+            style={reflectionListStyles.appBarClose}
+            icon="close"
+            onPress={this._hideMenu}
+          />
+        </Appbar>
       </View>
     );
   }
@@ -446,7 +493,9 @@ const reflectionListStyles = StyleSheet.create({
     marginBottom: 8
   },
   image: {
-    width: Dimensions.get('window').width - 64,
+    // Dimensions.get('window').width - 64
+    width: 300,
+    height: 250,
     flex: 1
   },
   appBar: {
