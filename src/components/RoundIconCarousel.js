@@ -66,7 +66,7 @@ export default class RoundIconCarousel extends React.Component {
           itemWidth={100}
           enableSnap={false}
           enableMomentum={true}
-          decelerationRate={0.9}
+          decelerationRate={0.99}
           activeSlideAlignment={'start'}
           inactiveSlideScale={1}
           inactiveSlideOpacity={1}
