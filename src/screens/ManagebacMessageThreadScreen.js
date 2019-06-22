@@ -43,10 +43,13 @@ class ManagebacMessageThreadScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    InteractionManager.runAfterInteractions(this._onRefresh);
-    this.props.navigation.setParams({
-      refreshPage: this._onRefresh,
-      editable: this.props.user.id === this.props.navigation.state.params.authorId
+    InteractionManager.runAfterInteractions(() => {
+      this.props.navigation.setParams({
+        refreshPage: this._onRefresh,
+        editable:
+          this.props.user.id === this.props.navigation.state.params.authorId
+      });
+      this._onRefresh();
     });
   }
 

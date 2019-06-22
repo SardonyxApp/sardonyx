@@ -121,12 +121,13 @@ export default class ManagebacAlertsScreen extends React.Component {
   /**
    * Called on Alert press. Navigate to Alert screen, change the state to mark item as read, and
    * call refresh on the Overview page.
-   * @param {Object} pressedItem 
+   * @param {Object} pressedItem
    */
   _onPress(pressedItem) {
     this.props.navigation.navigate('Alert', {
       ...pressedItem,
-      title: decodeURI(pressedItem.title)
+      title: decodeURI(pressedItem.title),
+      refreshOverview: this.props.navigation.state.params.refreshPage
     });
     if (pressedItem.unread) {
       const notificationsData = [...this.state.notificationsData];
@@ -141,17 +142,18 @@ export default class ManagebacAlertsScreen extends React.Component {
       this.setState({ notificationsData });
     }
     if (this.props.navigation.getParam('refreshPage', null) !== null) {
+      console.log(this.props.navigation.state.params.refreshPage);
       this.props.navigation.state.params.refreshPage();
     }
   }
 
   /**
    * Change all dates within today to Today instead of assuming midnight
-   * @param {Moment} date 
+   * @param {Moment} date
    */
   _getRelativeDate(date) {
-    if(date >= moment().startOf('day')) return 'Today';
-    return date.fromNow()
+    if (date >= moment().startOf('day')) return 'Today';
+    return date.fromNow();
   }
 
   _renderRow({ item }) {

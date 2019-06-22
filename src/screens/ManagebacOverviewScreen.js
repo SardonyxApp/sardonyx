@@ -69,6 +69,10 @@ class ManagebacOverviewScreen extends React.PureComponent {
   }
 
   componentDidMount() {
+    this.props.navigation.setParams({
+      refreshPage: this._onRefresh,
+      notificationCount: this.props.overview.notificationCount
+    });
     InteractionManager.runAfterInteractions(() => {
       this.setState({
         refreshing: false,
@@ -77,10 +81,6 @@ class ManagebacOverviewScreen extends React.PureComponent {
         classList: this.props.overview.classes,
         userInfo: this.props.overview.user
       });
-    });
-    this.props.navigation.setParams({
-      refreshPage: this._onRefresh,
-      notificationCount: this.props.overview.notificationCount
     });
   }
 
@@ -97,17 +97,19 @@ class ManagebacOverviewScreen extends React.PureComponent {
         const response = await fetch(BASE_URL + '/api/dashboard', {
           method: 'GET',
           headers: {
-            'Login-Token': credentials
+            'Login-Token': credentials,
+            'Cache-Control': 'no-cache, no-store, must-revalidate'
           },
           mode: 'no-cors'
         });
         if (response.status === 200) {
-          this.props.setManagebacOverview(await response.json());
+          const parsedResponse = await response.json();
+          this.props.setManagebacOverview(parsedResponse);
           this.setState({
             refreshing: false
           });
           this.props.navigation.setParams({
-            notificationCount: this.props.overview.notificationCount
+            notificationCount: parsedResponse.notificationCount
           });
           return;
         }
