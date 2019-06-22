@@ -77,7 +77,7 @@ export default class ManagebacMessageEditorScreen extends React.Component {
           messageBodyValue: turndownService.turndown(messageBodyHTML)
         });
       } else {
-        // Retrieve the draft is any exists, and set the value.
+        // Retrieve the draft if any exists, and set the value.
         let drafts = await Storage.retrieveValue('messageDrafts');
         if (drafts) {
           drafts = JSON.parse(drafts);
@@ -124,11 +124,9 @@ export default class ManagebacMessageEditorScreen extends React.Component {
     drafts[this.props.navigation.state.params.id] = {
       value: this.state.messageBodyValue
     };
-    Storage.writeValue('reflectionDrafts', JSON.stringify(drafts)).catch(
-      err => {
-        console.warn(err);
-      }
-    );
+    Storage.writeValue('messageDrafts', JSON.stringify(drafts)).catch(err => {
+      console.warn(err);
+    });
   }
 
   _onWillBlur() {
