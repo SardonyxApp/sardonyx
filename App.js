@@ -1,9 +1,7 @@
 import React from 'react';
 
-import {
-  createSwitchNavigator,
-  createAppContainer
-} from 'react-navigation';
+import { createSwitchNavigator, createAppContainer } from 'react-navigation';
+import { useScreens } from 'react-native-screens';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import * as Font from 'expo-font';
 import { Provider } from 'react-redux';
@@ -19,6 +17,9 @@ import LoginScreen from './src/screens/LoginScreen';
 import { colors } from './src/styles';
 
 const { store, persistor } = configureStore();
+
+// Use native screens for faster performance in Navigators
+useScreens();
 
 // The main app navigation stack.
 // Screens made later on (individual message screens, feed, or whatever) will be added here
