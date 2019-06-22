@@ -46,6 +46,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
     this._toggleExpand = this._toggleExpand.bind(this);
     this._showMenu = this._showMenu.bind(this);
     this._hideMenu = this._hideMenu.bind(this);
+    this._renderPhotoCarouselItem = this._renderPhotoCarouselItem.bind(this);
   }
 
   componentDidMount() {
@@ -235,7 +236,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * @param {Integer} id
    */
   async _requestDeleteReflection(credentials, id) {
-    const response = await fetch(
+    await fetch(
       `${BASE_URL}/api/cas/${
         this.props.navigation.state.params.id
       }/reflections/${id.toString()}`,
@@ -292,16 +293,16 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
 
   _renderPhotoCarouselItem({ item, index }) {
     return (
-      <View style={reflectionListStyles.itemContent}>
+      <View
+        style={reflectionListStyles.itemContent}
+      >
         <Text style={reflectionListStyles.imageCaptionText}>
           {decodeURI(item.title)}
         </Text>
-        <View style={{ elevation: 2 }}>
-          <PreloadImage
-            style={reflectionListStyles.image}
-            sourceUri={item.link}
-          />
-        </View>
+        <PreloadImage
+          style={reflectionListStyles.image}
+          sourceUri={item.link}
+        />
       </View>
     );
   }
@@ -486,6 +487,8 @@ const reflectionListStyles = StyleSheet.create({
     backgroundColor: colors.lightBlue2
   },
   itemContent: {
+    flex: 1,
+    justifyContent: 'flex-end',
     paddingHorizontal: 16,
     paddingVertical: 8
   },
@@ -493,10 +496,8 @@ const reflectionListStyles = StyleSheet.create({
     marginBottom: 8
   },
   image: {
-    // Dimensions.get('window').width - 64
-    width: 300,
-    height: 250,
-    flex: 1
+    width: 300 - 32,
+    height: 250
   },
   appBar: {
     position: 'absolute',
