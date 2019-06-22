@@ -50,6 +50,7 @@ export default class ManagebacAlertScreen extends React.Component {
    * Set the refreshing controller as visible, and call _fetchNotificationsData().
    */
   _onRefresh() {
+    this.props.navigation.state.params.refreshOverview();
     this.setState(
       {
         refreshing: true
@@ -64,7 +65,7 @@ export default class ManagebacAlertScreen extends React.Component {
    * Fetches details about a single notification.
    * @param {String} credentials
    */
- async _fetchNotificationData(credentials) {
+  async _fetchNotificationData(credentials) {
     const response = await fetch(
       BASE_URL +
         '/api/notification/' +
