@@ -20,6 +20,7 @@ import { connect } from 'react-redux';
 import { BASE_URL } from '../../env';
 
 import HeaderIcon from '../components/HeaderIcon';
+import EndOfList from '../components/EndOfList';
 import { Storage } from '../helpers';
 import { colors } from '../styles';
 
@@ -401,6 +402,7 @@ class ManagebacMessageThreadScreen extends React.Component {
           this.state.messageData.comments.map(item => {
             return this._renderComment(item);
           })}
+        <EndOfList />
         <KeyboardSpacer topSpacing={-150} />
       </ScrollView>
     );
