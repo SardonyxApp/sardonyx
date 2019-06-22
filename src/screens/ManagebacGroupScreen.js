@@ -229,6 +229,6 @@ const groupStyles = StyleSheet.create({
   },
   cta: {
     position: 'absolute',
-    bottom: 16
+    bottom: 32
   }
 });
