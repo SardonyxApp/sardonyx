@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
+import TurndownService from '@bmewburn/turndown';
 import { BASE_URL } from '../../env';
 
 import HeaderIcon from '../components/HeaderIcon';
@@ -37,7 +38,9 @@ export default class ManagebacMessageEditorScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Compose New Message',
+      title: navigation.state.params.editMode
+        ? 'Edit Message'
+        : 'Compose New Message',
       headerLeft: (
         <HeaderIcon
           onPress={() => {
@@ -50,7 +53,10 @@ export default class ManagebacMessageEditorScreen extends React.Component {
       headerRight: (
         <HeaderIcon onPress={navigation.state.params.sendMessage}>
           {/** navigationOptions is static, so we have to use params to access a method */}
-          <Icon name="send" color={colors.white} />
+          <Icon
+            name={navigation.state.params.editMode ? 'done' : 'send'}
+            color={colors.white}
+          />
         </HeaderIcon>
       )
     };
@@ -62,6 +68,16 @@ export default class ManagebacMessageEditorScreen extends React.Component {
 
     // Wait until all transitions/animations complete until running
     InteractionManager.runAfterInteractions(async () => {
+      const editMode = this.props.navigation.getParam('editMode', false);
+      if (editMode) {
+        const messageBodyHTML = this.props.navigation.state.params.data.content;
+        const turndownService = new TurndownService();
+        this.setState({
+          messageSubjectValue: this.props.navigation.state.params.data.title,
+          messageBodyValue: turndownService.turndown(messageBodyHTML)
+        });
+        return;
+      }
       // Retrieve the draft is any exists, and set the value.
       let drafts = await Storage.retrieveValue('messageDrafts');
       if (drafts) {
@@ -76,14 +92,13 @@ export default class ManagebacMessageEditorScreen extends React.Component {
 
       // Register the willBlur event so we can save the draft upon closing
       this.props.navigation.addListener('willBlur', this._onWillBlur);
-
-      // Set the textinput as editable (https://github.com/facebook/react-native/issues/20887)
-      setTimeout(() => {
-        this.setState({
-          editable: true
-        });
-      }, 100);
     });
+    // Set the textinput as editable (https://github.com/facebook/react-native/issues/20887)
+    setTimeout(() => {
+      this.setState({
+        editable: true
+      });
+    }, 100);
   }
 
   /**
@@ -154,6 +169,7 @@ export default class ManagebacMessageEditorScreen extends React.Component {
 
   /**
    * POST to /api/class|group/:id/messages and go back upon success. Also call the onGoBack() function.
+   * If params.editMode is true, then PATCH to /api/class|group/:id/messages/messageId.
    */
   _sendMessage() {
     this.setState(
@@ -162,26 +178,26 @@ export default class ManagebacMessageEditorScreen extends React.Component {
         sending: true // Maybe use this for loading animation? Currently used to check if draft message should be shown
       },
       async () => {
+        const editMode = this.props.navigation.getParam('editMode', false);
+        const url = editMode
+          ? `${BASE_URL}${this.props.navigation.state.params.data.link}`
+          : `${BASE_URL}/api/${this.props.navigation.state.params.type}/${
+              this.props.navigation.state.params.id
+            }/messages`;
         const credentials = await Storage.retrieveCredentials();
-        console.log(this.state);
-        await fetch(
-          `${BASE_URL}/api/${this.props.navigation.state.params.type}/${
-            this.props.navigation.state.params.id
-          }/messages`,
-          {
-            method: 'POST',
-            headers: {
-              'Login-Token': credentials,
-              'Message-Data': JSON.stringify({
-                topic: encodeURI(this.state.messageSubjectValue),
-                body: encodeURI(this.state.messageBodyValue),
-                notifyByEmail: 0,
-                privateMessage: 0
-              })
-            },
-            mode: 'no-cors'
-          }
-        );
+        await fetch(url, {
+          method: editMode ? 'PATCH' : 'POST',
+          headers: {
+            'Login-Token': credentials,
+            'Message-Data': JSON.stringify({
+              topic: encodeURI(this.state.messageSubjectValue),
+              body: encodeURI(this.state.messageBodyValue),
+              notifyByEmail: 0,
+              privateMessage: 0
+            })
+          },
+          mode: 'no-cors'
+        });
         // Remove the drafts if any exist
         this._discardDraft();
         if (this.props.navigation.getParam('onGoBack', null) !== null) {

@@ -16,12 +16,14 @@ import { TouchableRipple } from 'react-native-paper';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import HTMLView from 'react-native-htmlview';
 import moment from 'moment';
+import { connect } from 'react-redux';
 import { BASE_URL } from '../../env';
 
+import HeaderIcon from '../components/HeaderIcon';
 import { Storage } from '../helpers';
 import { colors } from '../styles';
 
-export default class ManagebacMessageThreadScreen extends React.Component {
+class ManagebacMessageThreadScreen extends React.Component {
   isMounted = false;
 
   constructor(props) {
@@ -42,6 +44,10 @@ export default class ManagebacMessageThreadScreen extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     InteractionManager.runAfterInteractions(this._onRefresh);
+    this.props.navigation.setParams({
+      refreshPage: this._onRefresh,
+      editable: this.props.user.id === this.props.navigation.state.params.authorId
+    });
   }
 
   componentWillUnmount() {
@@ -50,7 +56,22 @@ export default class ManagebacMessageThreadScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: `${navigation.state.params.title}`
+      title: `${navigation.state.params.title}`,
+      headerRight: navigation.state.params.editable ? (
+        <HeaderIcon
+          onPress={() => {
+            navigation.navigate('MessageEditor', {
+              editMode: true,
+              data: {
+                ...navigation.state.params
+              },
+              onGoBack: navigation.state.params.refreshPage
+            });
+          }}
+        >
+          <Icon name="edit" color={colors.white} />
+        </HeaderIcon>
+      ) : null
     };
   };
 
@@ -138,11 +159,16 @@ export default class ManagebacMessageThreadScreen extends React.Component {
     if (!this._isMounted) return;
     if (response.status === 200) {
       const parsedManagebacResponse = await response.json();
+      // Set the navigation params so further editing works
       this.setState(
         {
           messageData: parsedManagebacResponse.message[0]
         },
         () => {
+          this.props.navigation.setParams({
+            title: decodeURI(parsedManagebacResponse.message[0].title),
+            content: parsedManagebacResponse.message[0].content
+          });
           this._fetchMessageSubCommentsData(credentials);
         }
       );
@@ -466,3 +492,13 @@ const messageThreadStyles = StyleSheet.create({
     overflow: 'hidden'
   }
 });
+
+const mapStateToProps = state => {
+  const user = state.managebac.overview.user;
+  return { user };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(ManagebacMessageThreadScreen);
