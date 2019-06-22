@@ -266,7 +266,6 @@ const newMessageStyles = StyleSheet.create({
   },
   bodyTextInput: {
     flex: 1,
-    marginTop: 16,
     paddingVertical: 16,
     paddingHorizontal: 16,
     fontSize: 16,
