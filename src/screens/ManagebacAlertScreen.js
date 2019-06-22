@@ -14,8 +14,7 @@ import { BASE_URL } from '../../env';
 import HTMLView from 'react-native-htmlview';
 
 import { Storage } from '../helpers';
-import { fonts, colors } from '../styles';
-import { TouchableRipple } from 'react-native-paper';
+import { colors } from '../styles';
 
 export default class ManagebacAlertScreen extends React.Component {
   isMounted = false;
