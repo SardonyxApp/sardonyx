@@ -63,7 +63,7 @@ export default class ManagebacMessageEditorScreen extends React.Component {
     // Wait until all transitions/animations complete until running
     InteractionManager.runAfterInteractions(async () => {
       // Retrieve the draft is any exists, and set the value.
-      const drafts = await Storage.retrieveValue('messageDrafts');
+      let drafts = await Storage.retrieveValue('messageDrafts');
       if (drafts) {
         drafts = JSON.parse(drafts);
         if (this.props.navigation.getParam('id', null) in drafts) {
@@ -90,7 +90,7 @@ export default class ManagebacMessageEditorScreen extends React.Component {
    * Remove the key/value pair for this CAS id draft in Storage (if it exists).
    */
   async _discardDraft() {
-    const drafts = await Storage.retrieveValue('messageDrafts');
+    let drafts = await Storage.retrieveValue('messageDrafts');
     if (!drafts) return;
     drafts = JSON.parse(drafts);
     delete drafts[this.props.navigation.getParam('id', null)];
@@ -103,7 +103,7 @@ export default class ManagebacMessageEditorScreen extends React.Component {
    * Save the current value of the textbox to Storage under the CAS id key.
    */
   async _saveDraft() {
-    const drafts = await Storage.retrieveValue('messageDrafts');
+    let drafts = await Storage.retrieveValue('messageDrafts');
     if (!drafts) drafts = '{}';
     drafts = JSON.parse(drafts);
     drafts[this.props.navigation.state.params.id] = {
@@ -238,14 +238,14 @@ export default class ManagebacMessageEditorScreen extends React.Component {
 const newMessageStyles = StyleSheet.create({
   flex1: {
     flex: 1,
-    backgroundColor: colors.lightPrimary2,
+    backgroundColor: colors.white,
     flexDirection: 'column'
   },
   subjectTextInput: {
     fontSize: 16,
     paddingVertical: 16,
     paddingHorizontal: 16,
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.primary
   },
   bodyTextInput: {
@@ -254,6 +254,6 @@ const newMessageStyles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     fontSize: 16,
-    backgroundColor: colors.lightPrimary2
+    backgroundColor: colors.white
   }
 });
