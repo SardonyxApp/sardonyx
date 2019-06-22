@@ -46,7 +46,8 @@ const ManagebacStack = createStackNavigator(
         navigation.state.routes.map(route => {
           if (
             route.routeName === 'AddCASReflection' ||
-            route.routeName === 'EditCASReflection'
+            route.routeName === 'EditCASReflection' ||
+            route.routeName === 'MessageEditor'
           ) {
             tabBarVisible = false;
           } else {
