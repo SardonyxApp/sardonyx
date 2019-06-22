@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Text, View, FlatList, StyleSheet, Image } from 'react-native';
+import { Text, View, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 import Lottie from 'lottie-react-native';
 import { Icon } from 'react-native-elements';
@@ -10,7 +10,7 @@ import moment from 'moment';
 
 import { fonts, colors } from '../styles';
 
-export default class MessageListView extends React.Component {
+export default class MessageListView extends React.Component {  
   constructor(props) {
     super(props);
     this.state = {
@@ -81,14 +81,21 @@ export default class MessageListView extends React.Component {
               </TouchableRipple>
             </View>
           </View>
-          <HTMLView
-            style={messageListStyles.content}
-            value={`<html><body>${item.content}</body></html>`}
-            stylesheet={htmlStyles}
-            textComponentProps={{
-              style: htmlStyles.text
-            }}
-          />
+          <TouchableOpacity
+            onPress={() => this._navigateToMessageThreadScreen(item)}
+          >
+            <HTMLView
+              style={messageListStyles.content}
+              value={`<html><body>${item.content}</body></html>`}
+              stylesheet={htmlStyles}
+              textComponentProps={{
+                style: htmlStyles.text
+              }}
+              nodeComponentProps={{
+                numberOfLines: 5
+              }}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -101,7 +108,7 @@ export default class MessageListView extends React.Component {
         renderItem={this._renderMessage}
         keyExtractor={(item, index) => item.id.toString()}
         ListFooterComponent={
-          this.props.messages.length !== 0 ? (
+          this.props.messages.length !== 0 && !this.props.lastPage ? (
             <View style={messageListStyles.lottieContainer}>
               <Lottie
                 style={messageListStyles.lottie}

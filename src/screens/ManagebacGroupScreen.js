@@ -199,6 +199,10 @@ export default class ManagebacGroupScreen extends React.Component {
             onScrollEnd={this._fetchNextMessages}
             loading={this.state.fetchingMessages}
             navigation={this.props.navigation}
+            lastPage={
+              this.state.groupMessagesData.length ===
+              this.state.groupMessagesTotalPages
+            }
           />
         </ScrollView>
         <CTAButton

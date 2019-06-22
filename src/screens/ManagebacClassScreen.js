@@ -201,6 +201,10 @@ export default class ManagebacClassScreen extends React.Component {
             onScrollEnd={this._fetchNextMessages}
             loading={this.state.fetchingMessages}
             navigation={this.props.navigation}
+            lastPage={
+              this.state.classMessagesData.length ===
+              this.state.classMessagesTotalPages
+            }
           />
         </ScrollView>
         <CTAButton
