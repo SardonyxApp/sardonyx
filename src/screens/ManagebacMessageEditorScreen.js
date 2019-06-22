@@ -76,29 +76,29 @@ export default class ManagebacMessageEditorScreen extends React.Component {
           messageSubjectValue: this.props.navigation.state.params.data.title,
           messageBodyValue: turndownService.turndown(messageBodyHTML)
         });
-        return;
-      }
-      // Retrieve the draft is any exists, and set the value.
-      let drafts = await Storage.retrieveValue('messageDrafts');
-      if (drafts) {
-        drafts = JSON.parse(drafts);
-        if (this.props.navigation.getParam('id', null) in drafts) {
-          this.setState({
-            messageBodyValue:
-              drafts[this.props.navigation.getParam('id', null)].value
-          });
+      } else {
+        // Retrieve the draft is any exists, and set the value.
+        let drafts = await Storage.retrieveValue('messageDrafts');
+        if (drafts) {
+          drafts = JSON.parse(drafts);
+          if (this.props.navigation.getParam('id', null) in drafts) {
+            this.setState({
+              messageBodyValue:
+                drafts[this.props.navigation.getParam('id', null)].value
+            });
+          }
         }
-      }
 
-      // Register the willBlur event so we can save the draft upon closing
-      this.props.navigation.addListener('willBlur', this._onWillBlur);
+        // Register the willBlur event so we can save the draft upon closing
+        this.props.navigation.addListener('willBlur', this._onWillBlur);
+      }
+      // Set the textinput as editable (https://github.com/facebook/react-native/issues/20887)
+      setTimeout(() => {
+        this.setState({
+          editable: true
+        });
+      }, 100);
     });
-    // Set the textinput as editable (https://github.com/facebook/react-native/issues/20887)
-    setTimeout(() => {
-      this.setState({
-        editable: true
-      });
-    }, 100);
   }
 
   /**
