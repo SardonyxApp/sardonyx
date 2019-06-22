@@ -210,7 +210,7 @@ export default class ManagebacGroupScreen extends React.Component {
           onPress={() => {
             this.props.navigation.navigate('MessageEditor', {
               onGoBack: this._onRefresh,
-              type: 'class',
+              type: 'group',
               id: this.props.navigation.state.params.id
             });
           }}
