@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
+import { TouchableRipple, Paragraph, Switch } from 'react-native-paper';
 import TurndownService from '@bmewburn/turndown';
 import { BASE_URL } from '../../env';
 
@@ -27,7 +28,9 @@ export default class ManagebacMessageEditorScreen extends React.Component {
       messageSubjectValue: '',
       editable: false,
       sending: false,
-      textInputOffset: 0
+      textInputOffset: 0,
+      notifyByEmail: false,
+      privateMessage: false
     };
     this._onWillBlur = this._onWillBlur.bind(this);
     this._discardDraft = this._discardDraft.bind(this);
@@ -190,8 +193,8 @@ export default class ManagebacMessageEditorScreen extends React.Component {
             'Message-Data': JSON.stringify({
               topic: encodeURI(this.state.messageSubjectValue),
               body: encodeURI(this.state.messageBodyValue),
-              notifyByEmail: 0,
-              privateMessage: 0
+              notifyByEmail: editMode ? 0 : this.state.notifyByEmail,
+              privateMessage: editMode ? 0 : this.state.privateMessage
             })
           },
           mode: 'no-cors'
@@ -228,6 +231,38 @@ export default class ManagebacMessageEditorScreen extends React.Component {
             placeholder={'Enter subject...'}
           />
           <ScrollView keyboardDismissMode={'interactive'}>
+            {!this.props.navigation.getParam('editMode', false) && (
+              <View style={newMessageStyles.optionsContainer}>
+                <TouchableRipple
+                  onPress={() => {
+                    this.setState({
+                      notifyByEmail: !this.state.notifyByEmail
+                    });
+                  }}
+                >
+                  <View style={newMessageStyles.options}>
+                    <Paragraph>Notify by Email</Paragraph>
+                    <View pointerEvents={'none'}>
+                      <Switch value={this.state.notifyByEmail} />
+                    </View>
+                  </View>
+                </TouchableRipple>
+                <TouchableRipple
+                  onPress={() => {
+                    this.setState({
+                      privateMessage: !this.state.privateMessage
+                    });
+                  }}
+                >
+                  <View style={newMessageStyles.options}>
+                    <Paragraph>Private Message</Paragraph>
+                    <View pointerEvents={'none'}>
+                      <Switch value={this.state.privateMessage} />
+                    </View>
+                  </View>
+                </TouchableRipple>
+              </View>
+            )}
             <TextInput
               style={newMessageStyles.bodyTextInput}
               value={this.state.messageBodyValue}
@@ -254,6 +289,18 @@ const newMessageStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
     flexDirection: 'column'
+  },
+  optionsContainer: {
+    backgroundColor: colors.lightBackground,
+    borderBottomColor: colors.primary,
+    borderBottomWidth: StyleSheet.hairlineWidth
+  },
+  options: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 4
   },
   subjectTextInput: {
     fontSize: 16,
