@@ -8,7 +8,8 @@ import {
   RefreshControl,
   StyleSheet,
   InteractionManager,
-  TextInput
+  TextInput,
+  Alert
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -36,6 +37,8 @@ class ManagebacMessageThreadScreen extends React.Component {
       messageData: {}
     };
     this._onRefresh = this._onRefresh.bind(this);
+    this._confirmDelete = this._confirmDelete.bind(this);
+    this._deleteMessage = this._deleteMessage.bind(this);
     this._fetchMessageThreadData = this._fetchMessageThreadData.bind(this);
     this._toggleTextInputVisibility = this._toggleTextInputVisibility.bind(
       this
@@ -47,6 +50,7 @@ class ManagebacMessageThreadScreen extends React.Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.navigation.setParams({
         refreshPage: this._onRefresh,
+        confirmDelete: this._confirmDelete,
         editable:
           this.props.user.id === this.props.navigation.state.params.authorId
       });
@@ -58,24 +62,33 @@ class ManagebacMessageThreadScreen extends React.Component {
     this._isMounted = false;
   }
 
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
       title: `${navigation.state.params.title}`,
-      headerRight: navigation.state.params.editable ? (
-        <HeaderIcon
-          onPress={() => {
-            navigation.navigate('MessageEditor', {
-              editMode: true,
-              data: {
-                ...navigation.state.params
-              },
-              onGoBack: navigation.state.params.refreshPage
-            });
-          }}
-        >
-          <Icon name="edit" color={colors.white} />
-        </HeaderIcon>
-      ) : null
+      headerRight: !navigation.state.params.editable ? (
+        <View style={messageThreadStyles.headerIcons}>
+          <HeaderIcon
+            onPress={() => {
+              navigation.navigate('MessageEditor', {
+                editMode: true,
+                data: {
+                  ...navigation.state.params
+                },
+                onGoBack: navigation.state.params.refreshPage
+              });
+            }}
+          >
+            <Icon name="edit" color={colors.white} />
+          </HeaderIcon>
+          <HeaderIcon onPress={navigation.state.params.confirmDelete}>
+            <Icon name="delete" color={colors.white} />
+          </HeaderIcon>
+        </View>
+      ) : null,
+      headerTitleStyle: {
+        paddingRight: 48,
+        ...navigationOptions.headerTitleStyle
+      }
     };
   };
 
@@ -89,6 +102,51 @@ class ManagebacMessageThreadScreen extends React.Component {
       },
       async () => {
         this._fetchMessageThreadData(await Storage.retrieveCredentials());
+      }
+    );
+  }
+
+  /**
+   * Confirms the user if they really want to delete the message. Then calls _deleteMessage()
+   */
+  _confirmDelete() {
+    Alert.alert(
+      'Delete',
+      'Are you sure you want to delete this message, including any comments?',
+      [
+        {
+          text: 'No!'
+        },
+        {
+          text: 'Yes, delete',
+          onPress: this._deleteMessage
+        }
+      ]
+    );
+  }
+
+  /**
+   * Calls _requestDeleteMessage using credentials.
+   */
+  _deleteMessage() {
+    this.setState(
+      {
+        refreshing: true
+      },
+      async () => {
+        let url = this.props.navigation.getParam('link', '/404');
+        const credentials = await Storage.retrieveCredentials();
+        await fetch(
+          BASE_URL + url, {
+            method: 'DELETE',
+            headers: {
+              'Login-Token': credentials
+            },
+            mode: 'no-cors'
+          }
+        );
+        if (!this._isMounted) return;
+        this.props.navigation.goBack();
       }
     );
   }
@@ -410,6 +468,9 @@ class ManagebacMessageThreadScreen extends React.Component {
 }
 
 const messageThreadStyles = StyleSheet.create({
+  headerIcons: {
+    flexDirection: 'row'
+  },
   page: {
     flex: 1,
     backgroundColor: colors.lightBackground
