@@ -1,6 +1,10 @@
 import React from 'react';
 
-import { createSwitchNavigator, createAppContainer } from 'react-navigation';
+import {
+  createSwitchNavigator,
+  createAppContainer,
+  createStackNavigator
+} from 'react-navigation';
 import { useScreens } from 'react-native-screens';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import * as Font from 'expo-font';
@@ -9,12 +13,16 @@ import configureStore from './configureStore';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import ManagebacStack from './src/ManagebacStack';
+import ManagebacMessageEditorScreen from './src/screens/ManagebacMessageEditorScreen';
+import ManagebacEditCASReflectionScreen from './src/screens/ManagebacEditCASReflectionScreen';
+import ManagebacAddCASReflectionScreen from './src/screens/ManagebacAddCASReflectionScreen';
 import TasksStack from './src/TasksStack';
+import TasksLabelsFilterScreen from './src/screens/TasksLabelsFilterScreen';
 import SettingsStack from './src/SettingsStack';
 import LoginCheckScreen from './src/screens/LoginCheckScreen';
 import LoginScreen from './src/screens/LoginScreen';
 
-import { colors } from './src/styles';
+import { colors, fonts } from './src/styles';
 
 const { store, persistor } = configureStore();
 
@@ -23,7 +31,7 @@ useScreens();
 
 // The main app navigation stack.
 // Screens made later on (individual message screens, feed, or whatever) will be added here
-const AppStack = createMaterialBottomTabNavigator(
+const AppMaterialBottomBar = createMaterialBottomTabNavigator(
   {
     ManagebacTabs: ManagebacStack,
     TasksTabs: TasksStack,
@@ -36,6 +44,35 @@ const AppStack = createMaterialBottomTabNavigator(
     inactiveColor: colors.inactive,
     barStyle: {
       backgroundColor: colors.white
+    },
+    navigationOptions: {
+      header: null
+    }
+  }
+);
+
+// Here we define some screens that will go over the tab bar, such as Message Editors.
+// We could also manually hide the tab bar in specific screens inside ManagebacTabs, but it leads
+// to undesired glitchy keyboard effects
+const AppStack = createStackNavigator(
+  {
+    AppMaterialBottomBar,
+    MessageEditor: ManagebacMessageEditorScreen,
+    EditCASReflection: ManagebacEditCASReflectionScreen,
+    AddCASReflection: ManagebacAddCASReflectionScreen,
+    LabelsFilter: TasksLabelsFilterScreen, // Choose labels for filtering the tasklist
+  },
+  {
+    initialRouteName: 'AppMaterialBottomBar',
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: colors.blue
+      },
+      headerTintColor: colors.white,
+      headerTitleStyle: {
+        fontWeight: 'normal',
+        ...fonts.jost400
+      }
     }
   }
 );
@@ -49,7 +86,7 @@ const AppContainer = createAppContainer(
       // Make sure no names for screens overlap (e.g. LoginStack and Login), since they are unique
       //  identifiers that can be navigated to from anywhere in the app
       LoginCheck: LoginCheckScreen,
-      AppStack: AppStack, // navigators can contain navigators
+      AppStack: AppStack,
       Login: LoginScreen
     },
     {
