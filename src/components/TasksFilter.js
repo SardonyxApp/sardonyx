@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
-import { Icon } from 'react-native-elements';
-import { TouchableRipple } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
 
-import { styles, fonts } from '../styles';
+import { fonts } from '../styles';
 
 import Label from './TasksLabel';
 
@@ -20,48 +19,52 @@ export default class TasksFilter extends React.PureComponent {
   render() {
     const subjects = this.props.subjects
       .filter(label => this.props.subjectsFilter.includes(label.id))
-      .map(label => <Label key={label.name} label={label} onRemove={() => this.props.onFilter('subjectsFilter', label.id)} removable={true} />);
+      .map(label => (
+        <Label
+          key={label.name}
+          label={label}
+          onRemove={() => this.props.onFilter('subjectsFilter', label.id)}
+          removable={true}
+        />
+      ));
 
     const categories = this.props.categories
       .filter(label => this.props.categoriesFilter.includes(label.id))
-      .map(label => <Label key={label.name} label={label} onRemove={() => this.props.onFilter('categoriesFilter', label.id)} removable={true} />);
+      .map(label => (
+        <Label
+          key={label.name}
+          label={label}
+          onRemove={() => this.props.onFilter('categoriesFilter', label.id)}
+          removable={true}
+        />
+      ));
 
     return (
       <View style={[filterStyles.container, filterStyles.containercontainer]}>
-        <TouchableRipple 
-            onPress={this._handleNavigate}
-            rippleColor="rgba(0, 0, 0, 0.16)"
-            style={[styles.icon, filterStyles.filterIcon]}
-          >
-            <Icon 
-              name="filter"
-              type="material-community"
-              iconStyle={styles.icon}
-            /> 
-          </TouchableRipple>
-        <ScrollView horizontal={true} contentContainerStyle={filterStyles.container}>
+        <IconButton
+          onPress={this._handleNavigate}
+          style={filterStyles.filterIcon}
+          icon={'filter-list'}
+        />
+        <ScrollView
+          horizontal={true}
+          contentContainerStyle={filterStyles.container}
+        >
           {subjects}
           {categories}
-          {!subjects.length && !categories.length 
-          ? <Text 
-              className="overview-description" 
+          {!subjects.length && !categories.length ? (
+            <Text
+              className="overview-description"
               style={filterStyles.hint}
               onPress={this._handleNavigate}
             >
               Filter labels...
-            </Text> 
-          : null}
-          <TouchableRipple 
+            </Text>
+          ) : null}
+          <IconButton
             onPress={this._handleNavigate}
-            rippleColor="rgba(0, 0, 0, 0.16)"
-            style={styles.icon}
-          >
-            <Icon 
-              name="add"
-              type="material"
-              iconStyle={styles.icon}
-            />
-          </TouchableRipple>
+            icon={'add'}
+          />
         </ScrollView>
       </View>
     );
@@ -85,4 +88,4 @@ const filterStyles = StyleSheet.create({
     ...fonts.jost400,
     fontSize: 16
   }
-})
+});
