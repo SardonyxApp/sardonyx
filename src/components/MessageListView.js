@@ -1,6 +1,13 @@
 import React from 'react';
 
-import { Text, View, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import {
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity
+} from 'react-native';
 
 import Lottie from 'lottie-react-native';
 import { Icon } from 'react-native-elements';
@@ -8,9 +15,10 @@ import HTMLView from 'react-native-htmlview';
 import { TouchableRipple } from 'react-native-paper';
 import moment from 'moment';
 
+import EndOfList from './EndOfList';
 import { fonts, colors } from '../styles';
 
-export default class MessageListView extends React.Component {  
+export default class MessageListView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -120,10 +128,12 @@ export default class MessageListView extends React.Component {
                 source={require('../assets/loader.json')}
               />
             </View>
-          ) : (
+          ) : this.props.loading ? (
             <View style={messageListStyles.messageContainer}>
-              <Text>{this.props.loading ? 'Loading...' : 'Nothing here!'}</Text>
+              <Text>{'Loading...'}</Text>
             </View>
+          ) : (
+            <EndOfList />
           )
         }
       />
