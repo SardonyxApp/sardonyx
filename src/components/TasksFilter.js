@@ -20,11 +20,11 @@ export default class TasksFilter extends React.PureComponent {
   render() {
     const subjects = this.props.subjects
       .filter(label => this.props.subjectsFilter.includes(label.id))
-      .map(label => <Label key={label.name} label={label} onRemove={id => this.props.onFilter('subjectsFilter', id)} removable={true} />);
+      .map(label => <Label key={label.name} label={label} onRemove={() => this.props.onFilter('subjectsFilter', label.id)} removable={true} />);
 
     const categories = this.props.categories
       .filter(label => this.props.categoriesFilter.includes(label.id))
-      .map(label => <Label key={label.name} label={label} onRemove={id => this.props.onFilter('categoriesFilter', id)} removable={true} />);
+      .map(label => <Label key={label.name} label={label} onRemove={() => this.props.onFilter('categoriesFilter', label.id)} removable={true} />);
 
     return (
       <View style={[filterStyles.container, filterStyles.containercontainer]}>
