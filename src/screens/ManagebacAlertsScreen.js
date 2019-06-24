@@ -142,7 +142,6 @@ export default class ManagebacAlertsScreen extends React.Component {
       this.setState({ notificationsData });
     }
     if (this.props.navigation.getParam('refreshPage', null) !== null) {
-      console.log(this.props.navigation.state.params.refreshPage);
       this.props.navigation.state.params.refreshPage();
     }
   }
