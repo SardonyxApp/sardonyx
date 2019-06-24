@@ -196,6 +196,7 @@ export default class ManagebacGroupScreen extends React.Component {
             Messages
           </OverviewHeading>
           <MessageListView
+            onDeleteRefresh={this._onRefresh}
             messages={[].concat(...this.state.groupMessagesData)}
             onScrollEnd={this._fetchNextMessages}
             loading={this.state.fetchingMessages}
