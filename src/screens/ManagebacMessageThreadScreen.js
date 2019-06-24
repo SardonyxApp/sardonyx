@@ -146,6 +146,9 @@ class ManagebacMessageThreadScreen extends React.Component {
           }
         );
         if (!this._isMounted) return;
+        if(this.props.navigation.getParam('onGoBack', null) !== null) {
+          this.props.navigation.state.params.onGoBack();
+        }
         this.props.navigation.goBack();
       }
     );

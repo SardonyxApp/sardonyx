@@ -31,7 +31,8 @@ export default class MessageListView extends React.Component {
   _navigateToMessageThreadScreen(item) {
     this.props.navigation.navigate('MessageThread', {
       ...item,
-      title: decodeURI(item.title)
+      title: decodeURI(item.title),
+      onGoBack: this.props.onDeleteRefresh || null
     });
   }
 
@@ -67,6 +68,11 @@ export default class MessageListView extends React.Component {
               wrote {moment(item.date).fromNow()}
             </Text>
           </Text>
+          {item.onlyVisibleForTeachers && (
+            <Text style={messageListStyles.onlyTeacher}>
+              Only Visible For Teachers
+            </Text>
+          )}
           <View style={messageListStyles.titleFlex}>
             <Text style={messageListStyles.title}>{decodeURI(item.title)}</Text>
             <View style={messageListStyles.comments}>
@@ -165,6 +171,11 @@ const messageListStyles = StyleSheet.create({
   author: {
     fontSize: 12,
     ...fonts.jost300
+  },
+  onlyTeacher: {
+    fontSize: 12,
+    ...fonts.jost300,
+    color: colors.error
   },
   subtext: {
     color: colors.darkBackground
