@@ -10,13 +10,14 @@ import {
   StyleSheet
 } from 'react-native';
 
+import { FAB } from 'react-native-paper';
 import { BASE_URL } from '../../env';
 
 import UpcomingCarousel from '../components/UpcomingCarousel';
 import OverviewHeading from '../components/OverviewHeading';
 import MessageListView from '../components/MessageListView';
-import CTAButton from '../components/CTAButton';
 import { Storage } from '../helpers';
+import { colors } from '../styles';
 
 export default class ManagebacClassScreen extends React.Component {
   isMounted = false;
@@ -207,8 +208,11 @@ export default class ManagebacClassScreen extends React.Component {
             }
           />
         </ScrollView>
-        <CTAButton
+        <FAB
+          icon={'add'}
           style={classStyles.cta}
+          color={colors.lightPrimary2}
+          label={'New Message'}
           onPress={() => {
             this.props.navigation.navigate('MessageEditor', {
               onGoBack: this._onRefresh,
@@ -216,9 +220,7 @@ export default class ManagebacClassScreen extends React.Component {
               id: this.props.navigation.state.params.id
             });
           }}
-        >
-          New Message
-        </CTAButton>
+        />
       </View>
     );
   }
@@ -231,6 +233,7 @@ const classStyles = StyleSheet.create({
   },
   cta: {
     position: 'absolute',
-    bottom: 32
+    bottom: 32,
+    backgroundColor: colors.primary
   }
 });
