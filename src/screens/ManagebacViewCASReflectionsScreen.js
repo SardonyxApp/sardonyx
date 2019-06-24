@@ -293,9 +293,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
 
   _renderPhotoCarouselItem({ item, index }) {
     return (
-      <View
-        style={reflectionListStyles.itemContent}
-      >
+      <View style={reflectionListStyles.itemContent}>
         <Text style={reflectionListStyles.imageCaptionText}>
           {decodeURI(item.title)}
         </Text>
@@ -427,10 +425,10 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
           style={[
             reflectionListStyles.appBar,
             {
-              opacity: this.state.menuVisibility.interpolate({
+              transform: [{translateY: this.state.menuVisibility.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, 1]
-              })
+                outputRange: [56, 0]
+              })}]
             }
           ]}
         >
