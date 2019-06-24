@@ -15,6 +15,7 @@ import { TouchableRipple, Switch } from 'react-native-paper';
 import { bindActionCreators } from 'redux';
 import { setSettings } from '../actions';
 import { connect } from 'react-redux';
+import { version } from '../../package.json';
 
 import { Storage } from '../helpers';
 import { colors, fonts } from '../styles';
@@ -69,6 +70,10 @@ class SettingsScreen extends React.Component {
         {
           title: 'Terms of Service',
           onPress: () => Linking.openURL('https://sardonyx.app/terms')
+        },
+        {
+          title: 'Version Info',
+          description: version
         }
       ]
     }
