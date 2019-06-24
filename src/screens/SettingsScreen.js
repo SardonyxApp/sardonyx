@@ -151,6 +151,7 @@ class SettingsScreen extends React.Component {
   }
 
   _renderCheckboxRow(item) {
+    const reduxValue = this._objectKeyByString(this.props.settings, item.redux);
     return (
       <View style={[settingsStyles.item, settingsStyles.checkboxItem]}>
         <View style={settingsStyles.nonCheckboxContainer}>
@@ -162,12 +163,9 @@ class SettingsScreen extends React.Component {
         <View style={settingsStyles.checkboxContainer}>
           <Switch
             color={colors.primary}
-            value={this._objectKeyByString(this.props.settings, item.redux)}
+            value={reduxValue}
             onValueChange={() => {
-              this.props.setSettings(
-                item.redux,
-                !this._objectKeyByString(this.props.settings, item.redux)
-              );
+              this.props.setSettings(item.redux, !reduxValue);
             }}
           />
         </View>
