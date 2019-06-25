@@ -25,7 +25,8 @@
       "bundleIdentifier": "app.sardonyx"
     },
     "android": {
-      "package": "app.sardonyx"
+      "package": "app.sardonyx",
+      "permissions": []
     }
   }
 }
