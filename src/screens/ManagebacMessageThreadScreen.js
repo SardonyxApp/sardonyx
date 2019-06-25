@@ -65,7 +65,7 @@ class ManagebacMessageThreadScreen extends React.Component {
   static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
       title: `${navigation.state.params.title}`,
-      headerRight: !navigation.state.params.editable ? (
+      headerRight: navigation.state.params.editable ? (
         <View style={messageThreadStyles.headerIcons}>
           <HeaderIcon
             onPress={() => {
