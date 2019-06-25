@@ -243,7 +243,10 @@ export default class ManagebacMessageEditorScreen extends React.Component {
                   <View style={newMessageStyles.options}>
                     <Paragraph>Notify by Email</Paragraph>
                     <View pointerEvents={'none'}>
-                      <Switch value={this.state.notifyByEmail} />
+                      <Switch
+                        value={this.state.notifyByEmail}
+                        color={colors.primary}
+                      />
                     </View>
                   </View>
                 </TouchableRipple>
@@ -257,7 +260,10 @@ export default class ManagebacMessageEditorScreen extends React.Component {
                   <View style={newMessageStyles.options}>
                     <Paragraph>Private Message</Paragraph>
                     <View pointerEvents={'none'}>
-                      <Switch value={this.state.privateMessage} />
+                      <Switch
+                        value={this.state.privateMessage}
+                        color={colors.primary}
+                      />
                     </View>
                   </View>
                 </TouchableRipple>
