@@ -60,7 +60,6 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
     });
 
     InteractionManager.runAfterInteractions(() => {
-
       const currentValueHTML = this.props.navigation.getParam(
         'currentValueHTML',
         ''
@@ -118,7 +117,7 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
             mode: 'no-cors'
           }
         );
-        
+
         if (this.props.navigation.getParam('onGoBack', null) !== null) {
           this.props.navigation.state.params.onGoBack();
         }
@@ -161,7 +160,7 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
 const updateReflectionStyles = StyleSheet.create({
   flex1: {
     flex: 1,
-    backgroundColor: colors.lightPrimary2
+    backgroundColor: colors.white
   },
   textinput: {
     flex: 1,
