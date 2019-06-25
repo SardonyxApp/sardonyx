@@ -224,7 +224,7 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
 const addReflectionStyles = StyleSheet.create({
   flex1: {
     flex: 1,
-    backgroundColor: colors.lightPrimary2
+    backgroundColor: colors.white
   },
   textinput: {
     flex: 1,
