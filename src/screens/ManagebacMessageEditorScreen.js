@@ -2,6 +2,7 @@ import React from 'react';
 
 import {
   View,
+  Text,
   ScrollView,
   TextInput,
   StyleSheet,
@@ -12,13 +13,13 @@ import {
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
-import { TouchableRipple, Paragraph, Switch } from 'react-native-paper';
+import { TouchableRipple, Switch } from 'react-native-paper';
 import TurndownService from '@bmewburn/turndown';
 import { BASE_URL } from '../../env';
 
 import HeaderIcon from '../components/HeaderIcon';
 import { Storage } from '../helpers';
-import { colors } from '../styles';
+import { colors, fonts } from '../styles';
 
 export default class ManagebacMessageEditorScreen extends React.Component {
   constructor(props) {
@@ -241,7 +242,7 @@ export default class ManagebacMessageEditorScreen extends React.Component {
                   }}
                 >
                   <View style={newMessageStyles.options}>
-                    <Paragraph>Notify by Email</Paragraph>
+                    <Text style={newMessageStyles.optionText}>Notify by Email</Text>
                     <View pointerEvents={'none'}>
                       <Switch
                         value={this.state.notifyByEmail}
@@ -258,7 +259,7 @@ export default class ManagebacMessageEditorScreen extends React.Component {
                   }}
                 >
                   <View style={newMessageStyles.options}>
-                    <Paragraph>Private Message</Paragraph>
+                    <Text style={newMessageStyles.optionText}>Private Message</Text>
                     <View pointerEvents={'none'}>
                       <Switch
                         value={this.state.privateMessage}
@@ -307,6 +308,9 @@ const newMessageStyles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 4
+  },
+  optionText: {
+    ...fonts.jost400
   },
   subjectTextInput: {
     fontSize: 16,
