@@ -221,6 +221,11 @@ export default class ManagebacClassScreen extends React.Component {
               id: this.props.navigation.state.params.id
             });
           }}
+          theme={{
+            fonts: {
+              medium: 'Jost-500'
+            }
+          }}
         />
       </View>
     );
