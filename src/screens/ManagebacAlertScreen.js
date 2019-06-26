@@ -127,7 +127,6 @@ export default class ManagebacAlertScreen extends React.Component {
               ? this.state.notificationData.content
               : ''
           }</body></html>`}
-          addLineBreaks={false}
         />
       </ScrollView>
     );
