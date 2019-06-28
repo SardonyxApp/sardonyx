@@ -2,7 +2,7 @@ import React from 'react';
 
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
 
-export default class EndOfList extends React.Component {
+export default class EndOfList extends React.PureComponent {
   constructor(props) {
     super(props);
   }
