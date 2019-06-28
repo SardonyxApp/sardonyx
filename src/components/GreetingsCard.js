@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import { colors, fonts } from '../styles';
 
-class GreetingsCard extends React.Component {
+class GreetingsCard extends React.PureComponent {
   constructor(props) {
     super(props);
   }

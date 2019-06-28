@@ -7,7 +7,7 @@ import {
   View
 } from 'react-native';
 
-export default class HeaderIcon extends React.Component {
+export default class HeaderIcon extends React.PureComponent {
   constructor(props) {
     super(props);
   }

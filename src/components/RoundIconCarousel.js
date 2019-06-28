@@ -8,7 +8,7 @@ import { TouchableRipple } from 'react-native-paper';
 
 import { colors, fonts } from '../styles';
 
-export default class RoundIconCarousel extends React.Component {
+export default class RoundIconCarousel extends React.PureComponent {
   constructor(props) {
     super(props);
 
