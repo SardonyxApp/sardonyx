@@ -5,33 +5,48 @@ import {
   Text,
   Image,
   TextInput,
-  KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  Linking,
   Keyboard
 } from 'react-native';
 
-import {
-  CheckBox,
-  Button
-} from 'react-native-elements';
+import { Button } from 'react-native-elements';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setManagebacOverview } from '../actions';
+import { BASE_URL } from '../../env';
 
 import { Storage } from '../helpers';
-import { styles, colors, preset } from '../styles';
+import { styles, colors, preset, fonts } from '../styles';
 
-export default class Login extends React.Component {
+class Login extends React.Component {
   render() {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={[styles.alignChildrenCenter, styles.fullScreen]}>
+        <View style={[styles.alignChildrenCenter, { flex: 1 }]}>
           <View style={preset.loginBox}>
-            <Image source={require('../logos/Icon.png')} style={styles.logoIcon} />
-            <Text style={[styles.h1, styles.alignCenter]}>Sardonyx</Text>
-            <Text style={[styles.p, styles.alignCenter]}>Login with ManageBac</Text>
-            <LoginForm navigation={this.props.navigation} />
-            <ErrorMessage error={this.props.navigation.getParam('errorMessage', null)} />
+            <Image
+              source={require('../assets/logos/Icon.png')}
+              style={styles.logoIcon}
+            />
+            <Text style={[styles.h1, styles.alignCenter, fonts.jost300]}>
+              Sardonyx
+            </Text>
+            <Text style={[styles.p, styles.alignCenter, fonts.jost400]}>
+              Login with ManageBac
+            </Text>
+            <LoginForm
+              navigation={this.props.navigation}
+              setManagebacOverview={this.props.setManagebacOverview}
+            />
+            <ErrorMessage
+              error={this.props.navigation.getParam('errorMessage', null)}
+            />
           </View>
           <DisclaimerMessage />
-        </KeyboardAvoidingView>
+          <KeyboardSpacer topSpacing={-150} />
+        </View>
       </TouchableWithoutFeedback>
     );
   }
@@ -46,7 +61,6 @@ class LoginForm extends React.Component {
       agree: false,
       usernameError: false,
       passwordError: false,
-      agreeError: false,
       disabled: false
     };
 
@@ -82,77 +96,112 @@ class LoginForm extends React.Component {
     // returning a promise because setState does not get immediately reflected
     return new Promise(resolve => {
       //raise error if username is not a valid email address, or if one of the fields are empty
-      this.setState({
-        usernameError: !emailRegex.test(this.state.username),
-        passwordError: this.state.password.length < 1,
-        agreeError: !this.state.agree
-      }, () => {
-        // if there is either error, return false to reject request
-        resolve(this.state.usernameError || this.state.passwordError || this.state.agreeError);
-      });
+      this.setState(
+        {
+          usernameError: !emailRegex.test(this.state.username),
+          passwordError: this.state.password.length < 1
+        },
+        () => {
+          // if there is either error, return false to reject request
+          resolve(this.state.usernameError || this.state.passwordError);
+        }
+      );
     });
   }
 
-  sendForm(formData) {
-    fetch('https://sardonyx.app/api/login', { 
+  async sendForm(formData) {
+    const response = await fetch(BASE_URL + '/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data'
       },
       body: formData,
-      mode: 'no-cors',
-    }).then(response => {
-      if (response.status === 200) {
-        // store response tokens
-        const credentials = JSON.parse(response.headers.map['login-token'] || '{}');
-        Storage.writeCredentials(credentials).then(() => {
-          this.toggleButton(); // Make button available again
-          this.props.navigation.navigate('AppStack');
-        }).catch(error => {
-          this.toggleButton();
-          this.props.navigation.navigate('Login', {
-            errorMessage: 'There was an error while storing login. ' + error
-          });
-        });
-      } else {
-        this.toggleButton();
-        if (response.status === 401) this.props.navigation.navigate('Login', {
-          errorMessage: 'Your username and password did not match. Please retry.'
-        });
-        else if (response.status === 404) this.props.navigation.navigate('Login', {
-          errorMessage: 'Validation failed due to a network error.'
-        });
-        else this.props.navigation.navigate('Login', {
-          errorMessage: 'Validation failed due to an unknown error. Error code: ' + response.status
-        });
-      }
+      mode: 'no-cors'
     }).catch(error => {
       this.toggleButton();
       this.props.navigation.navigate('Login', {
-        errorMessage: 'There was an error while processing your login. Please retry. ' + error
+        errorMessage:
+          'There was an error while processing your login. Please retry. ' +
+          error
       });
     });
+    if (response.status === 200) {
+      // store response tokens
+      const credentials = {
+        ...JSON.parse(response.headers.map['login-token'] || '{}'),
+        ...{ sardonyxToken: response.headers.map['sardonyx-token'] }
+      };
+      try {
+        Storage.writeCredentials(credentials);
+        this.props.setManagebacOverview(await response.json());
+        this.toggleButton(); // Make button available again
+        this.props.navigation.navigate(
+          this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'
+        );
+      } catch (e) {
+        this.toggleButton();
+        this.props.navigation.navigate('Login', {
+          errorMessage: 'There was an error while storing login. ' + error
+        });
+      }
+      return;
+    }
+    this.toggleButton();
+    if (response.status === 401)
+      this.props.navigation.navigate('Login', {
+        errorMessage: 'Your username and password did not match. Please retry.'
+      });
+    else if (response.status === 404)
+      this.props.navigation.navigate('Login', {
+        errorMessage: 'Validation failed due to a network error.'
+      });
+    else if (response.status === 503)
+      this.props.navigation.navigate('Login', {
+        errorMessage:
+          'Could not access Sardonyx because Managebac is under maintenance. Please try again later.'
+      });
+    else
+      this.props.navigation.navigate('Login', {
+        errorMessage:
+          'Validation failed due to an unknown error. Error code: ' +
+          response.status
+      });
   }
 
   render() {
     return (
-      <View style={{ flexDirection: 'column' }}>
-
-        <TextInput 
+      <View style={{ flexDirection: 'column', width: '100%', marginTop: 16 }}>
+        <TextInput
           placeholder="Username"
           value={this.state.username}
-          style={preset.inputLine}
+          style={[
+            preset.inputLine,
+            {
+              borderBottomWidth: 0.5,
+              borderTopRightRadius: 4,
+              borderTopLeftRadius: 4
+            }
+          ]}
           textContentType="username"
           keyboardType="email-address"
           returnKeyType="next"
           autoCapitalize="none"
-          onChangeText={text => this.setState({
-            username: text
-          })}
+          onChangeText={text =>
+            this.setState({
+              username: text
+            })
+          }
           onSubmitEditing={() => this.passwordInput.focus()}
           blurOnSubmit={false}
         />
-        <Text style={[styles.error, styles.alignCenter, this.state.usernameError ? {} : styles.hidden]}>
+        <Text
+          style={[
+            styles.error,
+            styles.alignCenter,
+            fonts.jost400,
+            this.state.usernameError ? {} : styles.hidden
+          ]}
+        >
           Please enter a valid email address.
         </Text>
 
@@ -162,47 +211,46 @@ class LoginForm extends React.Component {
             this.passwordInput = input;
           }}
           value={this.state.password}
-          style={preset.inputLine}
+          style={[
+            preset.inputLine,
+            {
+              borderTopWidth: 0.5,
+              borderBottomRightRadius: 4,
+              borderBottomLeftRadius: 4
+            }
+          ]}
           textContentType="password"
           keyboardType="default"
           returnKeyType="done"
           autoCapitalize="none"
           secureTextEntry={true}
-          onChangeText={text => this.setState({
-            password: text 
-          })}
+          onChangeText={text =>
+            this.setState({
+              password: text
+            })
+          }
         />
-        <Text style={[styles.error, styles.alignCenter, this.state.passwordError ? {} : styles.hidden]}>
+        <Text
+          style={[
+            styles.error,
+            styles.alignCenter,
+            fonts.jost400,
+            this.state.passwordError ? {} : styles.hidden
+          ]}
+        >
           Please enter a password.
-        </Text>
-
-        <CheckBox 
-          title="I agree to the Terms of Service and Privacy Policy"
-          checked={this.state.agree}
-          checkedColor={colors.black}
-          uncheckedColor={colors.black}
-          iconType="material-community"
-          checkedIcon="checkbox-marked"
-          uncheckedIcon="checkbox-blank-outline"
-          containerStyle={[styles.transparentBackground, {paddingBottom: 0}]}
-          onPress={() => this.setState({
-            agree: !this.state.agree
-          })}
-          textstyle={/*[styles.regular, styles.p]*/ styles.link}
-        />
-        <Text style={[styles.error, styles.alignCenter, this.state.agreeError ? {} : styles.hidden]}>
-          Please agree to the Conditions.
         </Text>
 
         <Button
           title="Sign in"
-          backgroundColor={colors.primary}
+          type="solid"
           onPress={this.handleSubmit}
-          containerViewStyle={styles.padding10}
+          buttonStyle={{ backgroundColor: colors.primary }}
+          containerStyle={styles.padding10}
+          titleStyle={fonts.jost400}
           disabled={this.state.disabled}
           disabledStyle={{ backgroundColor: colors.lightPrimary }}
         />
-        
       </View>
     );
   }
@@ -210,15 +258,72 @@ class LoginForm extends React.Component {
 
 function DisclaimerMessage() {
   return (
-    <Text style={[styles.small, styles.alignCenter, styles.padding5]}>
-      Sardonyx is not affiliated, associated, authorized, endorsed by, or in any way officially connected with ManageBac, or any of its subsidiaries or its affiliates.
-    </Text>
+    <View style={styles.alignCenter}>
+      <Text
+        style={[
+          styles.small,
+          styles.alignCenter,
+          styles.padding5,
+          fonts.jost300
+        ]}
+      >
+        By signing in, you are agreeing to our{' '}
+        <Text
+          onPress={() => Linking.openURL(BASE_URL + '/terms')}
+          style={{ color: colors.primary }}
+        >
+          Terms of Service
+        </Text>{' '}
+        and{' '}
+        <Text
+          onPress={() => Linking.openURL(BASE_URL + '/privacy')}
+          style={{ color: colors.primary }}
+        >
+          Privacy Policy
+        </Text>
+        .
+      </Text>
+      <Text
+        style={[
+          styles.small,
+          styles.alignCenter,
+          styles.padding5,
+          fonts.jost300
+        ]}
+      >
+        Sardonyx is not affiliated, associated, authorized, endorsed by, or in
+        any way officially connected with ManageBac, or any of its subsidiaries
+        or its affiliates.
+      </Text>
+    </View>
   );
 }
 
 function ErrorMessage(props) {
   if (props.error) {
-    return <Text style={[styles.p, styles.alignCenter, styles.error]}>{props.error}</Text>;
+    return (
+      <Text style={[styles.p, styles.alignCenter, styles.error, fonts.jost400]}>
+        {props.error}
+      </Text>
+    );
   }
   return null;
 }
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      setManagebacOverview
+    },
+    dispatch
+  );
+
+const mapStateToProps = state => {
+  const firstScreenManagebac = state.settings.general.firstScreenManagebac;
+  return { firstScreenManagebac };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);

@@ -32,7 +32,7 @@
 # The app (mobile client)
 Tools needed:
 * Git
-* Node / NPM
+* Node 10.x or later / NPM
 * Android Studio (optional)
 * Expo Mobile App (optional)
 
@@ -44,13 +44,18 @@ Clone this repository and navigate to it.
 $ git clone https://github.com/SardonyxApp/sardonyx.git
 $ cd sardonyx
 ```
+
 Install dependencies.
 ```
 $ npm install
 ```
 
-Do NOT run `npm run audit` or change the React Native version. 
-
+In `evn.json`, set the `BASE_URL` environment variable to the url of the sardonyx-server.
+```json
+{
+  "BASE_URL": "http://192.168.x.x:3000" 
+}
+```
 ## Development
 Run development mode.
 ```
@@ -68,7 +73,7 @@ $ npm test
 ```
 
 ## Production
-This is not necessary except when releasing a new version.
+See Expo documentation. 
 
 Produce Android app.
 ```
@@ -90,7 +95,14 @@ Ejection is only necessary when native code is needed.
 # The server (backend)
 Tools needed:
 * Git
-* Node / NPM
+* Node (8.x) / NPM 
+* MySQL (5.7) or MariaDB (10.13)
+
+Node 10.x is known to have testing problems. 
+
+MySQL 8 will not work with the Node MySQL client unless it is set to authenticate with `mysql_native_password`. 
+
+Anything lower than MySQL 5.6 will require shorter VARCHAR sizes.
 
 ## Installation
 Clone this repository and navigate to it.
@@ -98,37 +110,78 @@ Clone this repository and navigate to it.
 $ git clone https://github.com/SardonyxApp/sardonyx-server.git
 $ cd sardonyx-server
 ```
+
 Install dependencies.
 ```
 $ npm install
 ```
-Make and edit a .env file. (`touch` and `vi` command only available on Bash: on windows, just use a text editor)
+
+Configure MySQL to use utf8mb4. (This may not be needed for some Linux installations.)
+
+Modify (or create) `my.cnf`:
+```
+[mysqld]
+character-set-server=utf8mb4
+
+[client]
+default-character-set=utf8mb4
+
+[mysql]
+default-character-set=utf8mb4
+```
+
+Start MySQL.
+
+Open the mysql prompt (steps may differ), and create the database.
+```
+$ mysql -h localhost -u root -p
+mysql > CREATE DATABASE sardonyx;
+mysql > USE sardonyx;
+mysql > source /path/to/setup.sql
+```
+
+Check character set variables. The names set in `my.cnf` should be correct.
+```
+mysql > SHOW VARIABLES LIKE 'char%';
+```
+
+Navigate to the `sardonyx-server` directory, create and edit a .env file. (`touch` and `vi` command only available on Bash: on windows, just use a text editor)
 ```
 $ touch .env
 $ vi .env
 ```
-Define `PORT` as appropriate.
-```
+
+Define environment variables as appropriate.
+```sh
 PORT=3000
+PRIVATE_KEY="abcdef" # Used to encode JWTs
+MODE="development" # Options: development or production 
+
+DB_HOST="localhost"
+DB_LOGIN="root" # Or however you have set the database up in your machine
+DB_PASSWORD="root" 
+DB_DATABASE="sardonyx" # Name of the database 
+DB_INSTANCE="sardony-app:asia-northeast1:sardonyx-db" # <project name>:<region>:<instance connection name>
 ```
-Check the server.js file and define any other variables necessary. Variables in `.env` are referred to as `process.env.VARIABLE_NAME`.
+
+Check the server files and define any other variables necessary. Variables in `.env` are referred to as `process.env.VARIABLE_NAME`.
 
 ## Development
 ### Front End 
-Start the Webpack Dev Server. 
+Start Webpack watch. 
 ```
 $ npm run client-dev
 ```
 Navigate to `localhost:8080`.
 
 ### Back End
-Start the Express server using nodemon. Server will be started at `localhost:PORT` as defined in `.env`.
+Start the Express server using nodemon. Server will be started at `HOST:PORT` as defined in `.env`.
 ```
 $ npm run server-dev
 ```
 
 ### Full Stack
-Start both the Webpack Dev Server and the Express server.
+Start both Webpack watch and the Express server.
 ```
 $ npm run dev
 ```
@@ -138,6 +191,49 @@ Jest tests can be used to test the Express server.
 ```
 $ npm test
 ```
+
+To run a specific test suite, append the name of the test.
+```
+$ npm test api
+```
+
+You may need to store personal information in the `.env` file. 
+```sh
+# Managebac cedentials
+LOGIN="foo@bar.com"
+PASSWORD="foobar1234"
+
+# Managebac cookies 
+CFDUID="cfduid=foobar"
+MANAGEBAC_SESSION="_managebac_session=foobar"
+AUTHENTICITY_TOKEN="foobar"
+
+# Pages that you want to test 
+CLASS_ID="123456"
+GROUP_ID="123456"
+CLASS_ASSIGNMENT_ID="123456"
+EVENT_ID="123456"
+GROUP_EVENT_ID= "123456" # class events are not tested 
+CLASS_MESSAGE_ID="123456"
+CLASS_MESSAGE_PAGE_ID="2"
+GROUP_MESSAGE_ID="123456"
+GROUP_MESSAGE_PAGE_ID="2"
+GROUP_MESSAGE_REPLY_OF_REPLY_ID="123456"
+NOTIFICATION_ID="123456"
+NOTIFICATION_PAGE_ID="2"
+CAS_ID="123456" 
+
+# Sample variables for testing the tasklist app
+STUDENT_ID="1"
+STUDENT_EMAIL="johndoe@example.com"
+STUDENT_TASKLIST="1"
+TEACHER_ID="1"
+TEACHER_EMAIL="janedoe@example.com"
+TEACHER_DEFAULT_TASKLIST="1"
+TASKLIST_ID="1"
+```
+
+To run a custom test, create a `tmp.test.js` file under `__tests__`. 
 
 ## Production
 ### Front End
@@ -160,17 +256,28 @@ $ npm run build
 Navigate to `localhost:PORT` as defined in `.env`
 
 ## Deployment
-Do not deploy broken builds. Deploy with extra care. Code can be tested with console on [Glitch](https://glitch.com).
+Do not deploy broken builds.
 
 Login to [Google Cloud Platform](https://console.cloud.google.com).
 
 Navigate to `App Engine` and open the shell.
 
+Make sure the `.env` file is defined properly, as listed in the Installation and Testing sections above.
+
 Execute the following:
 ```
 $ cd sardonyx-server
-$ npm install 
-$ npm run client
+$ npm ci
+$ npm run client 
+```
+
+Make sure that the server starts properly:
+```
+$ npm start
+```
+
+Then, deploy.
+```
 $ gcloud app deploy
 ```
 

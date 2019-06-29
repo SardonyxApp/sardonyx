@@ -1,40 +1,56 @@
 import React from 'react';
 
+import { Text } from 'react-native';
+
 import { createStackNavigator } from 'react-navigation';
+import { Icon } from 'react-native-elements';
 
-import {
-  Icon
-} from 'react-native-elements';
+import ManagebacAlertsScreen from './screens/ManagebacAlertsScreen';
+import ManagebacAlertScreen from './screens/ManagebacAlertScreen';
+import ManagebacOverviewScreen from './screens/ManagebacOverviewScreen';
+import ManagebacEventScreen from './screens/ManagebacEventScreen';
+import ManagebacCASScreen from './screens/ManagebacCASScreen';
+import ManagebacEditCASScreen from './screens/ManagebacEditCASScreen';
+import ManagebacViewCASReflectionsScreen from './screens/ManagebacViewCASReflectionsScreen';
+import ManagebacClassScreen from './screens/ManagebacClassScreen';
+import ManagebacGroupScreen from './screens/ManagebacGroupScreen';
+import ManagebacMessageThreadScreen from './screens/ManagebacMessageThreadScreen';
 
-import ManagebacScreen from './screens/ManagebacScreen';
-
-import { colors } from './styles';
+import { colors, fonts } from './styles';
 
 // Navigation stack for the Managebac tab
 const ManagebacStack = createStackNavigator(
   {
-    Managebac: ManagebacScreen
+    Alerts: ManagebacAlertsScreen,
+    Alert: ManagebacAlertScreen,
+    Overview: ManagebacOverviewScreen,
+    UpcomingEventItem: ManagebacEventScreen,
+    CASItem: ManagebacCASScreen,
+    EditCASItem: ManagebacEditCASScreen,
+    ViewCASReflections: ManagebacViewCASReflectionsScreen,
+    ClassItem: ManagebacClassScreen,
+    GroupItem: ManagebacGroupScreen,
+    MessageThread: ManagebacMessageThreadScreen
   },
   {
+    initialRouteName: 'Overview',
     navigationOptions: {
+      tabBarLabel: <Text style={fonts.jost400}>ManageBac</Text>,
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="globe" type={'feather'} color={tintColor} />
+      )
+    },
+    defaultNavigationOptions: {
       headerStyle: {
-        backgroundColor: colors.blue,
+        backgroundColor: colors.blue
       },
       headerTintColor: colors.white,
       headerTitleStyle: {
-        fontWeight: 'normal'
+        fontWeight: 'normal',
+        ...fonts.jost400
       }
     }
   }
 );
-
-// Applied after definition to prevent it from affecting children
-ManagebacStack.navigationOptions = {
-  tabBarLabel: 'Managebac',
-  tabBarIcon: ({ tintColor }) => (
-    <Icon name="globe" type={"feather"} color={tintColor} />
-  ),
-  tabBarColor: colors.white
-};
 
 export default ManagebacStack;
