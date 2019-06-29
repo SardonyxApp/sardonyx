@@ -79,11 +79,11 @@ export default class TaskDescription extends React.Component {
               onPress={this._handleFocus} 
               style={{ flex: 1 }}
             >
-              <Text style={[descriptionStyles.text, { paddingVertical: 8 }]}>
+              <Text style={[descriptionStyles.text, { padding: 8 }]}>
                 {this.state.description ? description : 'No description provided.'}
               </Text>
             </TouchableWithoutFeedback>
-          : <View style={{ flex: 1, flexDirection: 'row' }}>
+          : <View style={{ flex: 1, flexDirection: 'row', paddingHorizontal: 8 }}>
               <TextInput
                 style={[descriptionStyles.text, { borderBottomWidth: 2, borderBottomColor: colors.blue, paddingVertical: 8 }]}
                 multiline={true}
