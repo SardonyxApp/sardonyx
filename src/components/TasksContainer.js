@@ -155,7 +155,7 @@ export default class TasksContainer extends React.PureComponent {
               onPress={this.props.onLoadAll} 
               title="Load more tasks" 
               type="solid"
-              buttonStyle={{ backgroundColor: colors.primary }}
+              buttonStyle={{ backgroundColor: colors.primary, borderRadius: 1000 }}
               containerStyle={styles.padding20}
               titleStyle={fonts.jost400}
             />
@@ -179,7 +179,7 @@ const containerStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'stretch',
     marginTop: 12,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   touchableOpacity: {
     flex: 1
