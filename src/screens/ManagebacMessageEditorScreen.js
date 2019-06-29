@@ -211,7 +211,7 @@ export default class ManagebacMessageEditorScreen extends React.Component {
     if (this.state.sending) return;
     Animated.timing(this.sendingAnimation, {
       toValue: 1,
-      duration: 2000,
+      duration: 1500,
       useNativeDriver: true
     }).start();
     this.setState(
