@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, ActivityIndicator, InteractionManager } from 'react-native';
+import { ScrollView, InteractionManager, RefreshControl } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { colors } from '../styles';
 import { connect } from 'react-redux';
@@ -20,16 +20,15 @@ class TasksScreen extends React.Component {
   constructor(props) {
     super(props);
 
-// Set initial state with empty values to not cause any rendering errors 
+    // Set initial state with empty values to not cause any rendering errors 
     this.state = { 
-      // Data state 
       user: { 
         teacher: false,
         name: '', 
         email: '',
         tasklist_id: ''
       },
-      tasklist: { // Store information about current tasklist 
+      tasklist: { 
         id: null,
         name: '',
         description: ''
@@ -39,9 +38,11 @@ class TasksScreen extends React.Component {
       categories: [],
       subjectsFilter: [],
       categoriesFilter: [],
+      refreshing: false,
       displayPastTasks: false
     };
 
+    this._onRefresh = this._onRefresh.bind(this);
     this._handleFilter = this._handleFilter.bind(this);
     this._handleLoadAll = this._handleLoadAll.bind(this);
     this._handleCreateTask = this._handleCreateTask.bind(this);
@@ -76,11 +77,11 @@ class TasksScreen extends React.Component {
       // Fetch common data 
       Promise.all([
         // TODO: clean up the promise chains 
-        fetch(`${BASE_URL}/app/user`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
-        fetch(`${BASE_URL}/app/tasklist`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
-        fetch(`${BASE_URL}/app/tasks?full=true`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
-        fetch(`${BASE_URL}/app/subjects`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e)),
-        fetch(`${BASE_URL}/app/categories`, { headers: sardonyxToken }).then(r => r.json()).catch(e => console.error(e))
+        fetch(`${BASE_URL}/app/user`, { headers: sardonyxToken }).then(r => r.json()),
+        fetch(`${BASE_URL}/app/tasklist`, { headers: sardonyxToken }).then(r => r.json()),
+        fetch(`${BASE_URL}/app/tasks?full=true`, { headers: sardonyxToken }).then(r => r.json()),
+        fetch(`${BASE_URL}/app/subjects`, { headers: sardonyxToken }).then(r => r.json()),
+        fetch(`${BASE_URL}/app/categories`, { headers: sardonyxToken }).then(r => r.json())
       ]).then(responses => {
         this.setState({
           user: responses[0],
@@ -129,9 +130,47 @@ class TasksScreen extends React.Component {
             payload[type] = response;
             return payload;
           });
+
+          this.props.navigation.setParams({
+            [type]: response
+          });
         });
       });
     });
+  }
+
+  _onRefresh() {
+    this.setState(
+      {
+        refreshing: true
+      },
+      async () => {
+        const token = await Storage.retrieveValue('sardonyxToken');
+        const sardonyxToken = { 'Sardonyx-Token': token };
+        Promise.all([
+          fetch(`${BASE_URL}/app/tasks?tasklist=${this.state.tasklist.id}&full=true&${this.state.displayPastTasks ? '&all=true' : ''}`, { headers: sardonyxToken }).then(r => r.json()),
+          fetch(`${BASE_URL}/app/subjects?tasklist=${this.state.tasklist.id}`, { headers: sardonyxToken }).then(r => r.json()),
+          fetch(`${BASE_URL}/app/categories?tasklist=${this.state.tasklist.id}`, { headers: sardonyxToken }).then(r => r.json())
+        ])
+        .then(responses => {
+          this.setState({
+            tasks: responses[0],
+            subjects: responses[1],
+            categories: responses[2],
+            refreshing: false
+          });
+
+          this.props.navigation.setParams({
+            subjects: responses[1],
+            categories: responses[2]
+          });
+        })
+        .catch(err => {
+          alert('There was an error while retrieving information. If this error persists, please contact SardonyxApp.');
+          console.error(err);
+        });
+      }
+    );
   }
 
   /**
@@ -150,21 +189,29 @@ class TasksScreen extends React.Component {
   /**
    * @description Load all tasks (including past)
    */
-  async _handleLoadAll() {
-    const token = await Storage.retrieveValue('sardonyxToken');
-    const sardonyxToken = { 'Sardonyx-Token': token };
-    fetch(`${BASE_URL}/app/tasks?all=true&full=true`, { headers: sardonyxToken })
-    .then(response => response.json())
-    .then(response => {
-      this.setState({
-        tasks: response,
-        displayPastTasks: true
-      });
-    })
-    .catch(err => {
-      alert('There was an error while retrieving information. If this error persists, please contact SardonyxApp.');
-      console.error(err);
-    });
+  _handleLoadAll() {
+    this.setState(
+      {
+        refreshing: true
+      }, 
+      async () => {
+        const token = await Storage.retrieveValue('sardonyxToken');
+        const sardonyxToken = { 'Sardonyx-Token': token };
+        fetch(`${BASE_URL}/app/tasks?all=true&full=true`, { headers: sardonyxToken })
+        .then(response => response.json())
+        .then(response => {
+          this.setState({
+            tasks: response,
+            displayPastTasks: true,
+            refreshing: false
+          });
+        })
+        .catch(err => {
+          alert('There was an error while retrieving information. If this error persists, please contact SardonyxApp.');
+          console.error(err);
+        });
+      }
+    );
   }
 
   /**
@@ -414,6 +461,12 @@ class TasksScreen extends React.Component {
           flex: 1, 
           backgroundColor: colors.lightBackground
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing || this.state.tasklist.id === null}
+            onRefresh={this._onRefresh}
+          />
+        }
       >
         <TasksFilter 
           subjects={this.state.subjects}
@@ -422,11 +475,6 @@ class TasksScreen extends React.Component {
           categoriesFilter={this.state.categoriesFilter}
           onFilter={this._handleFilter}
           navigation={this.props.navigation}
-        />
-        <ActivityIndicator 
-          animating={this.state.tasklist.id === null} 
-          style={{ display: this.state.tasklist.id === null ? 'flex' : 'none' }} 
-          color={colors.primary}
         />
         <TasksContainer
           tasks={this.state.tasks}
