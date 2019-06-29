@@ -200,7 +200,6 @@ export default class ManagebacClassScreen extends React.Component {
           <MessageListView
             onDeleteRefresh={this._onRefresh}
             messages={[].concat(...this.state.classMessagesData)}
-            onScrollEnd={this._fetchNextMessages}
             loading={this.state.fetchingMessages}
             navigation={this.props.navigation}
             lastPage={
