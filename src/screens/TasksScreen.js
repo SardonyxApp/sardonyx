@@ -130,6 +130,10 @@ class TasksScreen extends React.Component {
             payload[type] = response;
             return payload;
           });
+
+          this.props.navigation.setParams({
+            [type]: response
+          });
         });
       });
     });
@@ -154,6 +158,11 @@ class TasksScreen extends React.Component {
             subjects: responses[1],
             categories: responses[2],
             refreshing: false
+          });
+
+          this.props.navigation.setParams({
+            subjects: responses[1],
+            categories: responses[2]
           });
         })
         .catch(err => {
