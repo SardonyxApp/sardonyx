@@ -37,10 +37,14 @@ export default class ManagebacAlertsScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    setTimeout(() => {
-      this.animation.play();
-    }, 50);
     InteractionManager.runAfterInteractions(this._onRefresh);
+  }
+
+  componentDidUpdate(_, oldState) {
+    if (
+      oldState.notificationsData.length !== this.state.notificationsData.length
+    )
+      this.animation && this.animation.play();
   }
 
   componentWillUnmount() {
@@ -79,7 +83,6 @@ export default class ManagebacAlertsScreen extends React.Component {
       this.state.notificationsTotalPages === this.state.notificationsLoadedPages
     )
       return;
-    this.animation.play();
     const credentials = await Storage.retrieveCredentials();
     this._fetchNotificationsData(
       credentials,
@@ -105,10 +108,9 @@ export default class ManagebacAlertsScreen extends React.Component {
     if (!this._isMounted) return;
     if (response.status === 200) {
       const parsedManagebacResponse = await response.json();
-      let notifications = this.state.notificationsData;
+      let notifications = [...this.state.notificationsData];
       notifications[page - 1] = parsedManagebacResponse.notifications;
       this.setState({
-        refreshing: false,
         fetchingMessages: false,
         notificationsData: notifications,
         notificationsTotalPages: parsedManagebacResponse.numberOfPages,
@@ -267,7 +269,7 @@ const alertsStyles = StyleSheet.create({
     height: 30
   },
   disclaimerText: {
-    marginTop: 32,
+    marginTop: 16,
     color: colors.gray2
   }
 });
