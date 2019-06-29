@@ -9,7 +9,8 @@ import {
   Alert,
   KeyboardAvoidingView,
   Dimensions,
-  InteractionManager
+  InteractionManager,
+  Animated
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -40,6 +41,8 @@ export default class ManagebacMessageEditorScreen extends React.Component {
     this._sendMessage = this._sendMessage.bind(this);
   }
 
+  sendingAnimation = new Animated.Value(0);
+
   static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.state.params.editMode
@@ -55,20 +58,51 @@ export default class ManagebacMessageEditorScreen extends React.Component {
         </HeaderIcon>
       ),
       headerRight: (
-        <HeaderIcon onPress={navigation.state.params.sendMessage}>
-          {/** navigationOptions is static, so we have to use params to access a method */}
-          <Icon
-            name={navigation.state.params.editMode ? 'done' : 'send'}
-            color={colors.white}
-          />
-        </HeaderIcon>
+        <View style={{ height: 56, width: 56 }}>
+          <Animated.View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              transform: [
+                {
+                  translateX:
+                    navigation.state.params.sendingAnimationPosition || 0
+                },
+                {
+                  rotate:
+                    navigation.state.params.sendingAnimationRotation || '0deg'
+                }
+              ]
+            }}
+          >
+            <HeaderIcon onPress={navigation.state.params.sendMessage}>
+              {/** navigationOptions is static, so we have to use params to access a method */}
+              <Icon
+                name={navigation.state.params.editMode ? 'done' : 'send'}
+                color={colors.white}
+              />
+            </HeaderIcon>
+          </Animated.View>
+        </View>
       )
     };
   };
 
   componentDidMount() {
     // Register the sendMessage method so it can be called from static navigationOptions
-    this.props.navigation.setParams({ sendMessage: this._sendMessage });
+    this.props.navigation.setParams({
+      sendMessage: this._sendMessage,
+      sendingAnimationPosition: this.sendingAnimation.interpolate({
+        inputRange: [0, 0.8, 1],
+        outputRange: [0, -15, 45]
+      }),
+      sendingAnimationRotation: this.sendingAnimation.interpolate({
+        inputRange: [0, 0.1, 0.3, 0.5, 0.7, 0.8],
+        outputRange: ['0deg', '10deg', '-10deg', '10deg', '-10deg', '0deg'],
+        extrapolate: 'clamp'
+      })
+    });
 
     // Wait until all transitions/animations complete until running
     InteractionManager.runAfterInteractions(async () => {
@@ -174,6 +208,12 @@ export default class ManagebacMessageEditorScreen extends React.Component {
    * If params.editMode is true, then PATCH to /api/class|group/:id/messages/messageId.
    */
   _sendMessage() {
+    if (this.state.sending) return;
+    Animated.timing(this.sendingAnimation, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true
+    }).start();
     this.setState(
       {
         editable: false,
@@ -212,7 +252,7 @@ export default class ManagebacMessageEditorScreen extends React.Component {
 
   render() {
     return (
-      <View style={newMessageStyles.flex1} onLayout={this._onLayout}>
+      <Animated.View style={newMessageStyles.flex1} onLayout={this._onLayout}>
         <KeyboardAvoidingView
           style={newMessageStyles.flex1}
           behavior={'padding'}
@@ -242,7 +282,9 @@ export default class ManagebacMessageEditorScreen extends React.Component {
                   }}
                 >
                   <View style={newMessageStyles.options}>
-                    <Text style={newMessageStyles.optionText}>Notify by Email</Text>
+                    <Text style={newMessageStyles.optionText}>
+                      Notify by Email
+                    </Text>
                     <View pointerEvents={'none'}>
                       <Switch
                         value={this.state.notifyByEmail}
@@ -259,7 +301,9 @@ export default class ManagebacMessageEditorScreen extends React.Component {
                   }}
                 >
                   <View style={newMessageStyles.options}>
-                    <Text style={newMessageStyles.optionText}>Private Message</Text>
+                    <Text style={newMessageStyles.optionText}>
+                      Private Message
+                    </Text>
                     <View pointerEvents={'none'}>
                       <Switch
                         value={this.state.privateMessage}
@@ -286,7 +330,7 @@ export default class ManagebacMessageEditorScreen extends React.Component {
             />
           </ScrollView>
         </KeyboardAvoidingView>
-      </View>
+      </Animated.View>
     );
   }
 }
