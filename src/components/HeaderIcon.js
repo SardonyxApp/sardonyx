@@ -7,7 +7,7 @@ import {
   View
 } from 'react-native';
 
-export default class HeaderIcon extends React.Component {
+export default class HeaderIcon extends React.PureComponent {
   constructor(props) {
     super(props);
   }
@@ -15,7 +15,12 @@ export default class HeaderIcon extends React.Component {
   render() {
     if (Platform.OS === "ios") {
       return (
-        <TouchableOpacity onPress={this.props.onPress}>
+        <TouchableOpacity 
+          onPress={this.props.onPress}
+          style={{
+            padding: 12
+          }}
+        >
           {this.props.children}
         </TouchableOpacity>
       );
@@ -46,7 +51,9 @@ export default class HeaderIcon extends React.Component {
                 true
               )}
             >
-              {this.props.children}
+              <View>
+                {this.props.children}
+              </View>
             </TouchableNativeFeedback>
           </View>
         </View>
