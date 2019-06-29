@@ -14,7 +14,7 @@
     "primaryColor": "#ffffff",
     "icon": "./src/assets/logos/appIcon.png",
     "splash": {
-      "backgroundColor": "#eeeeee",
+      "backgroundColor": "#ffffff",
       "resizeMode": "contain",
       "image": "./src/assets/logos/splash.png"
     },
