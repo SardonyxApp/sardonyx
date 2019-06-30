@@ -14,7 +14,7 @@ import { BASE_URL } from '../../env';
 import HTMLView from 'react-native-htmlview';
 
 import { Storage } from '../helpers';
-import { colors } from '../styles';
+import { colors, elevations } from '../styles';
 
 export default class ManagebacAlertScreen extends React.Component {
   isMounted = false;
@@ -140,7 +140,7 @@ const alertStyles = StyleSheet.create({
     backgroundColor: colors.lightBlue2,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.gray2,
-    elevation: 2
+    ...elevations.two
   },
   bold: {
     fontWeight: 'bold'

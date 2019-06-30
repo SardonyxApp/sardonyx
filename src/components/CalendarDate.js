@@ -2,7 +2,7 @@ import React from 'react';
 
 import { View, Text, StyleSheet } from 'react-native';
 
-import { fonts, colors } from '../styles';
+import { fonts, colors, elevations } from '../styles';
 
 export default class CalendarDate extends React.PureComponent {
   constructor(props) {
@@ -72,7 +72,7 @@ const calendarStyles = StyleSheet.create({
     width: 72,
     borderRadius: 3,
     backgroundColor: colors.white,
-    elevation: 2,
+    ...elevations.two,
     overflow: 'hidden'
   },
   month: {
@@ -113,7 +113,7 @@ const miniCalendarStyles = StyleSheet.create({
     width: 40,
     borderRadius: 2,
     backgroundColor: colors.white,
-    elevation: 1,
+    ...elevations.one,
     overflow: 'hidden'
   },
   month: {

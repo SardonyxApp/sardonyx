@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 import { TouchableRipple } from 'react-native-paper';
 
-import { fonts, colors } from '../styles';
+import { fonts, colors, elevations } from '../styles';
 
 export default class CTAButton extends React.PureComponent {
   constructor(props) {
@@ -34,7 +34,7 @@ const buttonStyles = StyleSheet.create({
   buttonOuter: {
     overflow: 'hidden',
     borderRadius: 30,
-    elevation: 10,
+    ...elevations.ten,
     backgroundColor: colors.primary
   },
   button: {

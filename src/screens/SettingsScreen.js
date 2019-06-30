@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 import { version } from '../../package.json';
 
 import { Storage } from '../helpers';
-import { colors, fonts } from '../styles';
+import { colors, fonts, elevations } from '../styles';
 
 class SettingsScreen extends React.Component {
   settingsSections = [
@@ -239,7 +239,7 @@ const settingsStyles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 32,
     marginBottom: 8,
-    elevation: 2
+    ...elevations.two
   },
   profileIcon: {
     width: 64,

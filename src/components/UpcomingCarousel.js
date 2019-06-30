@@ -6,7 +6,7 @@ import Carousel from 'react-native-snap-carousel';
 import { TouchableRipple } from 'react-native-paper';
 
 import CalendarDate from '../components/CalendarDate';
-import { colors, fonts } from '../styles';
+import { colors, fonts, elevations } from '../styles';
 
 export default class UpcomingCarousel extends React.Component {
   constructor(props) {
@@ -253,7 +253,7 @@ const upcomingCarouselStyles = StyleSheet.create({
     backgroundColor: colors.white,
     height: 100,
     borderRadius: 4,
-    elevation: 13 // Really increase this so the shadows appear blurry like iOS,
+    ...elevations.thirteen // Really increase this so the shadows appear blurry like iOS,
   },
   container: {
     flexDirection: 'row'
