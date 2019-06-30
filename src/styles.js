@@ -10,7 +10,7 @@ import { StyleSheet } from 'react-native';
 /**
  * The colors are generated with the following method:
  * dark: [1/2] original (50%) #000000 (50%)
- * dark2: [1/6] original (16.6%) #000000 (83.4%) 
+ * dark2: [1/6] original (16.6%) #000000 (83.4%)
  * light: [1/6] original (50%) #ffffff (50%)
  * light2: [1/6] original (16.6%) #ffffff (83.4%)
  */
@@ -58,6 +58,75 @@ const fonts = StyleSheet.create({
   },
   jost800: {
     fontFamily: 'Jost-800'
+  }
+});
+
+const elevations = StyleSheet.create({
+  one: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+
+    elevation: 1
+  },
+  two: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+
+    elevation: 2
+  },
+  three: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3
+  },
+  four: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4
+  },
+  ten: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 6.27,
+
+    elevation: 10
+  },
+  thirteen: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6
+    },
+    shadowOpacity: 0.39,
+    shadowRadius: 8.3,
+
+    elevation: 13
   }
 });
 
@@ -170,4 +239,4 @@ const labelColors = name => {
   return color;
 };
 
-export { styles, colors, preset, labelColors, fonts };
+export { styles, colors, preset, labelColors, fonts, elevations };

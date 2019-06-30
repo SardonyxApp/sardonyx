@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-import { fonts, styles } from '../styles';
+import { fonts, styles, elevations } from '../styles';
 
 export default TaskListCard = props => (
   <View
@@ -39,7 +39,7 @@ const cardStyles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 4,
     flex: 1,
-    elevation: 1,
+    ...elevations.one,
     paddingLeft: 32
   },
   title: {

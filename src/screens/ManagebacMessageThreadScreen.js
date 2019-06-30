@@ -23,7 +23,7 @@ import { BASE_URL } from '../../env';
 import HeaderIcon from '../components/HeaderIcon';
 import EndOfList from '../components/EndOfList';
 import { Storage } from '../helpers';
-import { colors } from '../styles';
+import { colors, elevations } from '../styles';
 
 class ManagebacMessageThreadScreen extends React.Component {
   isMounted = false;
@@ -479,18 +479,18 @@ const messageThreadStyles = StyleSheet.create({
     backgroundColor: colors.lightBackground
   },
   topLevel: {
-    elevation: 3,
+    ...elevations.three,
     backgroundColor: colors.white,
     marginBottom: 16
   },
   level2: {
-    elevation: 2,
+    ...elevations.two,
     backgroundColor: colors.white,
     marginLeft: 16,
     marginBottom: 16
   },
   level3: {
-    elevation: 1,
+    ...elevations.one,
     backgroundColor: colors.white,
     marginLeft: 32,
     marginBottom: 16
@@ -525,7 +525,7 @@ const messageThreadStyles = StyleSheet.create({
   },
   replyButtonContainer: {
     backgroundColor: colors.white,
-    elevation: 4,
+    ...elevations.four,
     borderRadius: 30,
     overflow: 'hidden',
     flexDirection: 'row',

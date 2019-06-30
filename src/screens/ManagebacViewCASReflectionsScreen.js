@@ -26,7 +26,7 @@ import HeaderIcon from '../components/HeaderIcon';
 import PreloadImage from '../components/PreloadImage';
 import ExperienceUneditableWarning from '../components/ExperienceUneditableWarning';
 import { Storage } from '../helpers';
-import { fonts, colors } from '../styles';
+import { fonts, colors, elevations } from '../styles';
 
 export default class ManagebacViewCASReflectionsScreen extends React.Component {
   isMounted = false;
@@ -475,7 +475,7 @@ const reflectionListStyles = StyleSheet.create({
     fontSize: 12
   },
   itemContentWrapper: {
-    elevation: 2,
+    ...elevations.two,
     marginHorizontal: 16,
     backgroundColor: colors.white,
     borderRadius: 2,
