@@ -10,23 +10,23 @@ import {
   FlatList,
   RefreshControl,
   Alert,
-  Vibration,
   InteractionManager,
-  Platform
+  Animated
 } from 'react-native';
 
-import { Haptic } from 'expo';
+import * as Haptics from 'expo-haptics';
 import HTMLView from 'react-native-htmlview';
 import { Appbar } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
+import Carousel from 'react-native-snap-carousel';
 import moment from 'moment';
 import { BASE_URL } from '../../env';
 
 import HeaderIcon from '../components/HeaderIcon';
 import PreloadImage from '../components/PreloadImage';
-import { Storage } from '../helpers';
-import { fonts, colors } from '../styles';
 import ExperienceUneditableWarning from '../components/ExperienceUneditableWarning';
+import { Storage } from '../helpers';
+import { fonts, colors, elevations } from '../styles';
 
 export default class ManagebacViewCASReflectionsScreen extends React.Component {
   isMounted = false;
@@ -37,7 +37,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
       refreshing: true,
       reflectionsData: [],
       numberOfLines: [],
-      menuVisible: false,
+      menuVisibility: new Animated.Value(0),
       menuFocusedOn: null
     };
     this._fetchReflectionsData = this._fetchReflectionsData.bind(this);
@@ -46,6 +46,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
     this._toggleExpand = this._toggleExpand.bind(this);
     this._showMenu = this._showMenu.bind(this);
     this._hideMenu = this._hideMenu.bind(this);
+    this._renderPhotoCarouselItem = this._renderPhotoCarouselItem.bind(this);
   }
 
   componentDidMount() {
@@ -82,8 +83,8 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * Requests /api/cas/:id for the list of reflections. Sets the state on success.
    * @param {String} credentials
    */
-  _fetchReflectionsData(credentials) {
-    fetch(
+  async _fetchReflectionsData(credentials) {
+    const response = await fetch(
       `${BASE_URL}/api/cas/${
         this.props.navigation.state.params.id
       }/reflections`,
@@ -94,35 +95,27 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
         },
         mode: 'no-cors'
       }
-    )
-      .then(response => {
-        if (!this._isMounted) return;
-        if (response.status === 200) {
-          const parsedManagebacResponse = JSON.parse(
-            response.headers.map['managebac-data']
-          );
-          this.setState({
-            refreshing: false,
-            reflectionsData: parsedManagebacResponse.reflections,
-            numberOfLines: Array(
-              parsedManagebacResponse.reflections.length
-            ).fill(10)
-          });
-          return;
-        } else {
-          Alert.alert(
-            'Internal Error',
-            'Error ' + response.status.toString() + ': Invalid Response.',
-            []
-          );
-          this.props.navigation.goBack();
-          return;
-        }
-      })
-      .catch(error => {
-        console.warn(error);
-        return;
+    );
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      this.setState({
+        refreshing: false,
+        reflectionsData: parsedManagebacResponse.reflections,
+        numberOfLines: Array(parsedManagebacResponse.reflections.length).fill(
+          10
+        )
       });
+      return;
+    } else {
+      Alert.alert(
+        'Internal Error',
+        'Error ' + response.status.toString() + ': Invalid Response.',
+        []
+      );
+      this.props.navigation.goBack();
+      return;
+    }
   }
 
   /**
@@ -133,12 +126,8 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(this._fetchReflectionsData)
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        this._fetchReflectionsData(await Storage.retrieveCredentials());
       }
     );
   }
@@ -173,13 +162,14 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * @param {Integer} index
    */
   _showMenu(index) {
-    if (Platform.OS === 'android') {
-      Vibration.vibrate(50);
-    } else if (Platform.OS === 'ios') {
-      Haptic.selection();
-    }
+    if (!this.props.navigation.state.params.editable) return;
+    Haptics.selectionAsync();
+    Animated.timing(this.state.menuVisibility, {
+      toValue: 1,
+      duration: 75,
+      useNativeDriver: true
+    }).start();
     this.setState({
-      menuVisible: true,
       menuFocusedOn: this.state.reflectionsData[index].id
     });
   }
@@ -188,8 +178,12 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * Hides AppBar.
    */
   _hideMenu() {
+    Animated.timing(this.state.menuVisibility, {
+      toValue: 0,
+      duration: 75,
+      useNativeDriver: true
+    }).start();
     this.setState({
-      menuVisible: false,
       menuFocusedOn: null
     });
   }
@@ -219,18 +213,19 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * @param {Integer} id
    */
   _deleteItem(id) {
+    Animated.timing(this.state.menuVisibility, {
+      toValue: 0,
+      duration: 75,
+      useNativeDriver: true
+    }).start();
     this.setState(
       {
         refreshing: true,
-        menuVisible: false,
         menuFocusedOn: null
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => this._requestDeleteReflection(credentials, id))
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        this._requestDeleteReflection(credentials, id);
       }
     );
   }
@@ -240,8 +235,8 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    * @param {String} credentials
    * @param {Integer} id
    */
-  _requestDeleteReflection(credentials, id) {
-    fetch(
+  async _requestDeleteReflection(credentials, id) {
+    await fetch(
       `${BASE_URL}/api/cas/${
         this.props.navigation.state.params.id
       }/reflections/${id.toString()}`,
@@ -252,15 +247,9 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
         },
         mode: 'no-cors'
       }
-    )
-      .then(response => {
-        if (!this._isMounted) return;
-        this._onRefresh();
-      })
-      .catch(error => {
-        console.warn(error);
-        return;
-      });
+    );
+    if (!this._isMounted) return;
+    this._onRefresh();
   }
 
   /**
@@ -299,6 +288,20 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
           </View>
         )}
       />
+    );
+  }
+
+  _renderPhotoCarouselItem({ item, index }) {
+    return (
+      <View style={reflectionListStyles.itemContent}>
+        <Text style={reflectionListStyles.imageCaptionText}>
+          {decodeURI(item.title)}
+        </Text>
+        <PreloadImage
+          style={reflectionListStyles.image}
+          sourceUri={item.link}
+        />
+      </View>
     );
   }
 
@@ -367,15 +370,26 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
                 : {}
             ]}
           >
-            <View style={reflectionListStyles.itemContent}>
-              <Text style={reflectionListStyles.imageCaptionText}>
-                {decodeURI(item.photos[0].title)}
-              </Text>
-              <PreloadImage
-                style={reflectionListStyles.image}
-                sourceUri={item.photos[0].link}
-              />
-            </View>
+            <Carousel
+              data={item.photos}
+              renderItem={this._renderPhotoCarouselItem}
+              sliderWidth={Dimensions.get('window').width - 64}
+              itemWidth={300}
+              enableSnap={false}
+              enableMomentum={true}
+              decelerationRate={0.99}
+              activeSlideAlignment={'start'}
+              inactiveSlideScale={1}
+              inactiveSlideOpacity={1}
+              contentContainerCustomStyle={
+                item.photos.length > 1
+                  ? {
+                      overflow: 'hidden',
+                      width: 300 * item.photos.length
+                    }
+                  : undefined
+              }
+            />
           </View>
         </View>
       );
@@ -407,23 +421,31 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
             extraData={this.state}
           />
         </ScrollView>
-        {this.state.menuVisible ? (
-          <Appbar style={reflectionListStyles.appBar}>
-            <Appbar.Action
-              icon="delete"
-              onPress={() => this._confirmDelete(this.state.menuFocusedOn)}
-            />
-            <Appbar.Action
-              icon="edit"
-              onPress={() => this._editItem(this.state.menuFocusedOn)}
-            />
-            <Appbar.Action
-              style={reflectionListStyles.appBarClose}
-              icon="close"
-              onPress={this._hideMenu}
-            />
-          </Appbar>
-        ) : null}
+        <Appbar
+          style={[
+            reflectionListStyles.appBar,
+            {
+              transform: [{translateY: this.state.menuVisibility.interpolate({
+                inputRange: [0, 1],
+                outputRange: [56, 0]
+              })}]
+            }
+          ]}
+        >
+          <Appbar.Action
+            icon="delete"
+            onPress={() => this._confirmDelete(this.state.menuFocusedOn)}
+          />
+          <Appbar.Action
+            icon="edit"
+            onPress={() => this._editItem(this.state.menuFocusedOn)}
+          />
+          <Appbar.Action
+            style={reflectionListStyles.appBarClose}
+            icon="close"
+            onPress={this._hideMenu}
+          />
+        </Appbar>
       </View>
     );
   }
@@ -453,7 +475,7 @@ const reflectionListStyles = StyleSheet.create({
     fontSize: 12
   },
   itemContentWrapper: {
-    elevation: 2,
+    ...elevations.two,
     marginHorizontal: 16,
     backgroundColor: colors.white,
     borderRadius: 2,
@@ -463,6 +485,8 @@ const reflectionListStyles = StyleSheet.create({
     backgroundColor: colors.lightBlue2
   },
   itemContent: {
+    flex: 1,
+    justifyContent: 'flex-end',
     paddingHorizontal: 16,
     paddingVertical: 8
   },
@@ -470,8 +494,8 @@ const reflectionListStyles = StyleSheet.create({
     marginBottom: 8
   },
   image: {
-    width: Dimensions.get('window').width - 64,
-    flex: 1
+    width: 300 - 32,
+    height: 250
   },
   appBar: {
     position: 'absolute',

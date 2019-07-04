@@ -1,19 +1,17 @@
-# sardonyx
-サードニクス
+# Sardonyx
 
-Mobile application for Sardonyx・サードニクスのスマートフォンアプリケーション
+![Licence: MIT](https://img.shields.io/github/license/SardonyxApp/sardonyx.svg?style=flat-square) [![Download for Android](https://img.shields.io/badge/Download%20for-Android-78c257.svg?style=flat-square)](https://play.google.com/store/apps/details?id=app.sardonyx)
 
-## About・概要
-Sardonyx is an online solution to transform how students and teachers use technology at the International Baccalaureate Diploma Program in Tokyo Metropolitan Kokusai High School. Sardonyx offers a cross-platfrom experience for all its users, through its mobile and web platforms. This repository contains code for Sardonyx's mobile application.
+## About
 
-The mobile application offers a responsive mobile experience of Kokusai's online environment. It also provides a real time messaging service between students and teachers. This is a solution to enhance student-teacher communication while complying to the Tokyo Metropolitan Board of Education's policies. 
+Sardonyx is an online solution to transform how high school students and teachers use technology to manage workloads. Sardonyx offers a cross-platfrom experience for all its users, through its mobile and web platforms. This repository contains code for Sardonyx's web application, targeted for computers and tablets.
 
-サードニクスは東京都立国際高校国際バカロレアコースの生徒と教員のテクノロジーの使い方を改新するためのオンラインソリューションです。
-スマートフォンとウェブアプリケーションを通じてサードニクスはクロスプラットフォームなサービスを提供する予定です。このリポジトリでは、サードニクスのスマートフォンアプリケーションのコードを載せております。
+The web application offers a group tasklist accessible by both teachers and students. Students and teachers benefit from the transparency of the workload, organized by due dates, subjects, and task categories. Each task on the list can be given a detailed description.
 
-本アプリケーションはスマートフォンでの国際高校のICT環境を改善するほか、生徒・教員間のリアルタイムメッセージングサービスを提供目標としています。これは東京都教育委員会のポリシーに従いながら、生徒と先生の間のコミュニケーションを改善するソリューションなのです。
+This repo is for the mobile application for iOS and Android, developed using React Native.
 
-## How to Use・使用方法
-Sardonyx is currently under development and is not available for use.
+## Building
 
-サードニクスは現在開発途中で、まだ非公開です。
+Navigate to [sardonyx.app](https://sardonyx.app/download) and download the app.
+
+Read the info page in the web app to learn more about using the application.

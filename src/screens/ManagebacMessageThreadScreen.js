@@ -8,18 +8,24 @@ import {
   RefreshControl,
   StyleSheet,
   InteractionManager,
-  TextInput
+  TextInput,
+  Alert
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
 import { TouchableRipple } from 'react-native-paper';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import HTMLView from 'react-native-htmlview';
+import moment from 'moment';
+import { connect } from 'react-redux';
 import { BASE_URL } from '../../env';
 
+import HeaderIcon from '../components/HeaderIcon';
+import EndOfList from '../components/EndOfList';
 import { Storage } from '../helpers';
-import { colors } from '../styles';
+import { colors, elevations } from '../styles';
 
-export default class ManagebacMessageThreadScreen extends React.Component {
+class ManagebacMessageThreadScreen extends React.Component {
   isMounted = false;
 
   constructor(props) {
@@ -31,6 +37,8 @@ export default class ManagebacMessageThreadScreen extends React.Component {
       messageData: {}
     };
     this._onRefresh = this._onRefresh.bind(this);
+    this._confirmDelete = this._confirmDelete.bind(this);
+    this._deleteMessage = this._deleteMessage.bind(this);
     this._fetchMessageThreadData = this._fetchMessageThreadData.bind(this);
     this._toggleTextInputVisibility = this._toggleTextInputVisibility.bind(
       this
@@ -39,16 +47,48 @@ export default class ManagebacMessageThreadScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    InteractionManager.runAfterInteractions(this._onRefresh);
+    InteractionManager.runAfterInteractions(() => {
+      this.props.navigation.setParams({
+        refreshPage: this._onRefresh,
+        confirmDelete: this._confirmDelete,
+        editable:
+          this.props.user.id === this.props.navigation.state.params.authorId
+      });
+      this._onRefresh();
+    });
   }
 
   componentWillUnmount() {
     this._isMounted = false;
   }
 
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation, navigationOptions }) => {
     return {
-      title: `${navigation.state.params.title}`
+      title: `${navigation.state.params.title}`,
+      headerRight: navigation.state.params.editable ? (
+        <View style={messageThreadStyles.headerIcons}>
+          <HeaderIcon
+            onPress={() => {
+              navigation.navigate('MessageEditor', {
+                editMode: true,
+                data: {
+                  ...navigation.state.params
+                },
+                onGoBack: navigation.state.params.refreshPage
+              });
+            }}
+          >
+            <Icon name="edit" color={colors.white} />
+          </HeaderIcon>
+          <HeaderIcon onPress={navigation.state.params.confirmDelete}>
+            <Icon name="delete" color={colors.white} />
+          </HeaderIcon>
+        </View>
+      ) : null,
+      headerTitleStyle: {
+        paddingRight: 48,
+        ...navigationOptions.headerTitleStyle
+      }
     };
   };
 
@@ -60,12 +100,56 @@ export default class ManagebacMessageThreadScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(this._fetchMessageThreadData)
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        this._fetchMessageThreadData(await Storage.retrieveCredentials());
+      }
+    );
+  }
+
+  /**
+   * Confirms the user if they really want to delete the message. Then calls _deleteMessage()
+   */
+  _confirmDelete() {
+    Alert.alert(
+      'Delete',
+      'Are you sure you want to delete this message, including any comments?',
+      [
+        {
+          text: 'No!'
+        },
+        {
+          text: 'Yes, delete',
+          onPress: this._deleteMessage
+        }
+      ]
+    );
+  }
+
+  /**
+   * Calls _requestDeleteMessage using credentials.
+   */
+  _deleteMessage() {
+    this.setState(
+      {
+        refreshing: true
+      },
+      async () => {
+        let url = this.props.navigation.getParam('link', '/404');
+        const credentials = await Storage.retrieveCredentials();
+        await fetch(
+          BASE_URL + url, {
+            method: 'DELETE',
+            headers: {
+              'Login-Token': credentials
+            },
+            mode: 'no-cors'
+          }
+        );
+        if (!this._isMounted) return;
+        if(this.props.navigation.getParam('onGoBack', null) !== null) {
+          this.props.navigation.state.params.onGoBack();
+        }
+        this.props.navigation.goBack();
       }
     );
   }
@@ -87,25 +171,28 @@ export default class ManagebacMessageThreadScreen extends React.Component {
             'Login-Token': credentials
           },
           mode: 'no-cors'
-        })
+        }).then(r => r.json().then(data => ({ response: r, data: data })))
       );
     });
 
     Promise.all(promises)
-      .then(responses => {
+      .then(responses => ({
+        // Convert to array of each
+        responses: responses.map(response => response.response),
+        datas: responses.map(response => response.data)
+      }))
+      .then(({ responses, datas }) => {
         if (!this._isMounted) return;
-        responses.forEach(response => {
+        responses.forEach((response, index) => {
           if (response.status === 200) {
-            const parsedManagebacResponse = JSON.parse(
-              response.headers.map['managebac-data']
-            );
+            const data = datas[index];
             // Copy the object, and start updating it
             const stateMessageData = { ...this.state.messageData };
             id = response.url.substring(response.url.lastIndexOf('/') + 1);
             // Update the comments from boolean "true" to array of subcomments
             stateMessageData.comments.forEach(item => {
               if (item.id == id) {
-                item.comments = parsedManagebacResponse.replyOfReply;
+                item.comments = data.replyOfReply;
               }
             });
             this.setState({
@@ -125,35 +212,37 @@ export default class ManagebacMessageThreadScreen extends React.Component {
    * Sends a GET request to the API, sets State, and show Alert on error.
    * @param {String} credentials
    */
-  _fetchMessageThreadData(credentials) {
+  async _fetchMessageThreadData(credentials) {
     let url = this.props.navigation.getParam('link', '/404');
-    fetch(BASE_URL + url, {
+    const response = await fetch(BASE_URL + url, {
       method: 'GET',
       headers: {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        this.setState(
-          {
-            messageData: parsedManagebacResponse.message[0]
-          },
-          () => {
-            this._fetchMessageSubCommentsData(credentials);
-          }
-        );
-        return;
-      } else if (response.status === 404) {
-        Alert.alert('Not Found', 'Message could not be found.', []);
-        this.props.navigation.goBack();
-        return;
-      }
     });
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      // Set the navigation params so further editing works
+      this.setState(
+        {
+          messageData: parsedManagebacResponse.message[0]
+        },
+        () => {
+          this.props.navigation.setParams({
+            title: decodeURI(parsedManagebacResponse.message[0].title),
+            content: parsedManagebacResponse.message[0].content
+          });
+          this._fetchMessageSubCommentsData(credentials);
+        }
+      );
+      return;
+    } else if (response.status === 404) {
+      Alert.alert('Not Found', 'Message could not be found.', []);
+      this.props.navigation.goBack();
+      return;
+    }
   }
 
   /**
@@ -161,35 +250,25 @@ export default class ManagebacMessageThreadScreen extends React.Component {
    * @param {Integer} level
    * @param {Integer} id
    */
-  _sendNewComment(level, id) {
+  async _sendNewComment(level, id) {
     let url = this.props.navigation.getParam('link', '/404');
     if (level === 1) url += '/reply';
     if (level === 2) url += '/reply/' + id;
-    Storage.retrieveCredentials()
-      .then(credentials => {
-        fetch(BASE_URL + url, {
-          method: 'POST',
-          headers: {
-            'Login-Token': credentials,
-            'Message-Data': JSON.stringify({
-              body: this.state.newCommentContent,
-              notifyViaEmail: 0,
-              privateMessage: 0
-            })
-          },
-          mode: 'no-cors'
+    const credentials = await Storage.retrieveCredentials();
+    await fetch(BASE_URL + url, {
+      method: 'POST',
+      headers: {
+        'Login-Token': credentials,
+        'Message-Data': JSON.stringify({
+          body: encodeURI(this.state.newCommentContent),
+          notifyViaEmail: 0,
+          privateMessage: 0
         })
-          .then(response => {
-            if (!this._isMounted) return;
-            this._onRefresh();
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      })
-      .catch(err => {
-        console.warn(err);
-      });
+      },
+      mode: 'no-cors'
+    });
+    if (!this._isMounted) return;
+    this._onRefresh();
   }
 
   /**
@@ -220,14 +299,16 @@ export default class ManagebacMessageThreadScreen extends React.Component {
                     ? {
                         uri: comment.avatar
                       }
-                    : require('../logos/Icon.png')
+                    : require('../assets/logos/Icon-128.png')
                 }
                 style={messageThreadStyles.image}
               />
             </View>
             <View style={messageThreadStyles.messageTextInfo}>
               <Text style={messageThreadStyles.author}>{comment.author}</Text>
-              <Text>{comment.date}</Text>
+              <Text>
+                {moment(comment.date).format('dddd, MMM Do YYYY, H:mm')}
+              </Text>
             </View>
             {level !== 3 ? (
               <View style={messageThreadStyles.replyButtonContainer}>
@@ -310,7 +391,7 @@ export default class ManagebacMessageThreadScreen extends React.Component {
                     ? {
                         uri: this.state.messageData.avatar
                       }
-                    : require('../logos/Icon.png')
+                    : require('../assets/logos/Icon-128.png')
                 }
                 style={messageThreadStyles.image}
               />
@@ -323,8 +404,12 @@ export default class ManagebacMessageThreadScreen extends React.Component {
               </Text>
               <Text>
                 {'date' in this.state.messageData
-                  ? this.state.messageData.date
-                  : this.props.navigation.getParam('date')}
+                  ? moment(this.state.messageData.date).format(
+                      'dddd, MMM Do YYYY, H:mm'
+                    )
+                  : moment(this.props.navigation.getParam('date')).format(
+                      'dddd, MMM Do YYYY, H:mm'
+                    )}
               </Text>
             </View>
             <View style={messageThreadStyles.replyButtonContainer}>
@@ -378,29 +463,34 @@ export default class ManagebacMessageThreadScreen extends React.Component {
           this.state.messageData.comments.map(item => {
             return this._renderComment(item);
           })}
+        <EndOfList />
+        <KeyboardSpacer topSpacing={-150} />
       </ScrollView>
     );
   }
 }
 
 const messageThreadStyles = StyleSheet.create({
+  headerIcons: {
+    flexDirection: 'row'
+  },
   page: {
     flex: 1,
     backgroundColor: colors.lightBackground
   },
   topLevel: {
-    elevation: 3,
+    ...elevations.three,
     backgroundColor: colors.white,
     marginBottom: 16
   },
   level2: {
-    elevation: 2,
+    ...elevations.two,
     backgroundColor: colors.white,
     marginLeft: 16,
     marginBottom: 16
   },
   level3: {
-    elevation: 1,
+    ...elevations.one,
     backgroundColor: colors.white,
     marginLeft: 32,
     marginBottom: 16
@@ -435,8 +525,8 @@ const messageThreadStyles = StyleSheet.create({
   },
   replyButtonContainer: {
     backgroundColor: colors.white,
-    elevation: 4,
-    borderRadius: 15,
+    ...elevations.four,
+    borderRadius: 30,
     overflow: 'hidden',
     flexDirection: 'row',
     justifyContent: 'center'
@@ -471,3 +561,13 @@ const messageThreadStyles = StyleSheet.create({
     overflow: 'hidden'
   }
 });
+
+const mapStateToProps = state => {
+  const user = state.managebac.overview.user;
+  return { user };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(ManagebacMessageThreadScreen);

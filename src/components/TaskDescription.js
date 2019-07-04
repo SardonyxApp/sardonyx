@@ -10,7 +10,6 @@ export default class TaskDescription extends React.Component {
     super(props);
     this.state = {
       focused: false,
-      height: 0, // Contrls the height of the TextInput
       description: null
     };
 
@@ -80,23 +79,22 @@ export default class TaskDescription extends React.Component {
               onPress={this._handleFocus} 
               style={{ flex: 1 }}
             >
-              <Text style={[descriptionStyles.text, { paddingVertical: 8 }]}>
+              <Text style={[descriptionStyles.text, { padding: 8 }]}>
                 {this.state.description ? description : 'No description provided.'}
               </Text>
             </TouchableWithoutFeedback>
-          : <View style={{ flex: 1, flexDirection: 'row' }}>
+          : <View style={{ flex: 1, flexDirection: 'row', paddingHorizontal: 8 }}>
               <TextInput
-                style={[descriptionStyles.text, { borderBottomWidth: 2, borderBottomColor: colors.blue }]}
+                style={[descriptionStyles.text, { borderBottomWidth: 2, borderBottomColor: colors.blue, paddingVertical: 8 }]}
                 multiline={true}
                 autoFocus={true}
                 scrollEnabled={false}
                 onBlur={this._handleSubmit}
                 onChangeText={text => this.setState({ description: text })}
-                onContentSizeChange={event => this.setState({ height: event.nativeEvent.contentSize.height })}
-                height={this.state.height}
                 maxLength={65535}
-                value={this.state.description}
-              />
+              >
+                <Text>{this.state.description}</Text>
+              </TextInput>
             </View>
         }
       </View>

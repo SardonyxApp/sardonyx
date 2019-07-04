@@ -1,14 +1,19 @@
 import React from 'react';
 
-import { ScrollView, RefreshControl, StyleSheet } from 'react-native';
+import {
+  ScrollView,
+  RefreshControl,
+  StyleSheet,
+  InteractionManager
+} from 'react-native';
 
 import { Icon } from 'react-native-elements';
+import { Badge } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setManagebacOverview } from '../actions';
 import { BASE_URL } from '../../env';
 
-import { Storage } from '../helpers';
 import HeaderIcon from '../components/HeaderIcon';
 import GreetingsCard from '../components/GreetingsCard';
 import OverviewHeading from '../components/OverviewHeading';
@@ -16,6 +21,7 @@ import UpcomingCarousel from '../components/UpcomingCarousel';
 import RoundIconCarousel from '../components/RoundIconCarousel';
 import CASExpandableCard from '../components/CASExpandableCard';
 import { colors } from '../styles';
+import { Storage } from '../helpers';
 
 class ManagebacOverviewScreen extends React.PureComponent {
   constructor(props) {
@@ -51,22 +57,30 @@ class ManagebacOverviewScreen extends React.PureComponent {
             }
             color={colors.white}
           />
+          {navigation.state.params &&
+          navigation.state.params.notificationCount ? (
+            <Badge style={overviewStyles.badgeIcon} size={16}>
+              {navigation.state.params.notificationCount}
+            </Badge>
+          ) : null}
         </HeaderIcon>
       )
     };
   }
 
   componentDidMount() {
-    this.setState({
-      refreshing: false,
-      upcomingEvents: this.props.overview.deadlines,
-      groupList: this.props.overview.groups,
-      classList: this.props.overview.classes,
-      userInfo: this.props.overview.user
-    });
     this.props.navigation.setParams({
       refreshPage: this._onRefresh,
       notificationCount: this.props.overview.notificationCount
+    });
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({
+        refreshing: false,
+        upcomingEvents: this.props.overview.deadlines,
+        groupList: this.props.overview.groups,
+        classList: this.props.overview.classes,
+        userInfo: this.props.overview.user
+      });
     });
   }
 
@@ -78,37 +92,27 @@ class ManagebacOverviewScreen extends React.PureComponent {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            fetch(BASE_URL + '/api/dashboard', {
-              method: 'GET',
-              headers: {
-                'Login-Token': credentials
-              },
-              mode: 'no-cors'
-            }).then(response => {
-              if (response.status === 200) {
-                this.props.setManagebacOverview(
-                  JSON.parse(response.headers.map['managebac-data'])
-                );
-                this.setState(
-                  {
-                    refreshing: false
-                  },
-                  () => {
-                    this.props.navigation.setParams({
-                      notificationCount: this.props.overview.notificationCount
-                    });
-                  }
-                );
-                return;
-              }
-            });
-          })
-          .catch(err => {
-            console.warn(err);
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        const response = await fetch(BASE_URL + '/api/dashboard', {
+          method: 'GET',
+          headers: {
+            'Login-Token': credentials,
+            'Cache-Control': 'no-cache, no-store, must-revalidate'
+          },
+          mode: 'no-cors'
+        });
+        if (response.status === 200) {
+          const parsedResponse = await response.json();
+          this.props.setManagebacOverview(parsedResponse);
+          this.setState({
+            refreshing: false
           });
+          this.props.navigation.setParams({
+            notificationCount: parsedResponse.notificationCount
+          });
+          return;
+        }
       }
     );
   }
@@ -159,6 +163,11 @@ class ManagebacOverviewScreen extends React.PureComponent {
 }
 
 const overviewStyles = StyleSheet.create({
+  badgeIcon: {
+    position: 'absolute',
+    top: -4,
+    backgroundColor: colors.lightError
+  },
   lastElementPadding: {
     marginBottom: 16
   }

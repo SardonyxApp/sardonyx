@@ -1,13 +1,22 @@
 import React from 'react';
 
-import { Text, View, FlatList, StyleSheet, Image } from 'react-native';
+import {
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity
+} from 'react-native';
 
 import Lottie from 'lottie-react-native';
 import { Icon } from 'react-native-elements';
 import HTMLView from 'react-native-htmlview';
-
-import { fonts, colors } from '../styles';
 import { TouchableRipple } from 'react-native-paper';
+import moment from 'moment';
+
+import EndOfList from './EndOfList';
+import { fonts, colors } from '../styles';
 
 export default class MessageListView extends React.Component {
   constructor(props) {
@@ -19,19 +28,17 @@ export default class MessageListView extends React.Component {
     this._renderMessage = this._renderMessage.bind(this);
   }
 
-  componentDidMount() {
-    // For some reason this.animation.play() doesn't work when immediately called
-    // Weird, because it works in LoginCheckScreen
-    setTimeout(() => {
-      this.animation.play();
-    }, 50);
-  }
-
   _navigateToMessageThreadScreen(item) {
     this.props.navigation.navigate('MessageThread', {
       ...item,
-      title: decodeURI(item.title)
+      title: decodeURI(item.title),
+      onGoBack: this.props.onDeleteRefresh || null
     });
+  }
+
+  componentDidUpdate(oldProps) {
+    if (oldProps.messages.length !== this.props.messages.length)
+      this.animation && this.animation.play();
   }
 
   /**
@@ -49,15 +56,23 @@ export default class MessageListView extends React.Component {
                 ? {
                     uri: item.avatar
                   }
-                : require('../logos/Icon.png')
+                : require('../assets/logos/Icon.png')
             }
             style={messageListStyles.image}
           />
         </View>
         <View style={messageListStyles.text}>
           <Text style={messageListStyles.author}>
-            {item.author} <Text style={messageListStyles.subtext}>wrote</Text>
+            {item.author}{' '}
+            <Text style={messageListStyles.subtext}>
+              wrote {moment(item.date).fromNow()}
+            </Text>
           </Text>
+          {item.onlyVisibleForTeachers && (
+            <Text style={messageListStyles.onlyTeacher}>
+              Only Visible For Teachers
+            </Text>
+          )}
           <View style={messageListStyles.titleFlex}>
             <Text style={messageListStyles.title}>{decodeURI(item.title)}</Text>
             <View style={messageListStyles.comments}>
@@ -80,14 +95,21 @@ export default class MessageListView extends React.Component {
               </TouchableRipple>
             </View>
           </View>
-          <HTMLView
-            style={messageListStyles.content}
-            value={`<html><body>${item.content}</body></html>`}
-            stylesheet={htmlStyles}
-            textComponentProps={{
-              style: htmlStyles.text
-            }}
-          />
+          <TouchableOpacity
+            onPress={() => this._navigateToMessageThreadScreen(item)}
+          >
+            <HTMLView
+              style={messageListStyles.content}
+              value={`<html><body>${item.content}</body></html>`}
+              stylesheet={htmlStyles}
+              textComponentProps={{
+                style: htmlStyles.text
+              }}
+              nodeComponentProps={{
+                numberOfLines: 5
+              }}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -100,17 +122,25 @@ export default class MessageListView extends React.Component {
         renderItem={this._renderMessage}
         keyExtractor={(item, index) => item.id.toString()}
         ListFooterComponent={
-          <View style={messageListStyles.lottieContainer}>
-            <Lottie
-              style={messageListStyles.lottie}
-              ref={animation => {
-                this.animation = animation;
-              }}
-              loop={true}
-              autoPlay={true}
-              source={require('../assets/loader.json')}
-            />
-          </View>
+          this.props.messages.length !== 0 && !this.props.lastPage ? (
+            <View style={messageListStyles.lottieContainer}>
+              <Lottie
+                style={messageListStyles.lottie}
+                ref={animation => {
+                  this.animation = animation;
+                }}
+                loop={true}
+                autoPlay={true}
+                source={require('../assets/loader.json')}
+              />
+            </View>
+          ) : this.props.loading ? (
+            <View style={messageListStyles.messageContainer}>
+              <Text>{'Loading...'}</Text>
+            </View>
+          ) : (
+            <EndOfList />
+          )
         }
       />
     );
@@ -141,6 +171,11 @@ const messageListStyles = StyleSheet.create({
   author: {
     fontSize: 12,
     ...fonts.jost300
+  },
+  onlyTeacher: {
+    fontSize: 12,
+    ...fonts.jost300,
+    color: colors.error
   },
   subtext: {
     color: colors.darkBackground
@@ -192,7 +227,7 @@ const messageListStyles = StyleSheet.create({
 
 const htmlStyles = StyleSheet.create({
   text: {
-    fontSize: 12,
+    fontSize: 13,
     color: colors.black
   },
   p: {

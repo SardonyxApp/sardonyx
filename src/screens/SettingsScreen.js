@@ -8,15 +8,17 @@ import {
   View,
   Image,
   StyleSheet,
-  Picker
+  Alert
 } from 'react-native';
 
 import { TouchableRipple, Switch } from 'react-native-paper';
 import { bindActionCreators } from 'redux';
 import { setSettings } from '../actions';
 import { connect } from 'react-redux';
+import { version } from '../../package.json';
 
-import { colors, fonts } from '../styles';
+import { Storage } from '../helpers';
+import { colors, fonts, elevations } from '../styles';
 
 class SettingsScreen extends React.Component {
   settingsSections = [
@@ -38,7 +40,9 @@ class SettingsScreen extends React.Component {
           redux: 'general.firstScreenManagebac'
         },
         {
-          title: 'Configure d tasklist labels',
+          title: 'Configure default tasklist labels',
+          description:
+            'Select the labels to filter the tasklist for by default. (applies from next launch)',
           onPress: () => this._handleNavigateToUserLabels()
         }
       ]
@@ -48,7 +52,7 @@ class SettingsScreen extends React.Component {
       data: [
         {
           title: 'Sign out',
-          onPress: () => this._handleLogout()
+          onPress: () => this._confirmLogout()
         }
       ]
     },
@@ -66,6 +70,10 @@ class SettingsScreen extends React.Component {
         {
           title: 'Terms of Service',
           onPress: () => Linking.openURL('https://sardonyx.app/terms')
+        },
+        {
+          title: 'Version Info',
+          description: version
         }
       ]
     }
@@ -98,8 +106,29 @@ class SettingsScreen extends React.Component {
     };
   };
 
+  _confirmLogout() {
+    Alert.alert('', 'Are you sure you want to log out?', [
+      {
+        text: 'No!'
+      },
+      {
+        text: 'Log me out please.',
+        onPress: this._handleLogout
+      }
+    ]);
+  }
+
   _handleLogout() {
-    this.props.navigation.navigate('Logout');
+    Storage.deleteCredentials()
+      .then(() => {
+        this.props.navigation.navigate('Login', {
+          errorMessage: null
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        Alert.alert('', 'There was an error while logging out: ' + err);
+      });
   }
 
   _handleNavigateToUserLabels() {
@@ -122,6 +151,7 @@ class SettingsScreen extends React.Component {
   }
 
   _renderCheckboxRow(item) {
+    const reduxValue = this._objectKeyByString(this.props.settings, item.redux);
     return (
       <View style={[settingsStyles.item, settingsStyles.checkboxItem]}>
         <View style={settingsStyles.nonCheckboxContainer}>
@@ -133,12 +163,9 @@ class SettingsScreen extends React.Component {
         <View style={settingsStyles.checkboxContainer}>
           <Switch
             color={colors.primary}
-            value={this._objectKeyByString(this.props.settings, item.redux)}
+            value={reduxValue}
             onValueChange={() => {
-              this.props.setSettings(
-                item.redux,
-                !this._objectKeyByString(this.props.settings, item.redux)
-              );
+              this.props.setSettings(item.redux, !reduxValue);
             }}
           />
         </View>
@@ -185,7 +212,7 @@ class SettingsScreen extends React.Component {
                 ? {
                     uri: this.props.user.avatar
                   }
-                : require('../logos/Icon.png')
+                : require('../assets/logos/Icon.png')
             }
             style={settingsStyles.profileIcon}
           />
@@ -212,7 +239,7 @@ const settingsStyles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 32,
     marginBottom: 8,
-    elevation: 2
+    ...elevations.two
   },
   profileIcon: {
     width: 64,

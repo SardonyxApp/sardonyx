@@ -7,19 +7,27 @@
     "slug": "sardonyx",
     "privacy": "unlisted",
     "sdkVersion": "33.0.0",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "platforms": ["ios", "android"],
     "githubUrl": "https://github.com/SardonyxApp/sardonyx",
     "orientation": "portrait",
-    "primaryColor": "#d17b46",
-    "icon": "./src/logos/Icon.png",
+    "primaryColor": "#ffffff",
+    "icon": "./src/assets/logos/appIcon.png",
     "splash": {
-      "backgroundColor": "#eeeeee",
+      "backgroundColor": "#ffffff",
       "resizeMode": "contain",
-      "image": "./src/logos/splash.png"
+      "image": "./src/assets/logos/splash.png"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
+    },
+    "ios": {
+      "bundleIdentifier": "app.sardonyx",
+      "icon": "./src/assets/logos/appIconOpaque.png"
+    },
+    "android": {
+      "package": "app.sardonyx",
+      "permissions": []
     }
   }
 }

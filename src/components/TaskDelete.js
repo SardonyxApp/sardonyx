@@ -4,7 +4,7 @@ import { Icon } from 'react-native-elements';
 
 import { styles, fonts } from '../styles';
 
-export default class TaskDelete extends React.Component {
+export default class TaskDelete extends React.PureComponent {
   constructor(props) {
     super(props);
     this._handleDelete = this._handleDelete.bind(this);

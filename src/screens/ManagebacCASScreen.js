@@ -44,7 +44,7 @@ export default class ManagebacCASScreen extends React.Component {
     this._isMounted = false;
   }
 
-  static navigationOptions = ({ navigation }) => { 
+  static navigationOptions = ({ navigation }) => {
     return {
       title: `${navigation.state.params.title}`,
       headerRight: navigation.state.params.editable ? (
@@ -87,43 +87,36 @@ export default class ManagebacCASScreen extends React.Component {
 
   /**
    * Sends a GET request to the API, sets State, and show Alert on error.
-   * @param {String} credentials 
+   * @param {String} credentials
    */
-  _fetchExperienceData(credentials) {
-    fetch(BASE_URL + this.props.navigation.getParam('apiLink', '/404'), {
+  async _fetchExperienceData(credentials) {
+    const response = await fetch(BASE_URL + this.props.navigation.getParam('apiLink', '/404'), {
       method: 'GET',
       headers: {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    })
-      .then(response => {
-        if (!this._isMounted) return;
-        if (response.status === 200) {
-          this.setState(
-            {
-              refreshing: false,
-              casExperienceData: JSON.parse(
-                response.headers.map['managebac-data']
-              ).cas
-            },
-            this._setEditableParam
-          );
-          return;
-        } else if (response.status === 404) {
-          Alert.alert(
-            'Not Found',
-            'Your CAS experience could not be found.',
-            []
-          );
-          this.props.navigation.goBack();
-          return;
-        }
-      })
-      .catch(error => {
-        console.warn(error);
-        return;
-      });
+    });
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const data = await response.json();
+      this.setState(
+        {
+          refreshing: false,
+          casExperienceData: data.cas
+        },
+        this._setEditableParam
+      );
+      return;
+    } else if (response.status === 404) {
+      Alert.alert(
+        'Not Found',
+        'Your CAS experience could not be found.',
+        []
+      );
+      this.props.navigation.goBack();
+      return;
+    }
   }
 
   /**
@@ -134,12 +127,8 @@ export default class ManagebacCASScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(this._fetchExperienceData)
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        this._fetchExperienceData(await Storage.retrieveCredentials());
       }
     );
   }

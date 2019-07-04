@@ -14,8 +14,7 @@ import { BASE_URL } from '../../env';
 import HTMLView from 'react-native-htmlview';
 
 import { Storage } from '../helpers';
-import { fonts, colors } from '../styles';
-import { TouchableRipple } from 'react-native-paper';
+import { colors, elevations } from '../styles';
 
 export default class ManagebacAlertScreen extends React.Component {
   isMounted = false;
@@ -50,16 +49,13 @@ export default class ManagebacAlertScreen extends React.Component {
    * Set the refreshing controller as visible, and call _fetchNotificationsData().
    */
   _onRefresh() {
+    this.props.navigation.state.params.refreshOverview();
     this.setState(
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(this._fetchNotificationData)
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        this._fetchNotificationData(await Storage.retrieveCredentials());
       }
     );
   }
@@ -68,8 +64,8 @@ export default class ManagebacAlertScreen extends React.Component {
    * Fetches details about a single notification.
    * @param {String} credentials
    */
-  _fetchNotificationData(credentials) {
-    fetch(
+  async _fetchNotificationData(credentials) {
+    const response = await fetch(
       BASE_URL +
         '/api/notification/' +
         this.props.navigation.getParam('id', '404'),
@@ -80,19 +76,17 @@ export default class ManagebacAlertScreen extends React.Component {
         },
         mode: 'no-cors'
       }
-    ).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        this.setState({
-          refreshing: false,
-          notificationData: parsedManagebacResponse.notification
-        });
-        return;
-      }
-    });
+    );
+
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      this.setState({
+        refreshing: false,
+        notificationData: parsedManagebacResponse.notification
+      });
+      return;
+    }
   }
 
   render() {
@@ -119,7 +113,9 @@ export default class ManagebacAlertScreen extends React.Component {
             Sent on:{' '}
             <Text style={alertStyles.bold}>
               {'date' in this.state.notificationData
-                ? moment(this.state.notificationData.date).format('dddd, MMM Do YYYY, H:mm')
+                ? moment(this.state.notificationData.date).format(
+                    'dddd, MMM Do YYYY, H:mm'
+                  )
                 : ''}
             </Text>
           </Text>
@@ -131,7 +127,6 @@ export default class ManagebacAlertScreen extends React.Component {
               ? this.state.notificationData.content
               : ''
           }</body></html>`}
-          addLineBreaks={false}
         />
       </ScrollView>
     );
@@ -143,9 +138,9 @@ const alertStyles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     backgroundColor: colors.lightBlue2,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: colors.gray2
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.gray2,
+    ...elevations.two
   },
   bold: {
     fontWeight: 'bold'

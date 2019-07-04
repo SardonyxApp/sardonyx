@@ -1,19 +1,23 @@
 import React from 'react';
 
 import {
+  View,
   ScrollView,
   RefreshControl,
   Alert,
   InteractionManager,
-  Dimensions
+  Dimensions,
+  StyleSheet
 } from 'react-native';
 
+import { FAB } from 'react-native-paper';
 import { BASE_URL } from '../../env';
 
 import UpcomingCarousel from '../components/UpcomingCarousel';
 import OverviewHeading from '../components/OverviewHeading';
 import MessageListView from '../components/MessageListView';
 import { Storage } from '../helpers';
+import { colors } from '../styles';
 
 export default class ManagebacGroupScreen extends React.Component {
   isMounted = false;
@@ -59,15 +63,10 @@ export default class ManagebacGroupScreen extends React.Component {
       {
         refreshing: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            this._fetchGroupOverviewData(credentials);
-            this._fetchGroupMessagesData(credentials);
-          })
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        this._fetchGroupOverviewData(credentials);
+        this._fetchGroupMessagesData(credentials);
       }
     );
   }
@@ -89,17 +88,12 @@ export default class ManagebacGroupScreen extends React.Component {
       {
         fetchingMessages: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            this._fetchGroupMessagesData(
-              credentials,
-              this.state.groupMessagesData.length + 1
-            );
-          })
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        this._fetchGroupMessagesData(
+          credentials,
+          this.state.groupMessagesData.length + 1
+        );
       }
     );
   }
@@ -108,31 +102,28 @@ export default class ManagebacGroupScreen extends React.Component {
    * Called on load, and on pull-to-refresh. Asynchronously sets the state using newest group data.
    * @param {String} credentials
    */
-  _fetchGroupOverviewData(credentials) {
+  async _fetchGroupOverviewData(credentials) {
     let url = this.props.navigation.getParam('link', '/404');
-    fetch(BASE_URL + url, {
+    const response = await fetch(BASE_URL + url, {
       method: 'GET',
       headers: {
         'Login-Token': credentials
       },
       mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        this.setState({
-          refreshing: false,
-          groupUpcomingEventsData: parsedManagebacResponse.deadlines
-        });
-        return;
-      } else if (response.status === 404) {
-        Alert.alert('Not Found', 'Group could not be found.', []);
-        this.props.navigation.goBack();
-        return;
-      }
     });
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      this.setState({
+        refreshing: false,
+        groupUpcomingEventsData: parsedManagebacResponse.deadlines
+      });
+      return;
+    } else if (response.status === 404) {
+      Alert.alert('Not Found', 'Group could not be found.', []);
+      this.props.navigation.goBack();
+      return;
+    }
   }
 
   /**
@@ -140,74 +131,112 @@ export default class ManagebacGroupScreen extends React.Component {
    * @param {String} credentials
    * @param {Integer} page
    */
-  _fetchGroupMessagesData(credentials, page = 1) {
+  async _fetchGroupMessagesData(credentials, page = 1) {
     let url = this.props.navigation.getParam('link', '/404');
     url = url.replace('/overview', '/messages');
-    fetch(BASE_URL + url + '?pageParam=' + page.toString(), {
-      method: 'GET',
-      headers: {
-        'Login-Token': credentials
-      },
-      mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        // Place messages from a paeg into its own array inside messages[]
-        // This will be concat-ed when sending to MessageListView, don't worry
-        // Keeping it like an array makes it possible to count the currently loaded page count.
-        let messages = this.state.groupMessagesData;
-        messages[page - 1] = parsedManagebacResponse.messages;
-        this.setState({
-          fetchingMessages: false,
-          groupMessagesData: messages,
-          groupMessagesTotalPages: parsedManagebacResponse.numberOfPages
-        });
-        return;
-      } else {
-        Alert.alert('Error', 'Messages could not be loaded.', []);
-        return;
+    const response = await fetch(
+      BASE_URL + url + '?pageParam=' + page.toString(),
+      {
+        method: 'GET',
+        headers: {
+          'Login-Token': credentials
+        },
+        mode: 'no-cors'
       }
-    });
+    );
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      // Place messages from a page into its own array inside messages[]
+      // This will be concat-ed when sending to MessageListView, don't worry
+      // Keeping it like an array makes it possible to count the currently loaded page count.
+      let messages = this.state.groupMessagesData;
+      messages[page - 1] = parsedManagebacResponse.messages;
+      this.setState({
+        fetchingMessages: false,
+        groupMessagesData: messages,
+        groupMessagesTotalPages: parsedManagebacResponse.numberOfPages
+      });
+      return;
+    } else {
+      Alert.alert('Error', 'Messages could not be loaded.', []);
+      return;
+    }
   }
 
   render() {
     return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh}
-          />
-        }
-        onScroll={event => {
-          let windowHeight = Dimensions.get('window').height,
-            height = event.nativeEvent.contentSize.height,
-            offset = event.nativeEvent.contentOffset.y;
-          if (windowHeight + offset >= height) {
-            // Thank you GitHub
-            // https://github.com/facebook/react-native/issues/2299
-            this._fetchNextMessages();
+      <View style={groupStyles.page}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
           }
-        }}
-      >
-        <UpcomingCarousel
-          upcomingEvents={this.state.groupUpcomingEventsData}
-          completedEvents={this.state.groupCompletedEventsData}
-          allGroupsAndClasses={[this.props.navigation.state.params]}
-          navigation={this.props.navigation}
+          onScroll={event => {
+            let windowHeight = Dimensions.get('window').height,
+              height = event.nativeEvent.contentSize.height,
+              offset = event.nativeEvent.contentOffset.y;
+            if (windowHeight + offset >= height - 500) {
+              // Thank you GitHub
+              // https://github.com/facebook/react-native/issues/2299
+              this._fetchNextMessages();
+            }
+          }}
+        >
+          <UpcomingCarousel
+            upcomingEvents={this.state.groupUpcomingEventsData}
+            completedEvents={this.state.groupCompletedEventsData}
+            allGroupsAndClasses={[this.props.navigation.state.params]}
+            navigation={this.props.navigation}
+          />
+          {/** OverviewHeading has a default marginBottom of -16px */}
+          <OverviewHeading style={{ marginBottom: 0 }}>
+            Messages
+          </OverviewHeading>
+          <MessageListView
+            onDeleteRefresh={this._onRefresh}
+            messages={[].concat(...this.state.groupMessagesData)}
+            loading={this.state.fetchingMessages}
+            navigation={this.props.navigation}
+            lastPage={
+              this.state.groupMessagesData.length ===
+              this.state.groupMessagesTotalPages
+            }
+          />
+        </ScrollView>
+        <FAB
+          icon={'add'}
+          style={groupStyles.cta}
+          color={colors.lightPrimary2}
+          label={'New Message'}
+          onPress={() => {
+            this.props.navigation.navigate('MessageEditor', {
+              onGoBack: this._onRefresh,
+              type: 'group',
+              id: this.props.navigation.state.params.id
+            });
+          }}
+          theme={{
+            fonts: {
+              medium: 'Jost-500'
+            }
+          }}
         />
-        {/** OverviewHeading has a default marginBottom of -16px */}
-        <OverviewHeading style={{ marginBottom: 0 }}>Messages</OverviewHeading>
-        <MessageListView
-          messages={[].concat(...this.state.groupMessagesData)}
-          onScrollEnd={this._fetchNextMessages}
-          loading={this.state.fetchingMessages}
-          navigation={this.props.navigation}
-        />
-      </ScrollView>
+      </View>
     );
   }
 }
+
+const groupStyles = StyleSheet.create({
+  page: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  cta: {
+    position: 'absolute',
+    bottom: 32,
+    backgroundColor: colors.primary
+  }
+});

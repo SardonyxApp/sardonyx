@@ -10,20 +10,25 @@ export default class TasksLabelsFilterScreen extends React.Component {
     this.state = {
       subjectsFilter: this.props.navigation.getParam('subjectsFilter'),
       categoriesFilter: this.props.navigation.getParam('categoriesFilter')
-    }
+    };
 
     this._handleFilter = this._handleFilter.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Edit filter'
-    }
-  }
+      title: 'Edit filter',
+      headerStyle: {
+        backgroundColor: colors.primary
+      }
+    };
+  };
 
   _handleFilter(filter, id) {
     this.setState(prevState => {
-      prevState[filter] = prevState[filter].includes(id) ? prevState[filter].filter(l => l !== id) : prevState[filter].concat([id]);
+      prevState[filter] = prevState[filter].includes(id)
+        ? prevState[filter].filter(l => l !== id)
+        : prevState[filter].concat([id]);
       return prevState;
     });
 
@@ -37,7 +42,7 @@ export default class TasksLabelsFilterScreen extends React.Component {
     const categoriesFilter = this.state.categoriesFilter;
 
     subjects = subjects.map(label => (
-      <Label 
+      <Label
         key={label.name}
         label={label}
         list={subjectsFilter}
@@ -46,7 +51,7 @@ export default class TasksLabelsFilterScreen extends React.Component {
     ));
 
     categories = categories.map(label => (
-      <Label 
+      <Label
         key={label.name}
         label={label}
         list={categoriesFilter}
