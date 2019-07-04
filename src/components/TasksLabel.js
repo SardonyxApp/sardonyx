@@ -32,7 +32,7 @@ export default class TasksLabel extends React.PureComponent {
           <Text style={labelStyles.labelName}>{this.props.label.name}</Text>
           {this.props.removable 
           ? <Icon 
-              size={16}
+              size={14}
               color="white"
               name="close"
               type="material"
@@ -49,8 +49,8 @@ export default class TasksLabel extends React.PureComponent {
 const labelStyles = StyleSheet.create({
   label: {
     marginHorizontal: 2,
-    borderRadius: 4,
-    paddingHorizontal: 8,
+    borderRadius: 1000, // Really large to always make the border circular
+    paddingHorizontal: 12,
     paddingVertical: 4,
     flexDirection: 'row',
     alignItems: 'center'

@@ -1,9 +1,8 @@
 import React from 'react';
-import { ScrollView, Text, StyleSheet } from 'react-native';
-import { Icon } from 'react-native-elements';
-import { TouchableRipple } from 'react-native-paper';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { IconButton } from 'react-native-paper';
 
-import { styles, fonts } from '../styles';
+import { fonts } from '../styles';
 
 import Label from './TasksLabel';
 
@@ -20,59 +19,73 @@ export default class TasksFilter extends React.PureComponent {
   render() {
     const subjects = this.props.subjects
       .filter(label => this.props.subjectsFilter.includes(label.id))
-      .map(label => <Label key={label.name} label={label} onRemove={id => this.props.onFilter('subjectsFilter', id)} removable={true} />);
+      .map(label => (
+        <Label
+          key={label.name}
+          label={label}
+          onRemove={() => this.props.onFilter('subjectsFilter', label.id)}
+          removable={true}
+        />
+      ));
 
     const categories = this.props.categories
       .filter(label => this.props.categoriesFilter.includes(label.id))
-      .map(label => <Label key={label.name} label={label} onRemove={id => this.props.onFilter('categoriesFilter', id)} removable={true} />);
+      .map(label => (
+        <Label
+          key={label.name}
+          label={label}
+          onRemove={() => this.props.onFilter('categoriesFilter', label.id)}
+          removable={true}
+        />
+      ));
 
     return (
-      <ScrollView horizontal={true} contentContainerStyle={filterStyles.container}>
-        <TouchableRipple 
+      <View style={[filterStyles.container, filterStyles.containercontainer]}>
+        <IconButton
           onPress={this._handleNavigate}
-          rippleColor="rgba(0, 0, 0, 0.16)"
+          style={filterStyles.filterIcon}
+          icon={'filter-list'}
+        />
+        <ScrollView
+          horizontal={true}
+          contentContainerStyle={filterStyles.container}
         >
-          <Icon 
-            name="search"
-            type="material"
-            iconStyle={styles.icon}
-          /> 
-        </TouchableRipple>
-        {subjects}
-        {categories}
-        {!subjects.length && !categories.length 
-        ? <Text 
-            className="overview-description" 
-            style={filterStyles.hint}
+          {subjects}
+          {categories}
+          {!subjects.length && !categories.length ? (
+            <Text
+              className="overview-description"
+              style={filterStyles.hint}
+              onPress={this._handleNavigate}
+            >
+              Filter labels...
+            </Text>
+          ) : null}
+          <IconButton
             onPress={this._handleNavigate}
-          >
-            Filter labels...
-          </Text> 
-        : null}
-        <TouchableRipple 
-          onPress={this._handleNavigate}
-          rippleColor="rgba(0, 0, 0, 0.16)"
-        >
-          <Icon 
-            name="add"
-            type="material"
-            iconStyle={styles.icon}
+            icon={'add'}
           />
-        </TouchableRipple>
-      </ScrollView>
+        </ScrollView>
+      </View>
     );
   }
 }
 
 const filterStyles = StyleSheet.create({
+  containercontainer: {
+    marginTop: 16
+  },
+  filterIcon: {
+    marginLeft: 12,
+    marginRight: 4
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginBottom: 4
+    justifyContent: 'flex-start'
   },
   hint: {
     ...fonts.jost400,
     fontSize: 16
   }
-})
+});

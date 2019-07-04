@@ -6,7 +6,6 @@ import { Icon } from 'react-native-elements';
 import TasksScreen from './screens/TasksScreen';
 import TasksInfoScreen from './screens/TasksInfoScreen';
 import TasksCreateScreen from './screens/TasksCreateScreen';
-import TasksLabelsFilterScreen from './screens/TasksLabelsFilterScreen'
 import TasksLabelsSelectorScreen from './screens/TasksLabelsSelectorScreen';
 import TasksManageLabelsScreen from './screens/TasksManageLabelsScreen';
 import TasksAddTaskScreen from './screens/TasksAddTaskScreen';
@@ -20,7 +19,6 @@ const TasksStack = createStackNavigator(
     Tasks: TasksScreen, // Main screen: list of tasks
     TaskInfo: TasksInfoScreen, // Detailed information for one task
     TasksCreate: TasksCreateScreen, // Screen with tasklist actions
-    LabelsFilter: TasksLabelsFilterScreen, // Choose labels for filtering the tasklist
     LabelsSelector: TasksLabelsSelectorScreen, // Choose labels for a task
     ManageLabels: TasksManageLabelsScreen, // Display all of the task's labels
     AddTask: TasksAddTaskScreen, // Create a new task

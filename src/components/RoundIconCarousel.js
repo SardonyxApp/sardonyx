@@ -6,9 +6,9 @@ import Carousel from 'react-native-snap-carousel';
 import { Icon } from 'react-native-elements';
 import { TouchableRipple } from 'react-native-paper';
 
-import { colors, fonts } from '../styles';
+import { colors, fonts, elevations } from '../styles';
 
-export default class RoundIconCarousel extends React.Component {
+export default class RoundIconCarousel extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -66,7 +66,7 @@ export default class RoundIconCarousel extends React.Component {
           itemWidth={100}
           enableSnap={false}
           enableMomentum={true}
-          decelerationRate={0.9}
+          decelerationRate={0.99}
           activeSlideAlignment={'start'}
           inactiveSlideScale={1}
           inactiveSlideOpacity={1}
@@ -93,7 +93,7 @@ const classesCarouselStyles = StyleSheet.create({
     height: 72,
     width: 72,
     borderRadius: 36,
-    elevation: 2,
+    ...elevations.two,
     overflow: 'hidden'
   },
   container: {

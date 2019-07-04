@@ -70,7 +70,8 @@ export default class TasksManageLabelsScreen extends React.Component {
             style={{
               margin: 4,
               paddingHorizontal: 12,
-              paddingVertical: 12
+              paddingVertical: 12,
+              borderRadius: 4
             }}
             updatable={true} 
             onUpdate={() => this.props.navigation.navigate('UpdateLabel', { onUpdate: this._handleUpdate, label, type: this.props.navigation.getParam('type') })}

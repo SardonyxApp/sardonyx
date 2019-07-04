@@ -25,7 +25,6 @@ export default class ManagebacAlertsScreen extends React.Component {
     super(props);
 
     this.state = {
-      refreshing: true,
       fetchingMessages: true,
       notificationsData: [],
       notificationsTotalPages: 1,
@@ -38,10 +37,14 @@ export default class ManagebacAlertsScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    setTimeout(() => {
-      this.animation.play();
-    }, 50);
     InteractionManager.runAfterInteractions(this._onRefresh);
+  }
+
+  componentDidUpdate(_, oldState) {
+    if (
+      oldState.notificationsData.length !== this.state.notificationsData.length
+    )
+      this.animation && this.animation.play();
   }
 
   componentWillUnmount() {
@@ -55,19 +58,15 @@ export default class ManagebacAlertsScreen extends React.Component {
   };
 
   /**
-   * Set the refreshing controller as visible, and call _fetchNotificationsData().
+   * Set the fetching controller as visible, and call _fetchNotificationsData().
    */
   _onRefresh() {
     this.setState(
       {
-        refreshing: true
+        fetchingMessages: true
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(this._fetchNotificationsData)
-          .catch(err => {
-            console.warn(err);
-          });
+      async () => {
+        this._fetchNotificationsData(await Storage.retrieveCredentials());
       }
     );
   }
@@ -75,7 +74,7 @@ export default class ManagebacAlertsScreen extends React.Component {
   /**
    * After performing several checks, load the next page of notifications.
    */
-  _fetchNextNotifications() {
+  async _fetchNextNotifications() {
     if (!this._isMounted) return;
     // Don't call fetch if it's already fetching something
     if (this.state.fetchingMessages) return;
@@ -84,23 +83,10 @@ export default class ManagebacAlertsScreen extends React.Component {
       this.state.notificationsTotalPages === this.state.notificationsLoadedPages
     )
       return;
-    // Lock the state and fetch messages
-    this.setState(
-      {
-        fetchingMessages: true
-      },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            this._fetchNotificationsData(
-              credentials,
-              this.state.notificationsLoadedPages + 1
-            );
-          })
-          .catch(err => {
-            console.warn(err);
-          });
-      }
+    const credentials = await Storage.retrieveCredentials();
+    this._fetchNotificationsData(
+      credentials,
+      this.state.notificationsLoadedPages + 1
     );
   }
 
@@ -108,34 +94,43 @@ export default class ManagebacAlertsScreen extends React.Component {
    * Requests /api/notification for the list of notifications. Sets the state on success.
    * @param {String} credentials
    */
-  _fetchNotificationsData(credentials, page = 1) {
-    fetch(BASE_URL + '/api/notification?pageId=' + page, {
-      method: 'GET',
-      headers: {
-        'Login-Token': credentials
-      },
-      mode: 'no-cors'
-    }).then(response => {
-      if (!this._isMounted) return;
-      if (response.status === 200) {
-        const parsedManagebacResponse = JSON.parse(
-          response.headers.map['managebac-data']
-        );
-        let notifications = this.state.notificationsData;
-        notifications[page - 1] = parsedManagebacResponse.notifications;
-        this.setState({
-          refreshing: false,
-          fetchingMessages: false,
-          notificationsData: notifications,
-          notificationsTotalPages: parsedManagebacResponse.numberOfPages,
-          notificationsLoadedPages: page
-        });
-        return;
+  async _fetchNotificationsData(credentials, page = 1) {
+    const response = await fetch(
+      BASE_URL + '/api/notification?pageId=' + page,
+      {
+        method: 'GET',
+        headers: {
+          'Login-Token': credentials
+        },
+        mode: 'no-cors'
       }
-    });
+    );
+    if (!this._isMounted) return;
+    if (response.status === 200) {
+      const parsedManagebacResponse = await response.json();
+      let notifications = [...this.state.notificationsData];
+      notifications[page - 1] = parsedManagebacResponse.notifications;
+      this.setState({
+        fetchingMessages: false,
+        notificationsData: notifications,
+        notificationsTotalPages: parsedManagebacResponse.numberOfPages,
+        notificationsLoadedPages: page
+      });
+      return;
+    }
   }
 
+  /**
+   * Called on Alert press. Navigate to Alert screen, change the state to mark item as read, and
+   * call refresh on the Overview page.
+   * @param {Object} pressedItem
+   */
   _onPress(pressedItem) {
+    this.props.navigation.navigate('Alert', {
+      ...pressedItem,
+      title: decodeURI(pressedItem.title),
+      refreshOverview: this.props.navigation.state.params.refreshPage
+    });
     if (pressedItem.unread) {
       const notificationsData = [...this.state.notificationsData];
       pageLoop: for (let page of notificationsData) {
@@ -148,13 +143,18 @@ export default class ManagebacAlertsScreen extends React.Component {
       }
       this.setState({ notificationsData });
     }
-    this.props.navigation.navigate('Alert', {
-      ...pressedItem,
-      title: decodeURI(pressedItem.title)
-    });
     if (this.props.navigation.getParam('refreshPage', null) !== null) {
       this.props.navigation.state.params.refreshPage();
     }
+  }
+
+  /**
+   * Change all dates within today to Today instead of assuming midnight
+   * @param {Moment} date
+   */
+  _getRelativeDate(date) {
+    if (date >= moment().startOf('day')) return 'Today';
+    return date.fromNow();
   }
 
   _renderRow({ item }) {
@@ -168,7 +168,7 @@ export default class ManagebacAlertsScreen extends React.Component {
                 {decodeURI(item.title)}
               </Text>
               <Text style={alertsStyles.dateText}>
-                {moment(item.dateString, 'MMM D, YYYY').fromNow()}
+                {this._getRelativeDate(moment(item.dateString, 'MMM D, YYYY'))}
               </Text>
             </View>
             <View style={alertsStyles.unreadIndicatorContainer}>
@@ -185,12 +185,6 @@ export default class ManagebacAlertsScreen extends React.Component {
   render() {
     return (
       <FlatList
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh}
-          />
-        }
         data={[].concat(...this.state.notificationsData)}
         keyExtractor={(item, index) => item.id.toString()}
         renderItem={this._renderRow}
@@ -198,7 +192,7 @@ export default class ManagebacAlertsScreen extends React.Component {
           let windowHeight = Dimensions.get('window').height,
             height = event.nativeEvent.contentSize.height,
             offset = event.nativeEvent.contentOffset.y;
-          if (windowHeight + offset >= height) {
+          if (windowHeight + offset >= height - 200) {
             // Thank you GitHub
             // https://github.com/facebook/react-native/issues/2299
             this._fetchNextNotifications();
@@ -264,6 +258,7 @@ const alertsStyles = StyleSheet.create({
     fontSize: 12
   },
   lottieContainer: {
+    paddingTop: 16,
     paddingHorizontal: 16,
     flex: 1,
     alignItems: 'center',
@@ -274,7 +269,7 @@ const alertsStyles = StyleSheet.create({
     height: 30
   },
   disclaimerText: {
-    marginTop: 32,
+    marginTop: 16,
     color: colors.gray2
   }
 });

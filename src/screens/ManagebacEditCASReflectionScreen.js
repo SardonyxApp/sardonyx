@@ -60,7 +60,6 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
     });
 
     InteractionManager.runAfterInteractions(() => {
-
       const currentValueHTML = this.props.navigation.getParam(
         'currentValueHTML',
         ''
@@ -101,38 +100,28 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
         editable: false,
         sending: true // Maybe use this for loading animation? Currently used to check if draft message should be shown
       },
-      () => {
-        Storage.retrieveCredentials()
-          .then(credentials => {
-            fetch(
-              `${BASE_URL}/api/cas/${
-                this.props.navigation.state.params.id
-              }/reflections/${this.props.navigation.state.params.reflectionId}`,
-              {
-                method: 'PATCH',
-                headers: {
-                  'Login-Token': credentials,
-                  'Reflection-Data': JSON.stringify({
-                    body: encodeURI(this.state.reflectionValue)
-                  })
-                },
-                mode: 'no-cors'
-              }
-            )
-              .then(response => {
-                // Remove the drafts if any exist
-                if (this.props.navigation.getParam('onGoBack', null) !== null) {
-                  this.props.navigation.state.params.onGoBack();
-                }
-                this.props.navigation.goBack();
+      async () => {
+        const credentials = await Storage.retrieveCredentials();
+        const response = await fetch(
+          `${BASE_URL}/api/cas/${
+            this.props.navigation.state.params.id
+          }/reflections/${this.props.navigation.state.params.reflectionId}`,
+          {
+            method: 'PATCH',
+            headers: {
+              'Login-Token': credentials,
+              'Reflection-Data': JSON.stringify({
+                body: encodeURI(this.state.reflectionValue)
               })
-              .catch(err => {
-                console.log(err);
-              });
-          })
-          .catch(err => {
-            console.warn(err);
-          });
+            },
+            mode: 'no-cors'
+          }
+        );
+
+        if (this.props.navigation.getParam('onGoBack', null) !== null) {
+          this.props.navigation.state.params.onGoBack();
+        }
+        this.props.navigation.goBack();
       }
     );
   }
@@ -171,7 +160,7 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
 const updateReflectionStyles = StyleSheet.create({
   flex1: {
     flex: 1,
-    backgroundColor: colors.lightPrimary2
+    backgroundColor: colors.white
   },
   textinput: {
     flex: 1,
