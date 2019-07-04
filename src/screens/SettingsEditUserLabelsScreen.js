@@ -104,7 +104,7 @@ class SettingsEditUserLabelsScreen extends React.Component {
     ));
 
     return (
-      <ScrollView style={{ flex: 1, backgroundColor: colors.lightBackground }}>
+      <ScrollView style={{ flex: 1, backgroundColor: colors.lightBackground, paddingTop: 8 }}>
         <ActivityIndicator 
           animating={!this.props.userLabels.loaded} 
           style={{ display: !this.props.userLabels.loaded ? 'flex' : 'none', marginTop: 8 }} 
