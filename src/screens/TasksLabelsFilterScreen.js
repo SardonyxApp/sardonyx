@@ -31,8 +31,8 @@ export default class TasksLabelsFilterScreen extends React.Component {
   }
 
   render() {
-    let subjects = this.props.navigation.getParam('subjects');
-    let categories = this.props.navigation.getParam('categories');
+    let subjects = this.props.navigation.getParam('subjects').sort((a, b) => a.name.localeCompare(b.name));
+    let categories = this.props.navigation.getParam('categories').sort((a, b) => a.name.localeCompare(b.name));
     const subjectsFilter = this.state.subjectsFilter;
     const categoriesFilter = this.state.categoriesFilter;
 
