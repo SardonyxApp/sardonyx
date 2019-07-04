@@ -5,36 +5,59 @@ import { TouchableRipple } from 'react-native-paper';
 
 import { fonts } from '../styles';
 
-export default TasksSelectableLabel = ({label, list, onFilter}) => (
-  <TouchableRipple
-    onPress={onFilter} 
-    rippleColor="rgba(0, 0, 0, 0.16)"
-  >
+export default (TasksSelectableLabel = ({ label, list, onFilter }) => (
+  <View style={labelStyles.container}>
     <View
-      style={[labelStyles.label, { backgroundColor: label.color }]}
+      style={[labelStyles.labelContainer, { backgroundColor: label.color }]}
     >
-      <Text style={labelStyles.labelName}>{label.name}</Text>
-      {list.includes(label.id) 
-      ? <Icon name="check" type="material" size={16} containerStyle={labelStyles.icon} color="white" />
-      : null}
+      <TouchableRipple
+        onPress={onFilter}
+        rippleColor="rgba(0, 0, 0, 0.16)"
+        style={{ flex: 1 }}
+      >
+        <View style={labelStyles.label}>
+          <Text style={labelStyles.labelName}>{label.name}</Text>
+          {list.includes(label.id) ? (
+            <Icon
+              name="check"
+              type="material"
+              size={20}
+              containerStyle={labelStyles.icon}
+              color="white"
+            />
+          ) : null}
+        </View>
+      </TouchableRipple>
     </View>
-  </TouchableRipple>
-);
+  </View>
+));
 
 const labelStyles = StyleSheet.create({
-  label: {
-    margin: 4,
+  container: {
+    marginHorizontal: 8,
+    marginVertical: 2
+  },
+  labelContainer: {
     borderRadius: 4,
+    flex: 1
+  },
+  label: {
+    flex: 1,
     padding: 12,
     flexDirection: 'row',
     alignItems: 'center'
   },
+  selected: {
+    marginLeft: 4,
+    marginRight: 4
+  },
   labelName: {
     ...fonts.jost400,
     fontSize: 16,
-    color: '#fff'
+    color: '#fff',
+    flex: 1
   },
   icon: {
-    marginLeft: 4
+    marginLeft: 8
   }
 });

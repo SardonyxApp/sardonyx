@@ -17,7 +17,7 @@ export default class TasksLabelsFilterScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Edit filter',
+      title: 'Filter tasks by label',
       headerStyle: {
         backgroundColor: colors.primary
       }
@@ -60,7 +60,7 @@ export default class TasksLabelsFilterScreen extends React.Component {
     ));
 
     return (
-      <ScrollView style={{ flex: 1, backgroundColor: colors.lightBackground }}>
+      <ScrollView style={{ flex: 1, backgroundColor: colors.lightBackground, paddingTop: 8 }}>
         {subjects}
         {categories}
       </ScrollView>
