@@ -17,7 +17,6 @@ import ManagebacMessageEditorScreen from './src/screens/ManagebacMessageEditorSc
 import ManagebacEditCASReflectionScreen from './src/screens/ManagebacEditCASReflectionScreen';
 import ManagebacAddCASReflectionScreen from './src/screens/ManagebacAddCASReflectionScreen';
 import TasksStack from './src/TasksStack';
-import TasksLabelsFilterScreen from './src/screens/TasksLabelsFilterScreen';
 import SettingsStack from './src/SettingsStack';
 import LoginCheckScreen from './src/screens/LoginCheckScreen';
 import LoginScreen from './src/screens/LoginScreen';
@@ -59,8 +58,7 @@ const AppStack = createStackNavigator(
     AppMaterialBottomBar,
     MessageEditor: ManagebacMessageEditorScreen,
     EditCASReflection: ManagebacEditCASReflectionScreen,
-    AddCASReflection: ManagebacAddCASReflectionScreen,
-    LabelsFilter: TasksLabelsFilterScreen, // Choose labels for filtering the tasklist
+    AddCASReflection: ManagebacAddCASReflectionScreen
   },
   {
     initialRouteName: 'AppMaterialBottomBar',
