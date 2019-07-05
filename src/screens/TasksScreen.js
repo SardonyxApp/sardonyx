@@ -1,18 +1,19 @@
 import React from 'react';
-import { ScrollView, InteractionManager, RefreshControl } from 'react-native';
+import { View, ScrollView, InteractionManager, RefreshControl } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { colors } from '../styles';
+import { createDrawerNavigator } from 'react-navigation-drawer';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setUserLabels, setLabels } from '../actions';
 
 import io from 'socket.io-client';
-import { Storage } from '../helpers';
 import { BASE_URL } from '../../env';
 
 import HeaderIcon from '../components/HeaderIcon';
-import TasksFilter from '../components/TasksFilter';
 import TasksContainer from '../components/TasksContainer';
+import TasksLabelsFilterSidebar from '../components/TasksLabelsFilterSidebar';
+import { Storage } from '../helpers';
+import { colors } from '../styles';
 
 const socket = io.connect(BASE_URL);
 
@@ -53,21 +54,6 @@ class TasksScreen extends React.Component {
     this._handleDeleteLabel = this._handleDeleteLabel.bind(this);
   }
 
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: 'Tasks',
-      headerRight: (
-        <HeaderIcon onPress={() => navigation.navigate('TasksCreate', navigation.state.params)}>
-          <Icon 
-            name="playlist-add" 
-            type="material" 
-            color="white" 
-          />
-        </HeaderIcon>
-      )
-    };
-  }
-
   // Safely fetch data after initial render 
   async componentDidMount() {
     InteractionManager.runAfterInteractions(async () => {
@@ -102,7 +88,10 @@ class TasksScreen extends React.Component {
           onUpdateLabel: this._handleUpdateLabel,
           onDeleteLabel: this._handleDeleteLabel,
           subjects: this.state.subjects,
-          categories: this.state.categories
+          categories: this.state.categories,
+          subjectsFilter: this.state.subjectsFilter,
+          categoriesFilter: this.state.categoriesFilter,
+          onFilter: this._handleFilter
         })
 
         socket.emit('join room', responses[1].id);
@@ -456,39 +445,32 @@ class TasksScreen extends React.Component {
 
   render() {
     return (
-      <ScrollView
-        style={{ 
+      <View style={{ 
           flex: 1, 
           backgroundColor: colors.lightBackground
-        }}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing || this.state.tasklist.id === null}
-            onRefresh={this._onRefresh}
+        }}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing || this.state.tasklist.id === null}
+              onRefresh={this._onRefresh}
+            />
+          }
+        >
+          <TasksContainer
+            tasks={this.state.tasks}
+            subjects={this.state.subjects}
+            categories={this.state.categories}
+            subjectsFilter={this.state.subjectsFilter}
+            categoriesFilter={this.state.categoriesFilter}
+            displayPastTasks={this.state.displayPastTasks}
+            navigation={this.props.navigation}
+            onLoadAll={this._handleLoadAll}
+            onUpdateTask={this._handleUpdateTask}
+            onDeleteTask={this._handleDeleteTask}
           />
-        }
-      >
-        <TasksFilter 
-          subjects={this.state.subjects}
-          categories={this.state.categories}
-          subjectsFilter={this.state.subjectsFilter}
-          categoriesFilter={this.state.categoriesFilter}
-          onFilter={this._handleFilter}
-          navigation={this.props.navigation}
-        />
-        <TasksContainer
-          tasks={this.state.tasks}
-          subjects={this.state.subjects}
-          categories={this.state.categories}
-          subjectsFilter={this.state.subjectsFilter}
-          categoriesFilter={this.state.categoriesFilter}
-          displayPastTasks={this.state.displayPastTasks}
-          navigation={this.props.navigation}
-          onLoadAll={this._handleLoadAll}
-          onUpdateTask={this._handleUpdateTask}
-          onDeleteTask={this._handleDeleteTask}
-        />
-      </ScrollView>
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -500,7 +482,38 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ setUserLabels, setLabels }, dispatch);
 
-export default connect(
+const connectedTasksScreen = connect(
   mapStateToProps,
   mapDispatchToProps
 )(TasksScreen);
+
+// Export a drawerNavigator instead of screen so that the filter drawer can be initiated.
+export default createDrawerNavigator({
+  _TasksScreen: connectedTasksScreen
+},{
+  drawerPosition: 'right',
+  contentComponent: (props) => (<TasksLabelsFilterSidebar {...props} />),
+  navigationOptions: ({ navigation }) => ({
+    title: 'Tasks',
+    headerRight: (
+      <View style={{ flexDirection: 'row' }}>
+        <HeaderIcon onPress={navigation.toggleDrawer}>
+          <Icon 
+            name="filter-list"
+            type="material"
+            color="white"
+          />
+        </HeaderIcon>
+        <HeaderIcon onPress={() => {
+          console.log(navigation.state);
+          navigation.navigate('AddTask', navigation.state.routes[0].params)}}>
+          <Icon 
+            name="add"
+            type="material" 
+            color="white" 
+          />
+        </HeaderIcon>
+      </View>
+    )
+  })
+});
