@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {
+  Alert,
   View,
   Text,
   Image,
@@ -148,24 +149,22 @@ class LoginForm extends React.Component {
     }
     this.toggleButton();
     if (response.status === 401)
-      this.props.navigation.navigate('Login', {
-        errorMessage: 'Your username and password did not match. Please retry.'
-      });
+      Alert.alert(
+        '',
+        'Your username and password did not match. Please retry.'
+      );
     else if (response.status === 404)
-      this.props.navigation.navigate('Login', {
-        errorMessage: 'Validation failed due to a network error.'
-      });
+      Alert.alert('', 'Validation failed due to a server error.');
     else if (response.status === 503)
-      this.props.navigation.navigate('Login', {
-        errorMessage:
-          'Could not access Sardonyx because Managebac is under maintenance. Please try again later.'
-      });
+      Alert.alert(
+        '',
+        'Sardonyx is unavailable because ManageBac is under maintenance. Please retry later.'
+      );
     else
-      this.props.navigation.navigate('Login', {
-        errorMessage:
-          'Validation failed due to an unknown error. Error code: ' +
-          response.status
-      });
+      Alert.alert(
+        '',
+        'Validation failed due to an unknown error: Code ' + response.status
+      );
   }
 
   render() {
