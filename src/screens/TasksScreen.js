@@ -504,9 +504,7 @@ export default createDrawerNavigator({
             color="white"
           />
         </HeaderIcon>
-        <HeaderIcon onPress={() => {
-          console.log(navigation.state);
-          navigation.navigate('AddTask', navigation.state.routes[0].params)}}>
+        <HeaderIcon onPress={() => navigation.navigate('AddTask', navigation.state.routes[0].params)}>
           <Icon 
             name="add"
             type="material" 
