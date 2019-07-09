@@ -74,12 +74,12 @@ export default class TasksLabelsFilterSidebar extends React.Component {
 
   render() {
     const params = this.props.navigation.state.routes[0].params;
-    let subjects =
-      typeof params === 'object' && 'subjects' in params ? params.subjects : [];
-    let categories =
-      typeof params === 'object' && 'categories' in params
-        ? params.categories
-        : [];
+    let subjects = typeof params === 'object' && 'subjects' in params 
+      ? params.subjects.sort((a, b) => a.name.localeCompare(b.name)) 
+      : [];
+    let categories = typeof params === 'object' && 'categories' in params
+      ? params.categories.sort((a, b) => a.name.localeCompare(b.name))
+      : [];
 
     return (
       <ScrollView>
