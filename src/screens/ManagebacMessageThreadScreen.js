@@ -225,7 +225,6 @@ class ManagebacMessageThreadScreen extends React.Component {
     if (response.status === 200) {
       const parsedManagebacResponse = await response.json();
       // Set the navigation params so further editing works
-      console.log(parsedManagebacResponse.message[0]);
       this.setState(
         {
           messageData: parsedManagebacResponse.message[0]
