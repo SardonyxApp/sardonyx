@@ -2,7 +2,7 @@ import React from 'react';
 
 import { View, Text, StyleSheet } from 'react-native';
 
-import { colors } from '../styles';
+import { colors, fonts } from '../styles';
 
 export default class NearDeadlineWarning extends React.PureComponent {
   constructor(props) {
@@ -67,6 +67,7 @@ const warningStyles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    color: colors.error
+    color: colors.error,
+    ...fonts.jost400
   }
 });
