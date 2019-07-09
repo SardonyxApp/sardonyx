@@ -136,7 +136,7 @@ export default class MessageListView extends React.Component {
             </View>
           ) : this.props.loading ? (
             <View style={messageListStyles.messageContainer}>
-              <Text>{'Loading...'}</Text>
+              <Text style={fonts.jost400}>{'Loading...'}</Text>
             </View>
           ) : (
             <EndOfList />
