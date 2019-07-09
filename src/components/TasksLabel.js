@@ -12,6 +12,7 @@ import { fonts } from '../styles';
  * @param {Object} props.label.id required if updatable or removable
  * @param {Object} props.label.name required
  * @param {Object} props.label.color required
+ * @param {Object} props.radius optional radius (if not supplied, the radius will be 1000)
  * @param {Function} props.onUpdate passed id
  * @param {Function} props.onRemove passed id
  * @param {Boolean} props.updatable if true, onUpdate will be triggered when clicked on the body

@@ -61,23 +61,25 @@ export default class TasksManageLabelsScreen extends React.Component {
   }
 
   render() {
-    const labels = this.state.labels.map(label => {
-      return (
-        <Label 
-          label={label}
-          style={{
-            paddingHorizontal: 12,
-            paddingVertical: 12
-          }}
-          radius={4}
-          updatable={true} 
-          onUpdate={() => this.props.navigation.navigate('UpdateLabel', { onUpdate: this._handleUpdate, label, type: this.props.navigation.getParam('type') })}
-          removable={true}
-          onRemove={this._handleRemove}
-          key={label.name}
-        />
-      );
-    });
+    const labels = this.state.labels
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(label => {
+        return (
+          <Label 
+            label={label}
+            style={{
+              paddingHorizontal: 12,
+              paddingVertical: 12
+            }}
+            radius={4}
+            updatable={true} 
+            onUpdate={() => this.props.navigation.navigate('UpdateLabel', { onUpdate: this._handleUpdate, label, type: this.props.navigation.getParam('type') })}
+            removable={true}
+            onRemove={this._handleRemove}
+            key={label.name}
+          />
+        );
+      });
 
     if (!labels.length) labels.push(<Text key="no labels" style={{ ...fonts.jost400, fontSize: 18 }}>NO LABELS FOUND</Text>)
     
