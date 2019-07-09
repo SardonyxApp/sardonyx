@@ -225,6 +225,7 @@ class ManagebacMessageThreadScreen extends React.Component {
     if (response.status === 200) {
       const parsedManagebacResponse = await response.json();
       // Set the navigation params so further editing works
+      console.log(parsedManagebacResponse.message[0]);
       this.setState(
         {
           messageData: parsedManagebacResponse.message[0]
@@ -309,6 +310,9 @@ class ManagebacMessageThreadScreen extends React.Component {
               <Text>
                 {moment(comment.date).format('dddd, MMM Do YYYY, H:mm')}
               </Text>
+              {comment.onlyVisibleForTeachers && (
+                <Text style={messageThreadStyles.onlyTeacher}>Only Visible For Teachers</Text>
+              )}
             </View>
             {level !== 3 ? (
               <View style={messageThreadStyles.replyButtonContainer}>
@@ -411,6 +415,9 @@ class ManagebacMessageThreadScreen extends React.Component {
                       'dddd, MMM Do YYYY, H:mm'
                     )}
               </Text>
+              {this.state.messageData.onlyVisibleForTeachers && (
+                <Text style={messageThreadStyles.onlyTeacher}>Only Visible For Teachers</Text>
+              )}
             </View>
             <View style={messageThreadStyles.replyButtonContainer}>
               <TouchableRipple
@@ -505,7 +512,8 @@ const messageThreadStyles = StyleSheet.create({
     backgroundColor: colors.lightBackground,
     paddingVertical: 4,
     paddingHorizontal: 16,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   imageContainer: {
     justifyContent: 'center',
@@ -523,7 +531,11 @@ const messageThreadStyles = StyleSheet.create({
   author: {
     fontWeight: 'bold'
   },
+  onlyTeacher: {
+    color: colors.error
+  },
   replyButtonContainer: {
+    height: 38,
     backgroundColor: colors.white,
     ...elevations.four,
     borderRadius: 30,
