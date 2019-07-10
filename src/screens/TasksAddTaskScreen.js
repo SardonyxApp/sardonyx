@@ -1,8 +1,9 @@
 import React from 'react';
-import { ScrollView, Text, TextInput, StyleSheet } from 'react-native';
-import { Button } from 'react-native-elements';
+import { ScrollView, Text, TextInput, StyleSheet, Platform } from 'react-native';
+import { Button, Icon } from 'react-native-elements';
 
 import { fonts, styles, colors } from '../styles';
+import HeaderIcon from '../components/HeaderIcon';
 
 export default class TasksAddTaskScreen extends React.Component {
   constructor(props) {
@@ -11,14 +12,27 @@ export default class TasksAddTaskScreen extends React.Component {
     this.state = {
       focused: true,
       name: ''
-    }
+    };
 
     this._handlePress = this._handlePress.bind(this);
   }
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Create new task'
+      title: 'Create new task',
+      headerRight: (
+        <HeaderIcon
+          onPress={() =>
+            navigation.navigate('TasksManage', navigation.state.params)
+          }
+        >
+          <Icon
+            name={Platform.OS === 'android' ? 'more-vert' : 'more-horiz'}
+            type="material"
+            color="white"
+          />
+        </HeaderIcon>
+      )
     };
   };
 
@@ -31,8 +45,13 @@ export default class TasksAddTaskScreen extends React.Component {
     return (
       <ScrollView style={addStyles.container}>
         <Text style={addStyles.heading}>Please enter the name of the task</Text>
-        <TextInput 
-          style={[addStyles.input, { borderBottomColor: this.state.focused ? colors.blue : colors.gray1 }]}
+        <TextInput
+          style={[
+            addStyles.input,
+            {
+              borderBottomColor: this.state.focused ? colors.blue : colors.gray1
+            }
+          ]}
           maxLength={255}
           multiline={false}
           autoFocus={true}
@@ -43,7 +62,7 @@ export default class TasksAddTaskScreen extends React.Component {
           onSubmitEditing={this._handlePress}
           returnKeyType="go"
         />
-        <Button 
+        <Button
           title="Create task"
           type="solid"
           buttonStyle={{ backgroundColor: colors.primary }}
@@ -73,4 +92,4 @@ const addStyles = StyleSheet.create({
     marginBottom: 8,
     ...styles.padding5
   }
-})
+});
