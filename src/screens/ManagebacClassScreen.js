@@ -7,8 +7,11 @@ import {
   Alert,
   InteractionManager,
   Dimensions,
+  Linking,
   StyleSheet
 } from 'react-native';
+
+import { Icon } from 'react-native-elements';
 
 import { FAB } from 'react-native-paper';
 import { BASE_URL } from '../../env';
@@ -18,6 +21,7 @@ import OverviewHeading from '../components/OverviewHeading';
 import MessageListView from '../components/MessageListView';
 import { Storage } from '../helpers';
 import { colors } from '../styles';
+import HeaderIcon from '../components/HeaderIcon';
 
 export default class ManagebacClassScreen extends React.Component {
   isMounted = false;
@@ -51,7 +55,14 @@ export default class ManagebacClassScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: `${navigation.state.params.title}`
+      title: `${navigation.getParam('title')}`,
+      headerRight: <HeaderIcon onPress={() => Linking.openURL(`https://kokusaiib.managebac.com/student/classes/${navigation.getParam('id')}`)}>
+        <Icon 
+          type="material"
+          name="exit-to-app"
+          color="white"
+        />
+      </HeaderIcon>
     };
   };
 
