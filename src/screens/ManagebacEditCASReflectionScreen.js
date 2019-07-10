@@ -168,6 +168,6 @@ const updateReflectionStyles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     fontSize: 16,
-    backgroundColor: colors.lightPrimary2
+    backgroundColor: colors.white
   }
 });

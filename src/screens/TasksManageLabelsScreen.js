@@ -19,7 +19,7 @@ export default class TasksManageLabelsScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Labels'
+      title: 'Manage Labels'
     };
   };
 
@@ -68,11 +68,10 @@ export default class TasksManageLabelsScreen extends React.Component {
           <Label 
             label={label}
             style={{
-              margin: 4,
               paddingHorizontal: 12,
-              paddingVertical: 12,
-              borderRadius: 4
+              paddingVertical: 12
             }}
+            radius={4}
             updatable={true} 
             onUpdate={() => this.props.navigation.navigate('UpdateLabel', { onUpdate: this._handleUpdate, label, type: this.props.navigation.getParam('type') })}
             removable={true}

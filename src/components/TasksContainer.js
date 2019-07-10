@@ -167,7 +167,7 @@ export default class TasksContainer extends React.PureComponent {
 
 const containerStyles = StyleSheet.create({
   heading: {
-    marginTop: 32,
+    marginTop: 16,
     marginBottom: 0 // override default -16
   },
   subheading: {

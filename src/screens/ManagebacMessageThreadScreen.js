@@ -23,7 +23,7 @@ import { BASE_URL } from '../../env';
 import HeaderIcon from '../components/HeaderIcon';
 import EndOfList from '../components/EndOfList';
 import { Storage } from '../helpers';
-import { colors, elevations } from '../styles';
+import { colors, elevations, fonts } from '../styles';
 
 class ManagebacMessageThreadScreen extends React.Component {
   isMounted = false;
@@ -306,9 +306,12 @@ class ManagebacMessageThreadScreen extends React.Component {
             </View>
             <View style={messageThreadStyles.messageTextInfo}>
               <Text style={messageThreadStyles.author}>{comment.author}</Text>
-              <Text>
+              <Text style={messageThreadStyles.date}>
                 {moment(comment.date).format('dddd, MMM Do YYYY, H:mm')}
               </Text>
+              {comment.onlyVisibleForTeachers && (
+                <Text style={messageThreadStyles.onlyTeacher}>Only Visible For Teachers</Text>
+              )}
             </View>
             {level !== 3 ? (
               <View style={messageThreadStyles.replyButtonContainer}>
@@ -402,7 +405,7 @@ class ManagebacMessageThreadScreen extends React.Component {
                   ? this.state.messageData.author
                   : this.props.navigation.getParam('author')}
               </Text>
-              <Text>
+              <Text style={messageThreadStyles.date}>
                 {'date' in this.state.messageData
                   ? moment(this.state.messageData.date).format(
                       'dddd, MMM Do YYYY, H:mm'
@@ -411,6 +414,9 @@ class ManagebacMessageThreadScreen extends React.Component {
                       'dddd, MMM Do YYYY, H:mm'
                     )}
               </Text>
+              {this.state.messageData.onlyVisibleForTeachers && (
+                <Text style={messageThreadStyles.onlyTeacher}>Only Visible For Teachers</Text>
+              )}
             </View>
             <View style={messageThreadStyles.replyButtonContainer}>
               <TouchableRipple
@@ -499,13 +505,14 @@ const messageThreadStyles = StyleSheet.create({
     fontSize: 18,
     marginVertical: 16,
     paddingHorizontal: 16,
-    fontWeight: 'bold'
+    ...fonts.jost500
   },
   messageInfo: {
     backgroundColor: colors.lightBackground,
     paddingVertical: 4,
     paddingHorizontal: 16,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   imageContainer: {
     justifyContent: 'center',
@@ -521,9 +528,17 @@ const messageThreadStyles = StyleSheet.create({
     flex: 1
   },
   author: {
-    fontWeight: 'bold'
+    ...fonts.jost500
+  },
+  date: {
+    ...fonts.jost300
+  },
+  onlyTeacher: {
+    color: colors.error,
+    ...fonts.jost300
   },
   replyButtonContainer: {
+    height: 38,
     backgroundColor: colors.white,
     ...elevations.four,
     borderRadius: 30,
@@ -539,7 +554,8 @@ const messageThreadStyles = StyleSheet.create({
   },
   replyButtonText: {
     color: colors.darkBlue,
-    fontSize: 14
+    fontSize: 14,
+    ...fonts.jost400
   },
   content: {
     paddingHorizontal: 16,

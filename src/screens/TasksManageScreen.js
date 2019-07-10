@@ -14,7 +14,7 @@ export default class TasksCreateScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Manage tasklist'
+      title: 'Manage TaskList'
     };
   };
   
@@ -44,15 +44,6 @@ export default class TasksCreateScreen extends React.Component {
         >
           CREATE
         </Text>
-
-        <Button 
-          title="Add task"
-          type="solid"
-          buttonStyle={{ backgroundColor: colors.primary }}
-          containerStyle={styles.padding10}
-          titleStyle={fonts.jost300}
-          onPress={() => navigation.navigate('AddTask', { onCreateTask: navigation.state.params.onCreateTask })}
-        />
         <Button 
           title="Add subject label"
           type="solid"

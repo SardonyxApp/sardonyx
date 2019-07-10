@@ -214,7 +214,8 @@ const preset = {
     styles.lightBackground,
     styles.padding20,
     styles.width90Percent,
-    styles.roundCorners
+    styles.roundCorners,
+    elevations.four
   ],
   inputLine: [
     styles.padding10,

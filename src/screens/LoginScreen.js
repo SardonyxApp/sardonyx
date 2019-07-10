@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {
+  Alert,
   View,
   Text,
   Image,
@@ -17,37 +18,55 @@ import { bindActionCreators } from 'redux';
 import { setManagebacOverview } from '../actions';
 import { BASE_URL } from '../../env';
 
+import PreloadImage from '../components/PreloadImage';
 import { Storage } from '../helpers';
 import { styles, colors, preset, fonts } from '../styles';
 
 class Login extends React.Component {
   render() {
     return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.alignChildrenCenter, { flex: 1 }]}>
-          <View style={preset.loginBox}>
-            <Image
-              source={require('../assets/logos/Icon.png')}
-              style={styles.logoIcon}
-            />
-            <Text style={[styles.h1, styles.alignCenter, fonts.jost300]}>
-              Sardonyx
-            </Text>
-            <Text style={[styles.p, styles.alignCenter, fonts.jost400]}>
-              Login with ManageBac
-            </Text>
-            <LoginForm
-              navigation={this.props.navigation}
-              setManagebacOverview={this.props.setManagebacOverview}
-            />
-            <ErrorMessage
-              error={this.props.navigation.getParam('errorMessage', null)}
-            />
+      <View style={{ flex: 1 }}>
+        <PreloadImage
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0
+          }}
+          sourceUri={'https://i.imgur.com/r7I9fFW.jpg'}
+          blurRadius={3}
+          resizeMode={'cover'}
+        />
+        <TouchableWithoutFeedback
+          style={{ flex: 1 }}
+          onPress={Keyboard.dismiss}
+        >
+          <View style={[styles.alignChildrenCenter, { flex: 1 }]}>
+            <View style={preset.loginBox}>
+              <Image
+                source={require('../assets/logos/Icon.png')}
+                style={styles.logoIcon}
+              />
+              <Text style={[styles.h1, styles.alignCenter, fonts.jost300]}>
+                Sardonyx
+              </Text>
+              <Text style={[styles.p, styles.alignCenter, fonts.jost400]}>
+                Login with ManageBac
+              </Text>
+              <LoginForm
+                navigation={this.props.navigation}
+                setManagebacOverview={this.props.setManagebacOverview}
+              />
+              <ErrorMessage
+                error={this.props.navigation.getParam('errorMessage', null)}
+              />
+            </View>
+            <DisclaimerMessage />
+            <KeyboardSpacer topSpacing={-150} />
           </View>
-          <DisclaimerMessage />
-          <KeyboardSpacer topSpacing={-150} />
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </View>
     );
   }
 }
@@ -148,24 +167,22 @@ class LoginForm extends React.Component {
     }
     this.toggleButton();
     if (response.status === 401)
-      this.props.navigation.navigate('Login', {
-        errorMessage: 'Your username and password did not match. Please retry.'
-      });
+      Alert.alert(
+        '',
+        'Your username and password did not match. Please retry.'
+      );
     else if (response.status === 404)
-      this.props.navigation.navigate('Login', {
-        errorMessage: 'Validation failed due to a network error.'
-      });
+      Alert.alert('', 'Validation failed due to a server error.');
     else if (response.status === 503)
-      this.props.navigation.navigate('Login', {
-        errorMessage:
-          'Could not access Sardonyx because Managebac is under maintenance. Please try again later.'
-      });
+      Alert.alert(
+        '',
+        'Sardonyx is unavailable because ManageBac is under maintenance. Please retry later.'
+      );
     else
-      this.props.navigation.navigate('Login', {
-        errorMessage:
-          'Validation failed due to an unknown error. Error code: ' +
-          response.status
-      });
+      Alert.alert(
+        '',
+        'Validation failed due to an unknown error: Code ' + response.status
+      );
   }
 
   render() {

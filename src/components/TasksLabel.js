@@ -7,49 +7,58 @@ import { TouchableRipple } from 'react-native-paper';
 import { fonts } from '../styles';
 
 /**
- * @param {Object} props 
- * @param {Object} props.label 
+ * @param {Object} props
+ * @param {Object} props.label
  * @param {Object} props.label.id required if updatable or removable
- * @param {Object} props.label.name required 
+ * @param {Object} props.label.name required
  * @param {Object} props.label.color required
- * @param {Function} props.onUpdate passed id 
- * @param {Function} props.onRemove passed id 
- * @param {Boolean} props.updatable if true, onUpdate will be triggered when clicked on the body 
- * @param {Bololean} props.removable if true, onRemove will be triggered when clicked on RemoveIcon
+ * @param {Object} props.radius optional radius (if not supplied, the radius will be 1000)
+ * @param {Function} props.onUpdate passed id
+ * @param {Function} props.onRemove passed id
+ * @param {Boolean} props.updatable if true, onUpdate will be triggered when clicked on the body
+ * @param {Boolean} props.removable if true, onRemove will be triggered when clicked on RemoveIcon
  * @param {Styles} props.style
  */
 export default class TasksLabel extends React.PureComponent {
   render() {
     return (
-      <TouchableRipple
-        onPress={this.props.updatable ? this.props.onUpdate : null}
-      >
-        <View 
-          className="label"
-          color="white"
-          style={[labelStyles.label, this.props.style, { backgroundColor: this.props.label.color }]} 
+      <View style={labelStyles.container}>
+        <View
+          style={{
+            backgroundColor: this.props.label.color,
+            borderRadius: this.props.radius || 1000
+          }}
         >
-          <Text style={labelStyles.labelName}>{this.props.label.name}</Text>
-          {this.props.removable 
-          ? <Icon 
-              size={14}
-              color="white"
-              name="close"
-              type="material"
-              containerStyle={labelStyles.icon}
-              onPress={() => this.props.onRemove(this.props.label.id)}
-            />
-          : null}
+          <TouchableRipple
+            onPress={this.props.updatable ? this.props.onUpdate : null}
+          >
+            <View style={[labelStyles.label, this.props.style]}>
+              <Text style={labelStyles.labelName}>{this.props.label.name}</Text>
+              {this.props.removable ? (
+                <Icon
+                  size={20}
+                  color="white"
+                  name="close"
+                  type="material"
+                  containerStyle={labelStyles.icon}
+                  onPress={() => this.props.onRemove(this.props.label.id)}
+                />
+              ) : null}
+            </View>
+          </TouchableRipple>
         </View>
-      </TouchableRipple>
+      </View>
     );
   }
 }
 
 const labelStyles = StyleSheet.create({
-  label: {
+  container: {
     marginHorizontal: 2,
-    borderRadius: 1000, // Really large to always make the border circular
+    marginVertical: 2
+  },
+  label: {
+    flex: 1,
     paddingHorizontal: 12,
     paddingVertical: 4,
     flexDirection: 'row',
@@ -59,6 +68,7 @@ const labelStyles = StyleSheet.create({
     ...fonts.jost300,
     fontSize: 16,
     color: '#fff',
+    flex: 1
   },
   icon: {
     marginLeft: 4
