@@ -255,7 +255,8 @@ const alertsStyles = StyleSheet.create({
   },
   dateText: {
     color: colors.gray2,
-    fontSize: 12
+    fontSize: 12,
+    ...fonts.jost300
   },
   lottieContainer: {
     paddingTop: 16,
