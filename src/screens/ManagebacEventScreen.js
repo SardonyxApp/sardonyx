@@ -207,14 +207,16 @@ const eventStyles = StyleSheet.create({
     justifyContent: 'center'
   },
   titleText: {
-    fontSize: 18
+    fontSize: 18,
+    ...fonts.jost400
   },
   timeAndLabels: {
     flexDirection: 'row'
   },
   dueTime: {
     paddingVertical: 2,
-    marginRight: 8
+    marginRight: 8,
+    ...fonts.jost300
   },
   labelContainer: {
     flex: 1,
