@@ -14,7 +14,7 @@ import { BASE_URL } from '../../env';
 import HTMLView from 'react-native-htmlview';
 
 import { Storage } from '../helpers';
-import { colors, elevations } from '../styles';
+import { colors, elevations, fonts } from '../styles';
 
 export default class ManagebacAlertScreen extends React.Component {
   isMounted = false;
@@ -100,18 +100,18 @@ export default class ManagebacAlertScreen extends React.Component {
         }
       >
         <View style={alertStyles.infoText}>
-          <Text>
+          <Text style={fonts.jost400}>
             From:{' '}
-            <Text style={alertStyles.bold}>
+            <Text style={fonts.jost500}>
               {'author' in this.state.notificationData
                 ? this.state.notificationData.author
                 : ''}
             </Text>
           </Text>
 
-          <Text>
+          <Text style={fonts.jost400}>
             Sent on:{' '}
-            <Text style={alertStyles.bold}>
+            <Text style={fonts.jost500}>
               {'date' in this.state.notificationData
                 ? moment(this.state.notificationData.date).format(
                     'dddd, MMM Do YYYY, H:mm'
