@@ -35,14 +35,15 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
     return {
       title: 'Edit Reflection',
       headerLeft: (
-        <HeaderIcon
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          {/**TODO: Check if using a custom Icon component here affects iOS rendering */}
-          <Icon name="clear" color={colors.white} />
-        </HeaderIcon>
+        <View style={{ height: 56, width: 56, alignItems: 'center' }}>
+          <HeaderIcon
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Icon name="clear" color={colors.white} />
+          </HeaderIcon>
+        </View>
       ),
       headerRight: (
         <HeaderIcon onPress={navigation.state.params.updateReflection}>

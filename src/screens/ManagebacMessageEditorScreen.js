@@ -49,16 +49,18 @@ export default class ManagebacMessageEditorScreen extends React.Component {
         ? 'Edit Message'
         : 'Compose New Message',
       headerLeft: (
-        <HeaderIcon
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <Icon name="clear" color={colors.white} />
-        </HeaderIcon>
+        <View style={{ height: 56, width: 56, alignItems: 'center' }}>
+          <HeaderIcon
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Icon name="clear" color={colors.white} />
+          </HeaderIcon>
+        </View>
       ),
       headerRight: (
-        <View style={{ height: 56, width: 56 }}>
+        <View style={{ height: 56, width: 42 }}>
           <Animated.View
             style={{
               position: 'absolute',
