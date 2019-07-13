@@ -153,7 +153,11 @@ class SettingsScreen extends React.Component {
   _renderCheckboxRow(item) {
     const reduxValue = this._objectKeyByString(this.props.settings, item.redux);
     return (
-      <TouchableRipple onPress={item.onPress}>
+      <TouchableRipple
+        onPress={() => {
+          this.props.setSettings(item.redux, !reduxValue);
+        }}
+      >
         <View style={[settingsStyles.item, settingsStyles.checkboxItem]}>
           <View style={settingsStyles.nonCheckboxContainer}>
             <Text style={settingsStyles.title}>{item.title}</Text>
