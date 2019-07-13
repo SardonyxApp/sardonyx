@@ -15,45 +15,8 @@ export default class RoundIconCarousel extends React.PureComponent {
     this._renderItem = this._renderItem.bind(this);
   }
 
-  _navigateToScreen(item) {
-    const screenName =
-      this.props.type.charAt(0).toUpperCase() +
-      this.props.type.slice(1) +
-      'Item';
-    this.props.navigation.navigate(screenName, {
-      ...item,
-      title: decodeURI(item.title)
-    });
-  }
-
-  _renderItem({ item, index }) {
-    return (
-      <View style={classesCarouselStyles.wrapper}>
-        <View
-          style={[
-            classesCarouselStyles.containerWrapper,
-            this.props.color && {
-              backgroundColor: this.props.color
-            }
-          ]}
-        >
-          <TouchableRipple
-            onPress={() => this._navigateToScreen(item)}
-            rippleColor="rgba(0, 0, 0, .16)"
-          >
-            <View style={classesCarouselStyles.container}>
-              <Icon
-                name={this.props.type === 'class' ? 'library-books' : 'people'}
-                color={colors.white}
-              />
-            </View>
-          </TouchableRipple>
-        </View>
-        <Text numberOfLines={1} style={classesCarouselStyles.text}>
-          {decodeURI(item.title)}
-        </Text>
-      </View>
-    );
+  _renderItem({ item }) {
+    return <RoundIcon {...this.props} data={item} />;
   }
 
   render() {
@@ -75,6 +38,55 @@ export default class RoundIconCarousel extends React.PureComponent {
             width: 100 * this.props.list.length
           }}
         />
+      </View>
+    );
+  }
+}
+
+class RoundIcon extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this._navigateToItemScreen = this._navigateToItemScreen.bind(this);
+  }
+
+  _navigateToItemScreen() {
+    const screenName =
+      this.props.type.charAt(0).toUpperCase() +
+      this.props.type.slice(1) +
+      'Item';
+    this.props.navigation.navigate(screenName, {
+      ...this.props.data,
+      title: decodeURI(this.props.data.title)
+    });
+  }
+
+  render() {
+    return (
+      <View style={classesCarouselStyles.wrapper}>
+        <View
+          style={[
+            classesCarouselStyles.containerWrapper,
+            this.props.color && {
+              backgroundColor: this.props.color
+            }
+          ]}
+        >
+          <TouchableRipple
+            onPress={this._navigateToItemScreen}
+            rippleColor="rgba(0, 0, 0, .16)"
+          >
+            <View style={classesCarouselStyles.container}>
+              <Icon
+                name={this.props.type === 'class' ? 'library-books' : 'people'}
+                color={colors.white}
+              />
+            </View>
+          </TouchableRipple>
+        </View>
+        <Text numberOfLines={1} style={classesCarouselStyles.text}>
+          {decodeURI(this.props.data.title)}
+        </Text>
       </View>
     );
   }
