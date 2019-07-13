@@ -153,33 +153,35 @@ class SettingsScreen extends React.Component {
   _renderCheckboxRow(item) {
     const reduxValue = this._objectKeyByString(this.props.settings, item.redux);
     return (
-      <View style={[settingsStyles.item, settingsStyles.checkboxItem]}>
-        <View style={settingsStyles.nonCheckboxContainer}>
-          <Text style={settingsStyles.title}>{item.title}</Text>
-          {item.description ? (
-            <Text style={settingsStyles.description}>{item.description}</Text>
-          ) : null}
+      <TouchableRipple onPress={item.onPress}>
+        <View style={[settingsStyles.item, settingsStyles.checkboxItem]}>
+          <View style={settingsStyles.nonCheckboxContainer}>
+            <Text style={settingsStyles.title}>{item.title}</Text>
+            {item.description ? (
+              <Text style={settingsStyles.description}>{item.description}</Text>
+            ) : null}
+          </View>
+          <View style={settingsStyles.checkboxContainer}>
+            <Switch
+              color={colors.primary}
+              value={reduxValue}
+              onValueChange={() => {
+                this.props.setSettings(item.redux, !reduxValue);
+              }}
+            />
+          </View>
         </View>
-        <View style={settingsStyles.checkboxContainer}>
-          <Switch
-            color={colors.primary}
-            value={reduxValue}
-            onValueChange={() => {
-              this.props.setSettings(item.redux, !reduxValue);
-            }}
-          />
-        </View>
-      </View>
+      </TouchableRipple>
     );
   }
 
   _renderRow({ item }) {
     return (
       <View style={settingsStyles.itemContainer}>
-        <TouchableRipple onPress={item.onPress}>
-          {item.type === 'checkbox' ? (
-            this._renderCheckboxRow(item)
-          ) : (
+        {item.type === 'checkbox' ? (
+          this._renderCheckboxRow(item)
+        ) : (
+          <TouchableRipple onPress={item.onPress}>
             <View style={settingsStyles.item}>
               <Text style={settingsStyles.title}>{item.title}</Text>
               {item.description ? (
@@ -188,8 +190,8 @@ class SettingsScreen extends React.Component {
                 </Text>
               ) : null}
             </View>
-          )}
-        </TouchableRipple>
+          </TouchableRipple>
+        )}
       </View>
     );
   }
