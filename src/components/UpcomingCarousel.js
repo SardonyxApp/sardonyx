@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import { View, Text, Dimensions, StyleSheet, Animated } from 'react-native';
 
 import Carousel from 'react-native-snap-carousel';
-import { TouchableRipple } from 'react-native-paper';
 
 import CalendarDate from '../components/CalendarDate';
 import { colors, fonts, elevations } from '../styles';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export default class UpcomingCarousel extends React.Component {
   constructor(props) {
@@ -65,9 +65,11 @@ export default class UpcomingCarousel extends React.Component {
         : this.props.upcomingEvents;
     completedEvents.map(item => {
       item.upcoming = false;
+      item.scale = new Animated.Value(1);
     });
     upcomingEvents.map(item => {
       item.upcoming = true;
+      item.scale = new Animated.Value(1);
     });
 
     return [
@@ -75,6 +77,22 @@ export default class UpcomingCarousel extends React.Component {
       completedLength,
       upcomingLength
     ];
+  }
+
+  _onPressIn(item) {
+    Animated.timing(item.scale, {
+      toValue: 0.95,
+      duration: 100,
+      useNativeDriver: true
+    }).start();
+  }
+
+  _onPressOut(item) {
+    Animated.timing(item.scale, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: true
+    }).start();
   }
 
   /**
@@ -142,17 +160,25 @@ export default class UpcomingCarousel extends React.Component {
     if (item.nothingToDo) return this._renderNothingToDo();
     return (
       <View style={upcomingCarouselStyles.wrapper}>
-        <View
+        <Animated.View
           style={[
             upcomingCarouselStyles.containerWrapper,
             !item.upcoming && {
               backgroundColor: colors.lightError2
+            },
+            {
+              transform: [
+                {
+                  scale: item.scale
+                }
+              ]
             }
           ]}
         >
-          <TouchableRipple
+          <TouchableWithoutFeedback
             onPress={() => this._navigateToUpcomingEventScreen(item)}
-            rippleColor="rgba(0, 0, 0, .16)"
+            onPressIn={() => this._onPressIn(item)}
+            onPressOut={() => this._onPressOut(item)}
           >
             <View style={upcomingCarouselStyles.container}>
               <CalendarDate
@@ -180,8 +206,8 @@ export default class UpcomingCarousel extends React.Component {
                 </Text>
               </View>
             </View>
-          </TouchableRipple>
-        </View>
+          </TouchableWithoutFeedback>
+        </Animated.View>
       </View>
     );
   }
@@ -206,7 +232,7 @@ export default class UpcomingCarousel extends React.Component {
         () => {
           setTimeout(() => {
             this._carousel.snapToItem(completedLength);
-          }, 50); 
+          }, 50);
         }
       );
     }
