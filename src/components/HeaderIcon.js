@@ -13,47 +13,51 @@ export default class HeaderIcon extends React.PureComponent {
   }
 
   render() {
-    if (Platform.OS === "ios") {
+    if (Platform.OS === 'ios') {
       return (
-        <TouchableOpacity 
-          onPress={this.props.onPress}
+        <View
           style={{
             padding: 12
           }}
         >
-          {this.props.children}
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this.props.onPress}
+            style={{
+              flex: 1
+            }}
+          >
+            {this.props.children}
+          </TouchableOpacity>
+        </View>
       );
     } else {
       return (
         <View
           style={{
             height: 56,
-            width: 56,
+            width: 42,
             flex: 1,
-            alignItems: "center",
-            flexDirection: "row",
-            justifyContent: "center"
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'center'
           }}
         >
           <View
             style={{
               height: 32,
               width: 32,
-              justifyContent: "center"
+              justifyContent: 'center'
             }}
           >
             <TouchableNativeFeedback
               delayPressIn={0}
               onPress={this.props.onPress}
               background={TouchableNativeFeedback.Ripple(
-                "rgba(0, 0, 0, 0.32)",
+                'rgba(0, 0, 0, 0.32)',
                 true
               )}
             >
-              <View>
-                {this.props.children}
-              </View>
+              <View>{this.props.children}</View>
             </TouchableNativeFeedback>
           </View>
         </View>
