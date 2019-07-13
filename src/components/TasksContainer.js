@@ -116,6 +116,7 @@ export default class TasksContainer extends React.PureComponent {
               <CalendarDate type="mini" date={due} bgColor={colors.primary} color={colors.primary}/>
             </View>
             <TouchableOpacity
+              activeOpacity={0.5}
               style={containerStyles.touchableOpacity}
               onPress={() => this.props.navigation.navigate('TaskInfo', { ...this.props, currentTask: t.id })}
             >
