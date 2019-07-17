@@ -2,9 +2,10 @@ import React from 'react';
 import { View, ScrollView, InteractionManager, RefreshControl } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { createDrawerNavigator } from 'react-navigation-drawer';
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setUserLabels, setLabels } from '../actions';
+import { setUserLabels, setLabels, addLabel, updateLabel, deleteLabel } from '../actions';
 
 import io from 'socket.io-client';
 import { BASE_URL } from '../../env';
@@ -35,8 +36,6 @@ class TasksScreen extends React.Component {
         description: ''
       },
       tasks: [],
-      subjects: [],
-      categories: [],
       subjectsFilter: [],
       categoriesFilter: [],
       refreshing: false,
@@ -73,8 +72,6 @@ class TasksScreen extends React.Component {
           user: responses[0],
           tasklist: responses[1],
           tasks: responses[2],
-          subjects: responses[3],
-          categories: responses[4],
           subjectsFilter: responses[0].subjects,
           categoriesFilter: responses[0].categories,
         });
@@ -87,10 +84,8 @@ class TasksScreen extends React.Component {
           onCreateLabel: this._handleCreateLabel,
           onUpdateLabel: this._handleUpdateLabel,
           onDeleteLabel: this._handleDeleteLabel,
-          subjects: this.state.subjects,
-          categories: this.state.categories,
-          subjectsFilter: this.state.subjectsFilter,
-          categoriesFilter: this.state.categoriesFilter,
+          subjectsFilter: responses[0].subjects,
+          categoriesFilter: responses[0].categories,
           onFilter: this._handleFilter
         })
 
@@ -114,15 +109,10 @@ class TasksScreen extends React.Component {
         fetch(`${BASE_URL}/app/${type}?tasklist=${this.state.tasklist.id}`, { headers: sardonyxToken })
         .then(response => response.json())
         .then(response => {
-          this.setState(() => {
-            const payload = {};
-            payload[type] = response;
-            return payload;
-          });
-
-          this.props.navigation.setParams({
-            [type]: response
-          });
+          this.props.setLabels(
+            type === 'subjects' ? response : this.props.subjects,
+            type === 'categories' ? repsonse : this.props.categories
+          );
         });
       });
     });
@@ -144,14 +134,12 @@ class TasksScreen extends React.Component {
         .then(responses => {
           this.setState({
             tasks: responses[0],
-            subjects: responses[1],
-            categories: responses[2],
             refreshing: false
           });
 
+          this.props.setLabels(responses[1], responses[2]);
+
           this.props.navigation.setParams({
-            subjects: responses[1],
-            categories: responses[2],
             subjectsFilter: this.state.subjectsFilter,
             categoriesFilter: this.state.categoriesFilter
           });
@@ -249,9 +237,7 @@ class TasksScreen extends React.Component {
 
       this.props.navigation.popToTop();
       this.props.navigation.push('TaskInfo', {
-        tasks: this.state.tasks, 
-        subjects: this.state.subjects, 
-        categories: this.state.categories, 
+        tasks: this.state.tasks,
         currentTask: response.insertId,
         onUpdateTask: this._handleUpdateTask,
         onDeleteTask: this._handleDeleteTask
@@ -344,20 +330,7 @@ class TasksScreen extends React.Component {
     })
     .then(response => response.json())
     .then(response => {
-      this.setState(prevState => {
-        const payload = {};
-        payload[type] = prevState[type].concat(Object.assign({
-          id: response.insertId          
-        }, obj));
-        return payload;
-      });
-
-      this.props.setLabels(this.state.subjects, this.state.categories);
-
-      this.props.navigation.setParams({
-        subjects: this.state.subjects,
-        categories: this.state.categories
-      });
+      this.props.addLabel(type, { ...obj, id: response.insertId });
 
       this.props.navigation.popToTop();
 
@@ -388,18 +361,7 @@ class TasksScreen extends React.Component {
         'Sardonyx-Token': token
       }
     }).then(() => {
-      this.setState(prevState => {
-        const payload = {};
-        payload[type] = prevState[type].map(l => l.id === obj.id ? {...l, ...obj} : l);
-        return payload;
-      });
-
-      this.props.setLabels(this.state.subjects, this.state.categories);
-
-      this.props.navigation.setParams({
-        subjects: this.state.subjects,
-        categories: this.state.categories
-      });
+      this.props.updateLabel(type, obj.id, obj);
 
       this.props.navigation.pop();
 
@@ -423,18 +385,7 @@ class TasksScreen extends React.Component {
         'Sardonyx-Token': token 
       }
     }).then(() => {
-      this.setState(prevState => {
-        const payload = {};
-        payload[type] = prevState[type].filter(l => l.id !== id)
-        return payload;
-      });
-
-      this.props.setLabels(this.state.subjects, this.state.categories);
-
-      this.props.navigation.setParams({
-        subjects: this.state.subjects,
-        categories: this.state.categories
-      });
+      this.props.deleteLabel(type, id);
 
       socket.emit('labels', type, this.state.tasklist.id);
     }).catch(err => {
@@ -461,8 +412,8 @@ class TasksScreen extends React.Component {
         >
           <TasksContainer
             tasks={this.state.tasks}
-            subjects={this.state.subjects}
-            categories={this.state.categories}
+            subjects={this.props.subjects}
+            categories={this.props.categories}
             subjectsFilter={this.state.subjectsFilter}
             categoriesFilter={this.state.categoriesFilter}
             displayPastTasks={this.state.displayPastTasks}
@@ -482,7 +433,7 @@ const mapStateToProps = state => {
   return { userLabels };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ setUserLabels, setLabels }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ setUserLabels, setLabels, addLabel, updateLabel, deleteLabel }, dispatch);
 
 const connectedTasksScreen = connect(
   mapStateToProps,

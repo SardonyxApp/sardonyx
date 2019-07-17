@@ -33,8 +33,6 @@ export default class TasksInfoScreen extends React.Component {
           <TaskLabels 
             task={task}
             navigation={this.props.navigation}
-            subjects={this.props.navigation.getParam('subjects')}
-            categories={this.props.navigation.getParam('categories')}
             onUpdateTask={this.props.navigation.state.params.onUpdateTask}
           />
           <TaskDescription

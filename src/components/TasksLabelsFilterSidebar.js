@@ -1,12 +1,14 @@
 import React from 'react';
-import { ScrollView, Text, FlatList } from 'react-native';
+import { ScrollView, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 
-import Label from './TasksSelectableLabel';
-import { colors } from '../styles';
-import OverviewHeading from './OverviewHeading';
+import { connect } from 'react-redux';
 
-export default class TasksLabelsFilterSidebar extends React.Component {
+import Label from './TasksSelectableLabel';
+import OverviewHeading from './OverviewHeading';
+import { colors } from '../styles';
+
+class TasksLabelsFilterSidebar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -70,14 +72,9 @@ export default class TasksLabelsFilterSidebar extends React.Component {
   }
 
   render() {
-    const params = this.props.navigation.state.routes[0].params;
-    let subjects = typeof params === 'object' && 'subjects' in params 
-      ? params.subjects.sort((a, b) => a.name.localeCompare(b.name)) 
-      : [];
-    let categories = typeof params === 'object' && 'categories' in params
-      ? params.categories.sort((a, b) => a.name.localeCompare(b.name))
-      : [];
-
+    const subjects = this.props.subjects.sort((a, b) => a.name.localeCompare(b.name));
+    const categories = this.props.categories.sort((a, b) => a.name.localeCompare(b.name));
+    
     return (
       <ScrollView>
         <SafeAreaView
@@ -107,3 +104,11 @@ export default class TasksLabelsFilterSidebar extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const subjects = state.labels.subjects;
+  const categories = state.labels.categories;
+  return { subjects, categories };
+};
+
+export default connect(mapStateToProps)(TasksLabelsFilterSidebar);
