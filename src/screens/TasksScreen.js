@@ -151,7 +151,9 @@ class TasksScreen extends React.Component {
 
           this.props.navigation.setParams({
             subjects: responses[1],
-            categories: responses[2]
+            categories: responses[2],
+            subjectsFilter: this.state.subjectsFilter,
+            categoriesFilter: this.state.categoriesFilter
           });
         })
         .catch(err => {

@@ -15,12 +15,6 @@ export const setUserLabels = (subjects, categories) => ({
   categories
 });
 
-export const setLabels = (subjects, categories) => ({
-  type: 'SET_LABELS',
-  subjects,
-  categories
-});
-
 export const addUserLabels = (labelType, id) => ({
   type: 'ADD_USER_LABELS',
   labelType,
@@ -31,4 +25,10 @@ export const deleteUserLabels = (labelType, id) => ({
   type: 'DELETE_USER_LABELS',
   labelType,
   id
+});
+
+export const setLabels = (subjects, categories) => ({
+  type: 'SET_LABELS',
+  subjects,
+  categories
 });
