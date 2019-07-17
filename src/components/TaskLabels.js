@@ -1,13 +1,16 @@
 import React from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
+
+import { connect } from 'react-redux';
+
 import { fonts, styles } from '../styles';
 import TasksLabel from './TasksLabel';
 
 // TaskLabels (this) -> display labels for each task
 // TasksLabel -> updatable/removable label
 // TasksSelectableLabel -> checkable label
-export default class TaskLabels extends React.Component {
+class TaskLabels extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -63,7 +66,7 @@ export default class TaskLabels extends React.Component {
             color: this.state.subject_color
           }}
           key="subject"
-          onUpdate={() => this.props.navigation.navigate('LabelsSelector', { ...this.props, ...this.state, onChange: this._handleChange })}
+          onUpdate={() => this.props.navigation.navigate('LabelsSelector', { ...this.state, onChange: this._handleChange })}
           updatable={true}
         />
       );
@@ -77,7 +80,7 @@ export default class TaskLabels extends React.Component {
             color: this.state.category_color
           }}
           key="category"
-          onUpdate={() => this.props.navigation.navigate('LabelsSelector', { ...this.props, ...this.state, onChange: this._handleChange })}
+          onUpdate={() => this.props.navigation.navigate('LabelsSelector', { ...this.state, onChange: this._handleChange })}
           updatable={true}
         />
       );
@@ -107,6 +110,14 @@ export default class TaskLabels extends React.Component {
 
   }
 }
+
+const mapStateToProps = state => {
+  const subjects = state.labels.subjects;
+  const categories = state.labels.categories;
+  return { subjects, categories };
+};
+
+export default connect(mapStateToProps)(TaskLabels);
 
 const labelsStyles = StyleSheet.create({
   labelsContainer: {

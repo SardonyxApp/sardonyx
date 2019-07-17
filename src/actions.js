@@ -32,3 +32,22 @@ export const setLabels = (subjects, categories) => ({
   subjects,
   categories
 });
+
+export const addLabel = (labelType, obj) => ({
+  type: 'ADD_LABEL',
+  labelType,
+  obj
+});
+
+export const updateLabel = (labelType, id, obj) => ({
+  type: 'UPDATE_LABEL',
+  labelType,
+  id,
+  obj
+});
+
+export const deleteLabel = (labelType, id) => ({
+  type: 'DELETE_LABEL',
+  labelType,
+  id
+});

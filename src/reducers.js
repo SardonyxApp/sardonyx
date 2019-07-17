@@ -81,6 +81,21 @@ const labelsReducer = (state = LABELS_INITIAL_STATE, action) => {
         categories: action.categories,
         loaded: true
       };
+    case 'ADD_LABEL': 
+      return {
+        ...state,
+        [action.labelType]: state[action.labelType].concat(action.obj)
+      };
+    case 'UPDATE_LABEL': 
+      return {
+        ...state,
+        [action.labelType]: state[action.labelType].map(l => l.id === action.id ? action.obj : l)
+      };
+    case 'DELETE_LABEL': 
+      return {
+        ...state,
+        [action.labelType]: state[action.labelType].filter(l => l.id !== action.id)
+      };
     default: 
       return state;
   }

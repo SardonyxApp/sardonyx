@@ -1,17 +1,14 @@
 import React from 'react';
 import { ScrollView, Text, Alert } from 'react-native';
 
-import { fonts, colors } from '../styles';
+import { connect } from 'react-redux';
 
+import { fonts, colors } from '../styles';
 import Label from '../components/TasksLabel';
 
-export default class TasksManageLabelsScreen extends React.Component {
+class TasksManageLabelsScreen extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      labels: []
-    }
 
     this._handleUpdate = this._handleUpdate.bind(this);
     this._handleRemove = this._handleRemove.bind(this);
@@ -23,18 +20,7 @@ export default class TasksManageLabelsScreen extends React.Component {
     };
   };
 
-  componentDidMount() {
-    this.setState({
-      labels: this.props.navigation.getParam('labels')
-    })
-  }
-
   _handleUpdate(type, obj) {
-    this.setState(prevState => {
-      prevState.labels = prevState.labels.map(l => l.id === obj.id ? {...l, ...obj} : l);
-      return prevState;
-    });
-
     this.props.navigation.state.params.onUpdate(type, obj);
   }
 
@@ -49,10 +35,6 @@ export default class TasksManageLabelsScreen extends React.Component {
         {
           text: 'OK',
           onPress: () => {
-            this.setState(prevState => {
-              prevState.labels = prevState.labels.filter(l => l.id !== id);
-              return prevState;
-            });
             this.props.navigation.state.params.onDelete(this.props.navigation.getParam('type'), id);
           }
         }
@@ -61,7 +43,7 @@ export default class TasksManageLabelsScreen extends React.Component {
   }
 
   render() {
-    const labels = this.state.labels
+    const labels = this.props[this.props.navigation.getParam('type')]
       .sort((a, b) => a.name.localeCompare(b.name))
       .map(label => {
         return (
@@ -90,3 +72,12 @@ export default class TasksManageLabelsScreen extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const subjects = state.labels.subjects;
+  const categories = state.labels.categories;
+  // Include both in props because navigation parameters are not accessible outside of the class 
+  return { subjects, categories };
+};
+
+export default connect(mapStateToProps)(TasksManageLabelsScreen);
