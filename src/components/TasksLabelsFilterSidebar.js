@@ -25,12 +25,9 @@ export default class TasksLabelsFilterSidebar extends React.Component {
       this.props.navigation.state.routes[0].params
     ) {
       const newParams = this.props.navigation.state.routes[0].params;
-      if (typeof newParams !== 'object') return;
       this.setState({
-        subjectsFilter:
-          'subjectsFilter' in newParams ? newParams.subjectsFilter : [],
-        categoriesFilter:
-          'categoriesFilter' in newParams ? newParams.categoriesFilter : []
+        subjectsFilter: newParams.subjectsFilter,
+        categoriesFilter: newParams.categoriesFilter
       });
     }
   }
