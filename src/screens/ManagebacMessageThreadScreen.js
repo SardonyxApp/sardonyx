@@ -136,17 +136,15 @@ class ManagebacMessageThreadScreen extends React.Component {
       async () => {
         let url = this.props.navigation.getParam('link', '/404');
         const credentials = await Storage.retrieveCredentials();
-        await fetch(
-          BASE_URL + url, {
-            method: 'DELETE',
-            headers: {
-              'Login-Token': credentials
-            },
-            mode: 'no-cors'
-          }
-        );
+        await fetch(BASE_URL + url, {
+          method: 'DELETE',
+          headers: {
+            'Login-Token': credentials
+          },
+          mode: 'no-cors'
+        });
         if (!this._isMounted) return;
-        if(this.props.navigation.getParam('onGoBack', null) !== null) {
+        if (this.props.navigation.getParam('onGoBack', null) !== null) {
           this.props.navigation.state.params.onGoBack();
         }
         this.props.navigation.goBack();
@@ -289,7 +287,9 @@ class ManagebacMessageThreadScreen extends React.Component {
    */
   _renderComment(comment, level = 2) {
     return (
-      <View key={comment.id}>
+      <View
+        key={comment.id}
+      >
         <View style={messageThreadStyles['level' + level]}>
           <View style={messageThreadStyles.messageInfo}>
             <View style={messageThreadStyles.imageContainer}>
@@ -310,7 +310,9 @@ class ManagebacMessageThreadScreen extends React.Component {
                 {moment(comment.date).format('dddd, MMM Do YYYY, H:mm')}
               </Text>
               {comment.onlyVisibleForTeachers && (
-                <Text style={messageThreadStyles.onlyTeacher}>Only Visible For Teachers</Text>
+                <Text style={messageThreadStyles.onlyTeacher}>
+                  Only Visible For Teachers
+                </Text>
               )}
             </View>
             {level !== 3 ? (
@@ -342,6 +344,7 @@ class ManagebacMessageThreadScreen extends React.Component {
                 onChangeText={newCommentContent => {
                   this.setState({ newCommentContent });
                 }}
+                multiline={true}
               />
               <View style={messageThreadStyles.replySendButtonContainer}>
                 <TouchableRipple
@@ -415,7 +418,9 @@ class ManagebacMessageThreadScreen extends React.Component {
                     )}
               </Text>
               {this.state.messageData.onlyVisibleForTeachers && (
-                <Text style={messageThreadStyles.onlyTeacher}>Only Visible For Teachers</Text>
+                <Text style={messageThreadStyles.onlyTeacher}>
+                  Only Visible For Teachers
+                </Text>
               )}
             </View>
             <View style={messageThreadStyles.replyButtonContainer}>
@@ -447,6 +452,7 @@ class ManagebacMessageThreadScreen extends React.Component {
                 onChangeText={newCommentContent => {
                   this.setState({ newCommentContent });
                 }}
+                multiline={true}
               />
               <View style={messageThreadStyles.replySendButtonContainer}>
                 <TouchableRipple
