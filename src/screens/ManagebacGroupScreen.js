@@ -56,13 +56,19 @@ export default class ManagebacGroupScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: `${navigation.state.params.title}`,
-      headerRight: <HeaderIcon onPress={() => Linking.openURL(`https://kokusaiib.managebac.com/student/groups/${navigation.getParam('id')}`)}>
-        <Icon 
-          type="material"
-          name="exit-to-app"
-          color="white"
-        />
-      </HeaderIcon>
+      headerRight: (
+        <HeaderIcon
+          onPress={() =>
+            Linking.openURL(
+              `https://kokusaiib.managebac.com/student/groups/${navigation.getParam(
+                'id'
+              )}`
+            )
+          }
+        >
+          <Icon type="material" name="exit-to-app" color="white" />
+        </HeaderIcon>
+      )
     };
   };
 
