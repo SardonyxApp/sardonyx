@@ -165,13 +165,10 @@ class SettingsScreen extends React.Component {
               <Text style={settingsStyles.description}>{item.description}</Text>
             ) : null}
           </View>
-          <View style={settingsStyles.checkboxContainer}>
+          <View style={settingsStyles.checkboxContainer} pointerEvents="none">
             <Switch
               color={colors.primary}
               value={reduxValue}
-              onValueChange={() => {
-                this.props.setSettings(item.redux, !reduxValue);
-              }}
             />
           </View>
         </View>
