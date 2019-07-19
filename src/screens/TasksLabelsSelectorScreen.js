@@ -1,11 +1,13 @@
 import React from 'react';
-import { ScrollView} from 'react-native';
-import Label from '../components/TasksSelectableLabel';
+import { ScrollView } from 'react-native';
+
+import { connect } from 'react-redux';
 
 import { colors } from '../styles';
+import Label from '../components/TasksSelectableLabel';
 
-// This screen is for selecting labels for a task. To filter the tasklist with labels, use TasksLabelsFilterScreen
-export default class TasksLabelsSelectorScreen extends React.Component {
+// This screen is for selecting labels for a task. To filter the tasklist with labels
+class TasksLabelsSelectorScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,26 +35,27 @@ export default class TasksLabelsSelectorScreen extends React.Component {
   }
 
   render() {
-    let subjects = this.props.navigation.getParam('subjects').sort((a, b) => a.name.localeCompare(b.name));
-    let categories = this.props.navigation.getParam('categories').sort((a, b) => a.name.localeCompare(b.name));
+    subjects = this.props.subjects
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(label => (
+        <Label 
+          key={label.name}
+          label={label}
+          list={[this.state.subject_id]}
+          onFilter={() => this._handleChange('subject_id', label.id)}
+        />
+      ));
 
-    subjects = subjects.map(label => (
-      <Label 
-        key={label.name}
-        label={label}
-        list={[this.state.subject_id]}
-        onFilter={() => this._handleChange('subject_id', label.id)}
-      />
-    ));
-
-    categories = categories.map(label => (
-      <Label 
-        key={label.name}
-        label={label}
-        list={[this.state.category_id]}
-        onFilter={() => this._handleChange('category_id', label.id)}
-      />
-    ));
+    categories = this.props.categories
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(label => (
+        <Label 
+          key={label.name}
+          label={label}
+          list={[this.state.category_id]}
+          onFilter={() => this._handleChange('category_id', label.id)}
+        />
+      ));
 
     return (
       <ScrollView style={{ flex: 1, backgroundColor: colors.lightBackground }}>
@@ -62,3 +65,11 @@ export default class TasksLabelsSelectorScreen extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const subjects = state.labels.subjects;
+  const categories = state.labels.categories;
+  return { subjects, categories };
+};
+
+export default connect(mapStateToProps)(TasksLabelsSelectorScreen);
