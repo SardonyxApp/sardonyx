@@ -18,20 +18,11 @@ export default class TasksCreateScreen extends React.Component {
     };
   };
   
-  // These methods are necessary to update the navigation params accordingly
   _handleUpdate(type, obj) {
-    this.props.navigation.setParams({
-      [type]: this.props.navigation.getParam(type).map(l => l.id === obj.id ? {...l, ...obj} : l)
-    });
-
     this.props.navigation.state.params.onUpdateLabel(type, obj);
   }
 
   _handleDelete(type, id) {
-    this.props.navigation.setParams({
-      [type]: this.props.navigation.getParam(type).filter(l => l.id !== id)
-    });
-
     this.props.navigation.state.params.onDeleteLabel(type, id);
   }
   
@@ -72,7 +63,7 @@ export default class TasksCreateScreen extends React.Component {
           buttonStyle={{ backgroundColor: colors.blue }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
-          onPress={() => navigation.navigate('ManageLabels', { onUpdate: this._handleUpdate, onDelete: this._handleDelete, labels: navigation.state.params.subjects, type: 'subjects' })}
+          onPress={() => navigation.navigate('ManageLabels', { onUpdate: this._handleUpdate, onDelete: this._handleDelete, type: 'subjects' })}
         />
         <Button 
           title="Manage category labels"
@@ -80,7 +71,7 @@ export default class TasksCreateScreen extends React.Component {
           buttonStyle={{ backgroundColor: colors.blue }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
-          onPress={() => navigation.navigate('ManageLabels', { onUpdate: this._handleUpdate, onDelete: this._handleDelete, labels: navigation.state.params.categories, type: 'categories' })}
+          onPress={() => navigation.navigate('ManageLabels', { onUpdate: this._handleUpdate, onDelete: this._handleDelete, type: 'categories' })}
         />
       </ScrollView>
     );
