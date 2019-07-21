@@ -7,6 +7,7 @@ import {
 } from 'react-navigation';
 import { useScreens } from 'react-native-screens';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+import { registerRootComponent } from 'expo';
 import * as Font from 'expo-font';
 import { Provider } from 'react-redux';
 import configureStore from './configureStore';
@@ -130,7 +131,7 @@ export default class Root extends React.Component {
   }
 }
 
-Expo.registerRootComponent(Root);
+registerRootComponent(Root);
 
 // To ignore warnings for WebSocket, which is completely fine to use.
 // See this page: https://stackoverflow.com/questions/53638667/unrecognized-websocket-connection-options-agent-permessagedeflate-pfx
