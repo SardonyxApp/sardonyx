@@ -173,7 +173,8 @@ const containerStyles = StyleSheet.create({
   subheading: {
     ...fonts.jost400,
     fontSize: 16,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
+    marginTop: 16
   },
   container: {
     flexDirection: 'row',
