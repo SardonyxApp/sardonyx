@@ -33,7 +33,7 @@ class TasksLabelsFilterSidebar extends React.Component {
       });
     }
   }
-
+  
   _handleFilter(filter, id) {
     this.setState(
       prevState => {
