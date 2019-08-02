@@ -16,8 +16,8 @@ export default class TaskDue extends React.Component {
   }
 
   _handleDateChange(date) {
-    this.setState({ date });
-    this.props.onUpdateTask({ id: this.props.id, due: date })
+    this.setState({ date: new Date(date) });
+    this.props.onUpdateTask({ id: this.props.id, due: new Date(date).toISOString() })
   }
 
   render() {
