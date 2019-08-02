@@ -7,7 +7,7 @@
     "slug": "sardonyx",
     "privacy": "unlisted",
     "sdkVersion": "33.0.0",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "platforms": ["ios", "android"],
     "githubUrl": "https://github.com/SardonyxApp/sardonyx",
     "orientation": "portrait",
