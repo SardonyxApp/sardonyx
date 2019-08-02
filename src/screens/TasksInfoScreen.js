@@ -1,10 +1,12 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, StatusBar } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { Header } from 'react-navigation';
 
 import { colors } from '../styles';
 
 import TaskTitle from '../components/TaskTitle';
+import OverviewHeading from '../components/OverviewHeading';
 import TaskLabels from '../components/TaskLabels';
 import TaskDescription from '../components/TaskDescription';
 import TaskDue from '../components/TaskDue';
@@ -17,20 +19,43 @@ export default class TasksInfoScreen extends React.Component {
   }
 
   static navigationOptions = ({ navigation }) => {
-    const id = navigation.getParam('currentTask');
     return {
-      headerTitle: <TaskTitle id={id} title={navigation.getParam('tasks').filter(t => t.id === id)[0].name} onUpdateTask={navigation.state.params.onUpdateTask} />
+      headerTintColor: colors.black,
+      headerTransparent: true,
+      headerStyle: { borderBottomWidth: 0 }
     };
   };
 
   render() {
     const tasks = this.props.navigation.getParam('tasks');
-    const task = tasks.filter(t => t.id === this.props.navigation.getParam('currentTask'))[0];
+    const task = tasks.filter(
+      t => t.id === this.props.navigation.getParam('currentTask')
+    )[0];
+    const id = this.props.navigation.getParam('currentTask');
 
     return (
-      <ScrollView contentContainerStyle={{ flex: 1, backgroundColor: colors.lightBackground }}>
-        <ScrollView contentContainerStyle={{ padding: 8 }}>
-          <TaskLabels 
+      <ScrollView
+        contentContainerStyle={{
+          flex: 1,
+          backgroundColor: colors.lightBackground
+        }}
+      >
+        <ScrollView
+          contentContainerStyle={{
+            paddingTop: Header.HEIGHT + StatusBar.currentHeight,
+            padding: 8
+          }}
+        >
+          <TaskTitle
+            id={id}
+            title={
+              this.props.navigation
+                .getParam('tasks')
+                .filter(t => t.id === id)[0].name
+            }
+            onUpdateTask={this.props.navigation.state.params.onUpdateTask}
+          />
+          <TaskLabels
             task={task}
             navigation={this.props.navigation}
             onUpdateTask={this.props.navigation.state.params.onUpdateTask}
@@ -40,15 +65,13 @@ export default class TasksInfoScreen extends React.Component {
             description={task.description}
             onUpdateTask={this.props.navigation.state.params.onUpdateTask}
           />
-          <TaskDue 
+          <TaskDue
             id={task.id}
             due={task.due}
             onUpdateTask={this.props.navigation.state.params.onUpdateTask}
           />
-          <TaskAuthor 
-            author={task.student_name || task.teacher_name}
-          />
-          <TaskDelete 
+          <TaskAuthor author={task.student_name || task.teacher_name} />
+          <TaskDelete
             id={task.id}
             navigation={this.props.navigation}
             onDeleteTask={this.props.navigation.state.params.onDeleteTask}
