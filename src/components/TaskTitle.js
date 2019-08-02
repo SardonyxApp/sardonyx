@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableWithoutFeedback, StyleSheet, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  StyleSheet,
+  Platform
+} from 'react-native';
 
 import { fonts, colors } from '../styles';
 
@@ -25,20 +32,18 @@ export default class TaskTitle extends React.Component {
       focused: false
     });
 
-    this.props.onUpdateTask({ 
-      id: this.props.id, 
-      name: this.state.title 
+    this.props.onUpdateTask({
+      id: this.props.id,
+      name: this.state.title
     });
   }
 
   render() {
     return this.state.focused ? (
-      <View
-        style={titleStyles.inputContainer}
-      >
-        <TextInput 
+      <View style={titleStyles.inputContainer}>
+        <TextInput
           style={titleStyles.text}
-          multiline={false}
+          multiline={true}
           onBlur={this._handleSubmit}
           onChangeText={text => this.setState({ title: text })}
           maxLength={255}
@@ -48,20 +53,13 @@ export default class TaskTitle extends React.Component {
       </View>
     ) : (
       <View style={titleStyles.textContainer}>
-        <TouchableWithoutFeedback 
-          onPress={() => this.setState({ focused: true })} 
+        <TouchableWithoutFeedback
+          onPress={() => this.setState({ focused: true })}
         >
-          <Text 
-            style={[titleStyles.text, { marginRight: 8 }]}
-            numberOfLines={1}
-            ellipsizeMode={'tail'}
-          >
-            {this.state.title}
-          </Text>
+          <Text style={titleStyles.text}>{this.state.title}</Text>
         </TouchableWithoutFeedback>
       </View>
-      
-    )
+    );
   }
 }
 
@@ -71,16 +69,21 @@ const titleStyles = StyleSheet.create({
     borderBottomColor: colors.blue,
     flex: 1,
     marginRight: 8,
-    marginLeft: Platform.OS === 'ios' ? 24 : 0
+    marginLeft: Platform.OS === 'ios' ? 24 : 0,
+    marginBottom: 16
   },
   textContainer: {
     flex: 1,
     marginRight: 8,
-    marginLeft: Platform.OS === 'ios' ? 24 : 0
-  }, 
+    marginLeft: Platform.OS === 'ios' ? 24 : 0,
+    marginBottom: 16
+  },
   text: {
-    ...fonts.jost400,
-    color: 'white',
-    fontSize: 18
+    ...fonts.jost800,
+    fontWeight: 'normal',
+    fontSize: 28,
+    marginHorizontal: 16,
+    color: colors.darkBlue,
+    marginTop: 8
   }
 });
