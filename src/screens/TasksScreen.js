@@ -401,7 +401,7 @@ class TasksScreen extends React.Component {
       <View style={{ 
           flex: 1, 
           backgroundColor: colors.lightBackground
-        }}>
+      }}>
         <ScrollView
           refreshControl={
             <RefreshControl

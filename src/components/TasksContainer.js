@@ -131,7 +131,9 @@ export default class TasksContainer extends React.PureComponent {
     });
 
     return (
-      <View>
+      <View
+        style={{ marginBottom: 12 }}
+      >
         {todayTasks.length ? <OverviewHeading style={containerStyles.heading}>Today</OverviewHeading> : null}
         {todayTasks}
 
