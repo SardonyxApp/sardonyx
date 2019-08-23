@@ -16,8 +16,9 @@ export default class TaskDue extends React.Component {
   }
 
   _handleDateChange(date) {
-    this.setState({ date: new Date(date) });
-    this.props.onUpdateTask({ id: this.props.id, due: new Date(date).toISOString() })
+    this.setState({ date: date === null ? null : new Date(date)});
+    this.props.onUpdateTask({ id: this.props.id, due: date === null ? null : new Date(date).toISOString()});
+    // Do not convert to date when date is set to null
   }
 
   render() {
@@ -32,7 +33,7 @@ export default class TaskDue extends React.Component {
         <Icon 
           name="schedule"
           type="material"
-          iconStyles={styles.icon}
+          iconStyle={styles.icon}
         />
         <DatePicker 
           date={this.state.date}
@@ -59,7 +60,7 @@ export default class TaskDue extends React.Component {
         <Icon 
           name="clear"
           type="material"
-          iconStyles={styles.icon}
+          iconStyle={styles.icon}
           onPress={() => this._handleDateChange(null)}
         />
       </View>

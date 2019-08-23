@@ -41,7 +41,7 @@ export default class TaskDelete extends React.PureComponent {
         <Icon 
           name="delete"
           type="material"
-          iconStyles={styles.icon}
+          iconStyle={styles.icon}
           color="#f44138"
         />
         <TouchableOpacity
