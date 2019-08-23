@@ -7,14 +7,12 @@ import {
   InteractionManager
 } from 'react-native';
 
-import { Icon } from 'react-native-elements';
-import { Badge } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setManagebacOverview } from '../actions';
 import { BASE_URL } from '../../env';
 
-import HeaderIcon from '../components/HeaderIcon';
+import HeaderNotificationIcon from '../components/HeaderNotificationIcon';
 import GreetingsCard from '../components/GreetingsCard';
 import OverviewHeading from '../components/OverviewHeading';
 import UpcomingCarousel from '../components/UpcomingCarousel';
@@ -41,29 +39,13 @@ class ManagebacOverviewScreen extends React.PureComponent {
     return {
       title: 'ManageBac',
       headerRight: (
-        <HeaderIcon
+        <HeaderNotificationIcon
           onPress={() => {
             navigation.navigate('Alerts', {
               refreshPage: navigation.state.params.refreshPage
             });
           }}
-        >
-          <Icon
-            name={
-              navigation.state.params &&
-              navigation.state.params.notificationCount
-                ? 'notifications-active'
-                : 'notifications-none'
-            }
-            color={colors.white}
-          />
-          {navigation.state.params &&
-          navigation.state.params.notificationCount ? (
-            <Badge style={overviewStyles.badgeIcon} size={16}>
-              {navigation.state.params.notificationCount}
-            </Badge>
-          ) : null}
-        </HeaderIcon>
+        />
       )
     };
   }
@@ -107,9 +89,6 @@ class ManagebacOverviewScreen extends React.PureComponent {
           this.props.setManagebacOverview(parsedResponse);
           this.setState({
             refreshing: false
-          });
-          this.props.navigation.setParams({
-            notificationCount: parsedResponse.notificationCount
           });
           return;
         }
@@ -163,11 +142,6 @@ class ManagebacOverviewScreen extends React.PureComponent {
 }
 
 const overviewStyles = StyleSheet.create({
-  badgeIcon: {
-    position: 'absolute',
-    top: -4,
-    backgroundColor: colors.lightError
-  },
   lastElementPadding: {
     marginBottom: 16
   }
