@@ -72,7 +72,7 @@ export default class TaskDescription extends React.Component {
         <Icon 
           name="subject" // Using this iconbecause the "notes" icon somehow does not load
           type="material"
-          iconStyles={styles.icon}
+          iconStyle={styles.icon}
         />
         {!this.state.focused 
           ? <TouchableWithoutFeedback 
