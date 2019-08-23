@@ -68,7 +68,7 @@ class RoundIcon extends React.PureComponent {
           style={[
             classesCarouselStyles.containerWrapper,
             this.props.color && {
-              backgroundColor: this.props.color
+              borderColor: this.props.color
             }
           ]}
         >
@@ -77,10 +77,26 @@ class RoundIcon extends React.PureComponent {
             rippleColor="rgba(0, 0, 0, .16)"
           >
             <View style={classesCarouselStyles.container}>
-              <Icon
-                name={this.props.type === 'class' ? 'library-books' : 'people'}
-                color={colors.white}
-              />
+              <View
+                style={[
+                  classesCarouselStyles.letterContainer,
+                  StyleSheet.absoluteFillObject
+                ]}
+              >
+                <Text style={classesCarouselStyles.letter}>
+                  {decodeURI(this.props.data.title)[0]}
+                </Text>
+              </View>
+              <View style={classesCarouselStyles.iconContainer}>
+                <Icon
+                  name={
+                    this.props.type === 'class' ? 'library-books' : 'people'
+                  }
+                  color={colors.darkPrimary}
+                  size={16}
+                  style={classesCarouselStyles.icon}
+                />
+              </View>
             </View>
           </TouchableRipple>
         </View>
@@ -101,18 +117,36 @@ const classesCarouselStyles = StyleSheet.create({
     paddingVertical: 25
   },
   containerWrapper: {
-    backgroundColor: '#00c2b5',
+    backgroundColor: colors.white,
     height: 72,
     width: 72,
     borderRadius: 36,
     ...elevations.two,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    borderWidth: 4
   },
   container: {
-    width: 72,
-    height: 72,
+    width: 72 - 8,
+    height: 72 - 8
+  },
+  letterContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  letter: {
+    fontSize: 24,
+    ...fonts.jost500,
+    color: colors.darkPrimary
+  },
+  iconContainer: {
+    backgroundColor: colors.white,
+    borderRadius: 4,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: ((72 - 8) / 2),
+    left: ((72 - 8) / 2)
   },
   text: {
     textAlign: 'center',
