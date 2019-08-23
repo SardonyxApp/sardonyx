@@ -17,7 +17,7 @@ export default TaskAuthor = props => (
     <Icon 
       name="person"
       type="material"
-      iconStyles={styles.icon}
+      iconStyle={styles.icon}
     />
     <Text
       style={{
