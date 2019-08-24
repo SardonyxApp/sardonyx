@@ -28,7 +28,7 @@ const TasksStack = createStackNavigator(
     initialRouteName: 'Tasks',
     navigationOptions: {
       tabBarLabel: <Text style={fonts.jost400}>Tasks</Text>,
-      tabBarIcon: ({ tintColor }) => <Icon name="dashboard" color={tintColor} />
+      tabBarIcon: ({ focused, tintColor }) => <Icon type="material-community" name={focused ? 'view-dashboard' : 'view-dashboard-outline'} color={tintColor} />
     },
     defaultNavigationOptions: {
       headerStyle: {
