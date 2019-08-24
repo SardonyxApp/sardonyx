@@ -12,10 +12,6 @@ class HeaderNotificationIcon extends React.Component {
     super(props);
   }
 
-  componentDidUpdate() {
-    console.log(this.props.overview);
-  }
-
   render() {
     return (
       <HeaderIcon onPress={this.props.onPress}>
