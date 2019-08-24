@@ -161,7 +161,7 @@ export default class ManagebacCASScreen extends React.Component {
           ) : null}
         </View>
         {'description' in this.state.casExperienceData ? (
-          <View>
+          <React.Fragment>
             <View style={casStyles.warnings}>
               <ExperienceUneditableWarning
                 status={this.state.casExperienceData.status}
@@ -180,7 +180,7 @@ export default class ManagebacCASScreen extends React.Component {
                 {decodeURI(this.state.casExperienceData.learningOutcomes)}
               </Text>
             </View>
-          </View>
+          </React.Fragment>
         ) : null}
       </ScrollView>
     );
