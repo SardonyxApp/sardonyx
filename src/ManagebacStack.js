@@ -17,6 +17,7 @@ import ManagebacGroupScreen from './screens/ManagebacGroupScreen';
 import ManagebacMessageThreadScreen from './screens/ManagebacMessageThreadScreen';
 
 import { colors, fonts } from './styles';
+import NotificationBadge from './components/NotificationBadge';
 
 // Navigation stack for the Managebac tab
 const ManagebacStack = createStackNavigator(
@@ -37,7 +38,10 @@ const ManagebacStack = createStackNavigator(
     navigationOptions: {
       tabBarLabel: <Text style={fonts.jost400}>ManageBac</Text>,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="globe" type={'feather'} color={tintColor} />
+        <React.Fragment>
+          <Icon name="globe" type={'feather'} color={tintColor} />
+          <NotificationBadge style={{right: -16}}/>
+        </React.Fragment>
       )
     },
     defaultNavigationOptions: {
