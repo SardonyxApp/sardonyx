@@ -312,7 +312,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
   _renderRow({ item, index }) {
     if (item.type === 'reflection') {
       return (
-        <View>
+        <React.Fragment>
           <View style={reflectionListStyles.itemTextWrapper}>
             <Text style={reflectionListStyles.itemDate}>
               {moment(item.date).format('dddd, MMM Do YYYY, H:mm')}
@@ -348,7 +348,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
               />
             </TouchableOpacity>
           </View>
-        </View>
+        </React.Fragment>
       );
     }
     if (item.type === 'photo') {
