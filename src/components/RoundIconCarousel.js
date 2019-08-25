@@ -84,7 +84,7 @@ class RoundIcon extends React.PureComponent {
                 ]}
               >
                 <Text style={classesCarouselStyles.letter}>
-                  {decodeURI(this.props.data.title)[0]}
+                  {decodeURI(this.props.data.title).trim()[0].toUpperCase()}
                 </Text>
               </View>
               <View style={classesCarouselStyles.iconContainer}>
