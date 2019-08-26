@@ -115,9 +115,9 @@ export default class TasksUpdateLabelScreen extends React.Component {
             ) : null
           }
           <Button 
-            title={this.props.navigation.getParam('label') ? 'Update task' : 'Create task'}
+            title={this.props.navigation.getParam('label') ? 'Update label' : 'Create label'}
             type="solid"
-            buttonStyle={{ backgroundColor: colors.primary }}
+            buttonStyle={{ backgroundColor: colors.primary, borderRadius: 1000 }}
             containerStyle={styles.padding10}
             titleStyle={fonts.jost300}
             onPress={this._handlePress}

@@ -34,16 +34,17 @@ export default (TasksSelectableLabel = ({ label, list, onFilter }) => (
 
 const labelStyles = StyleSheet.create({
   container: {
-    marginHorizontal: 8,
-    marginVertical: 2
+    marginHorizontal: 14,
+    marginVertical: 4
   },
   labelContainer: {
-    borderRadius: 4,
+    borderRadius: 1000,
     flex: 1
   },
   label: {
     flex: 1,
-    padding: 12,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'center'
   },
