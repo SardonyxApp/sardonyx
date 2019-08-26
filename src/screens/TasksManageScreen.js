@@ -38,7 +38,7 @@ export default class TasksCreateScreen extends React.Component {
         <Button 
           title="Add subject label"
           type="solid"
-          buttonStyle={{ backgroundColor: colors.primary }}
+          buttonStyle={{ backgroundColor: colors.primary, borderRadius: 1000 }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
           onPress={() => navigation.navigate('UpdateLabel', { onUpdate: navigation.state.params.onCreateLabel, type: 'subjects' })}
@@ -46,7 +46,7 @@ export default class TasksCreateScreen extends React.Component {
         <Button 
           title="Add category label"
           type="solid"
-          buttonStyle={{ backgroundColor: colors.primary }}
+          buttonStyle={{ backgroundColor: colors.primary, borderRadius: 1000 }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
           onPress={() => navigation.navigate('UpdateLabel', { onUpdate: navigation.state.params.onCreateLabel, type: 'categories' })}
@@ -60,7 +60,7 @@ export default class TasksCreateScreen extends React.Component {
         <Button 
           title="Manage subject labels"
           type="solid"
-          buttonStyle={{ backgroundColor: colors.blue }}
+          buttonStyle={{ backgroundColor: colors.blue, borderRadius: 1000 }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
           onPress={() => navigation.navigate('ManageLabels', { onUpdate: this._handleUpdate, onDelete: this._handleDelete, type: 'subjects' })}
@@ -68,7 +68,7 @@ export default class TasksCreateScreen extends React.Component {
         <Button 
           title="Manage category labels"
           type="solid"
-          buttonStyle={{ backgroundColor: colors.blue }}
+          buttonStyle={{ backgroundColor: colors.blue, borderRadius: 1000 }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
           onPress={() => navigation.navigate('ManageLabels', { onUpdate: this._handleUpdate, onDelete: this._handleDelete, type: 'categories' })}

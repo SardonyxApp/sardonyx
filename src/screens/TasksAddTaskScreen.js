@@ -65,7 +65,7 @@ export default class TasksAddTaskScreen extends React.Component {
         <Button
           title="Create task"
           type="solid"
-          buttonStyle={{ backgroundColor: colors.primary }}
+          buttonStyle={{ backgroundColor: colors.primary, borderRadius: 1000 }}
           containerStyle={styles.padding10}
           titleStyle={fonts.jost300}
           onPress={this._handlePress}

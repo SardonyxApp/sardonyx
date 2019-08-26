@@ -22,11 +22,11 @@ import { fonts } from '../styles';
 export default class TasksLabel extends React.PureComponent {
   render() {
     return (
-      <View style={labelStyles.container}>
+      <View style={[labelStyles.container, this.props.containerStyle]}>
         <View
           style={{
             backgroundColor: this.props.label.color,
-            borderRadius: this.props.radius || 1000
+            borderRadius: 1000
           }}
         >
           <TouchableRipple

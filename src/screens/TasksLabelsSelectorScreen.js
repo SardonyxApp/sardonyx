@@ -58,7 +58,7 @@ class TasksLabelsSelectorScreen extends React.Component {
       ));
 
     return (
-      <ScrollView style={{ flex: 1, backgroundColor: colors.lightBackground }}>
+      <ScrollView style={{ flex: 1, backgroundColor: colors.lightBackground, paddingVertical: 4 }}>
         {subjects}
         {categories}
       </ScrollView>
