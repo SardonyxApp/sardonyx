@@ -198,6 +198,9 @@ export default class ManagebacClassScreen extends React.Component {
             }
           }}
         >
+          <OverviewHeading style={{ marginBottom: 0 }}>
+            Tasks/Events
+          </OverviewHeading>
           <UpcomingCarousel
             upcomingEvents={this.state.classUpcomingEventsData}
             completedEvents={this.state.classCompletedEventsData}
