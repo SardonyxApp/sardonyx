@@ -202,6 +202,9 @@ export default class ManagebacGroupScreen extends React.Component {
             }
           }}
         >
+          <OverviewHeading style={{ marginBottom: 0 }}>
+            Tasks/Events
+          </OverviewHeading>
           <UpcomingCarousel
             upcomingEvents={this.state.groupUpcomingEventsData}
             completedEvents={this.state.groupCompletedEventsData}
