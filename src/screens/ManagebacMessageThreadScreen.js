@@ -8,6 +8,7 @@ import {
   RefreshControl,
   StyleSheet,
   InteractionManager,
+  Dimensions,
   TextInput,
   Alert
 } from 'react-native';
@@ -40,9 +41,7 @@ class ManagebacMessageThreadScreen extends React.Component {
     this._confirmDelete = this._confirmDelete.bind(this);
     this._deleteMessage = this._deleteMessage.bind(this);
     this._fetchMessageThreadData = this._fetchMessageThreadData.bind(this);
-    this._toggleTextInputVisibility = this._toggleTextInputVisibility.bind(
-      this
-    );
+    this._toggleTextInputVisibility = this._toggleTextInputVisibility.bind(this);
   }
 
   componentDidMount() {
@@ -266,6 +265,8 @@ class ManagebacMessageThreadScreen extends React.Component {
       mode: 'no-cors'
     });
     if (!this._isMounted) return;
+    this.replyInput.clear();
+    this._toggleTextInputVisibility(id);
     this._onRefresh();
   }
 
@@ -345,6 +346,7 @@ class ManagebacMessageThreadScreen extends React.Component {
                   this.setState({ newCommentContent });
                 }}
                 multiline={true}
+                ref={input => { this.replyInput = input }}
               />
               <View style={messageThreadStyles.replySendButtonContainer}>
                 <TouchableRipple
@@ -453,6 +455,7 @@ class ManagebacMessageThreadScreen extends React.Component {
                   this.setState({ newCommentContent });
                 }}
                 multiline={true}
+                ref={input => { this.replyInput = input }}
               />
               <View style={messageThreadStyles.replySendButtonContainer}>
                 <TouchableRipple
@@ -476,7 +479,8 @@ class ManagebacMessageThreadScreen extends React.Component {
             return this._renderComment(item);
           })}
         <EndOfList />
-        <KeyboardSpacer topSpacing={-150} />
+        <KeyboardSpacer topSpacing={(Dimensions.get('window').width / 768) * -270 + 24} />
+        {/* Account for the height of EndOfList */}
       </ScrollView>
     );
   }
