@@ -56,13 +56,19 @@ export default class ManagebacClassScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: `${navigation.getParam('title')}`,
-      headerRight: <HeaderIcon onPress={() => Linking.openURL(`https://kokusaiib.managebac.com/student/classes/${navigation.getParam('id')}`)}>
-        <Icon 
-          type="material"
-          name="exit-to-app"
-          color="white"
-        />
-      </HeaderIcon>
+      headerRight: (
+        <HeaderIcon
+          onPress={() =>
+            Linking.openURL(
+              `https://kokusaiib.managebac.com/student/classes/${navigation.getParam(
+                'id'
+              )}`
+            )
+          }
+        >
+          <Icon type="material" name="exit-to-app" color="white" />
+        </HeaderIcon>
+      )
     };
   };
 
@@ -115,16 +121,30 @@ export default class ManagebacClassScreen extends React.Component {
    */
   async _fetchClassOverviewData(credentials) {
     let url = this.props.navigation.getParam('link', '/404');
-    url = url.replace('/overview', '/assignments');
-    const response = await fetch(BASE_URL + url, {
-      method: 'GET',
-      headers: {
-        'Login-Token': credentials
-      },
-      mode: 'no-cors'
-    });
+    const promises = [];
+    assignments_url = url.replace('/overview', '/assignments');
+    coretasks_url = url.replace('/overview', '/core_tasksaaa');
+    promises.push(
+      fetch(BASE_URL + assignments_url, {
+        method: 'GET',
+        headers: {
+          'Login-Token': credentials
+        },
+        mode: 'no-cors'
+      }),
+      fetch(BASE_URL + coretasks_url, {
+        method: 'GET',
+        headers: {
+          'Login-Token': credentials
+        },
+        mode: 'no-cors'
+      })
+    );
+
+    const responses = await Promise.all(promises);
+    const response = responses.filter(item => item.status === 200)[0];
     if (!this._isMounted) return;
-    if (response.status === 200) {
+    if (response && response.status === 200) {
       const parsedManagebacResponse = await response.json();
       this.setState({
         refreshing: false,
@@ -132,7 +152,7 @@ export default class ManagebacClassScreen extends React.Component {
         classCompletedEventsData: parsedManagebacResponse.completed
       });
       return;
-    } else if (response.status === 404) {
+    } else {
       Alert.alert('Not Found', 'Class could not be found.', []);
       this.props.navigation.goBack();
       return;
@@ -198,7 +218,7 @@ export default class ManagebacClassScreen extends React.Component {
             }
           }}
         >
-          <OverviewHeading style={{ marginBottom: 0 }}>
+          <OverviewHeading style={{ marginBottom: 0, marginTop: 16 }}>
             Tasks/Events
           </OverviewHeading>
           <UpcomingCarousel
