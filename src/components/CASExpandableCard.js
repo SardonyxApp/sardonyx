@@ -31,7 +31,7 @@ export default class CASExpandableCard extends ExpandableCard {
       },
       mode: 'no-cors'
     });
-    if(!_isMounted) return;
+    if (!_isMounted) return;
     if (response.status === 200) {
       this.setState({
         casExperiences: await response.json()
@@ -95,8 +95,8 @@ export default class CASExpandableCard extends ExpandableCard {
   }
 
   _renderList() {
-    return this.state.casExperiences.cas.length > 0 ? (
-      
+    return 'cas' in this.state.casExperiences &&
+      this.state.casExperiences.cas.length > 0 ? (
       <FlatList
         data={this.state.casExperiences.cas}
         keyExtractor={item => item.link}
