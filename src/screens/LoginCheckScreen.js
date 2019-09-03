@@ -67,6 +67,13 @@ class LoginCheckScreen extends React.Component {
       return;
     }
 
+    if (response.status === 403) {
+      this.props.navigation.navigate('Login', {
+        errorMessage: 'We\'re sorry, but this app is designed for students and not teachers.'
+      });
+      return;
+    }
+
     if (response.status === 404) {
       // Network error
       this.props.navigation.navigate('Login', {
