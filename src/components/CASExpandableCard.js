@@ -95,7 +95,8 @@ export default class CASExpandableCard extends ExpandableCard {
   }
 
   _renderList() {
-    return (
+    return this.state.casExperiences.cas.length > 0 ? (
+      
       <FlatList
         data={this.state.casExperiences.cas}
         keyExtractor={item => item.link}
@@ -128,6 +129,6 @@ export default class CASExpandableCard extends ExpandableCard {
           </TouchableRipple>
         )}
       />
-    );
+    ) : null;
   }
 }
