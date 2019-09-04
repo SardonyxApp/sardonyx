@@ -118,11 +118,12 @@ class LoginForm extends React.Component {
       this.setState(
         {
           usernameError: !emailRegex.test(this.state.username),
+          teacherEmailError: this.state.username.includes('sardonyx.app'),
           passwordError: this.state.password.length < 1
         },
         () => {
           // if there is either error, return false to reject request
-          resolve(this.state.usernameError || this.state.passwordError);
+          resolve(this.state.usernameError || this.state.teacherEmailError || this.state.passwordError);
         }
       );
     });
@@ -220,6 +221,16 @@ class LoginForm extends React.Component {
           ]}
         >
           Please enter a valid email address.
+        </Text>
+        <Text
+          style={[
+            styles.error,
+            styles.alignCenter,
+            fonts.jost400,
+            this.state.teacherEmailError ? {} : styles.hidden
+          ]}
+        >
+          Teachers cannot use the mobile app.
         </Text>
 
         <TextInput
