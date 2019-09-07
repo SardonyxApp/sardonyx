@@ -6,8 +6,9 @@ import {
   FlatList,
   Text,
   StyleSheet,
-  RefreshControl,
-  Dimensions
+  Dimensions,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import Lottie from 'lottie-react-native';
@@ -35,7 +36,18 @@ export default class ManagebacAlertsScreen extends React.Component {
     this._renderRow = this._renderRow.bind(this);
   }
 
+  /**
+   * Set the status bar color to blue.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.blue);
+    StatusBar.setBarStyle('light-content');
+  }
+
   componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     this._isMounted = true;
     InteractionManager.runAfterInteractions(this._onRefresh);
   }

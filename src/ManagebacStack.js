@@ -40,7 +40,7 @@ const ManagebacStack = createStackNavigator(
       tabBarIcon: ({ tintColor }) => (
         <React.Fragment>
           <Icon name="globe" type={'feather'} color={tintColor} />
-          <NotificationBadge style={{right: -16}}/>
+          <NotificationBadge style={{ right: -16 }} />
         </React.Fragment>
       )
     },

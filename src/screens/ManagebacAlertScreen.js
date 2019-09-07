@@ -6,7 +6,9 @@ import {
   Text,
   InteractionManager,
   StyleSheet,
-  RefreshControl
+  RefreshControl,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import moment from 'moment';
@@ -30,7 +32,18 @@ export default class ManagebacAlertScreen extends React.Component {
     this._fetchNotificationData = this._fetchNotificationData.bind(this);
   }
 
+  /**
+   * Set the status bar color to blue.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.blue);
+    StatusBar.setBarStyle('light-content');
+  }
+
   componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     this._isMounted = true;
     InteractionManager.runAfterInteractions(this._onRefresh);
   }

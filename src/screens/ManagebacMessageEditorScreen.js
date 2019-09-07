@@ -10,7 +10,9 @@ import {
   KeyboardAvoidingView,
   Dimensions,
   InteractionManager,
-  Animated
+  Animated,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -91,7 +93,18 @@ export default class ManagebacMessageEditorScreen extends React.Component {
     };
   };
 
+  /**
+   * Set the status bar color to blue.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.blue);
+    StatusBar.setBarStyle('light-content');
+  }
+
   componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     // Register the sendMessage method so it can be called from static navigationOptions
     this.props.navigation.setParams({
       sendMessage: this._sendMessage,
@@ -225,9 +238,7 @@ export default class ManagebacMessageEditorScreen extends React.Component {
         const editMode = this.props.navigation.getParam('editMode', false);
         const url = editMode
           ? `${BASE_URL}${this.props.navigation.state.params.data.link}`
-          : `${BASE_URL}/api/${this.props.navigation.state.params.type}/${
-              this.props.navigation.state.params.id
-            }/messages`;
+          : `${BASE_URL}/api/${this.props.navigation.state.params.type}/${this.props.navigation.state.params.id}/messages`;
         const credentials = await Storage.retrieveCredentials();
         await fetch(url, {
           method: editMode ? 'PATCH' : 'POST',

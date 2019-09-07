@@ -7,7 +7,9 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Dimensions,
-  InteractionManager
+  InteractionManager,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -54,7 +56,18 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
     };
   };
 
+  /**
+   * Set the status bar color to blue.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.blue);
+    StatusBar.setBarStyle('light-content');
+  }
+
   componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     // Register the sendReflection method so it can be called from static navigationOptions
     this.props.navigation.setParams({
       updateReflection: this._updateReflection
@@ -104,9 +117,7 @@ export default class ManagebacEditCASReflectionScreen extends React.Component {
       async () => {
         const credentials = await Storage.retrieveCredentials();
         const response = await fetch(
-          `${BASE_URL}/api/cas/${
-            this.props.navigation.state.params.id
-          }/reflections/${this.props.navigation.state.params.reflectionId}`,
+          `${BASE_URL}/api/cas/${this.props.navigation.state.params.id}/reflections/${this.props.navigation.state.params.reflectionId}`,
           {
             method: 'PATCH',
             headers: {

@@ -7,7 +7,9 @@ import {
   StyleSheet,
   RefreshControl,
   Alert,
-  InteractionManager
+  InteractionManager,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -35,7 +37,18 @@ export default class ManagebacCASScreen extends React.Component {
     this._onRefresh = this._onRefresh.bind(this);
   }
 
+  /**
+   * Set the status bar color to blue.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.blue);
+    StatusBar.setBarStyle('light-content');
+  }
+
   componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     this._isMounted = true;
     InteractionManager.runAfterInteractions(this._onRefresh);
   }
@@ -90,13 +103,16 @@ export default class ManagebacCASScreen extends React.Component {
    * @param {String} credentials
    */
   async _fetchExperienceData(credentials) {
-    const response = await fetch(BASE_URL + this.props.navigation.getParam('apiLink', '/404'), {
-      method: 'GET',
-      headers: {
-        'Login-Token': credentials
-      },
-      mode: 'no-cors'
-    });
+    const response = await fetch(
+      BASE_URL + this.props.navigation.getParam('apiLink', '/404'),
+      {
+        method: 'GET',
+        headers: {
+          'Login-Token': credentials
+        },
+        mode: 'no-cors'
+      }
+    );
     if (!this._isMounted) return;
     if (response.status === 200) {
       const data = await response.json();
@@ -109,11 +125,7 @@ export default class ManagebacCASScreen extends React.Component {
       );
       return;
     } else if (response.status === 404) {
-      Alert.alert(
-        'Not Found',
-        'Your CAS experience could not be found.',
-        []
-      );
+      Alert.alert('Not Found', 'Your CAS experience could not be found.', []);
       this.props.navigation.goBack();
       return;
     }

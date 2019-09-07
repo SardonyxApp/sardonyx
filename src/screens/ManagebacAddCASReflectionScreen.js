@@ -8,7 +8,9 @@ import {
   Alert,
   KeyboardAvoidingView,
   Dimensions,
-  InteractionManager
+  InteractionManager,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -57,7 +59,18 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
     };
   };
 
+  /**
+   * Set the status bar color to blue.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.blue);
+    StatusBar.setBarStyle('light-content');
+  }
+
   componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     // Register the sendReflection method so it can be called from static navigationOptions
     this.props.navigation.setParams({ sendReflection: this._sendReflection });
 
@@ -70,11 +83,11 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
         if (this.props.navigation.getParam('id', null) in drafts) {
           this.setState({
             reflectionValue:
-            drafts[this.props.navigation.getParam('id', null)].value
+              drafts[this.props.navigation.getParam('id', null)].value
           });
         }
       }
-      
+
       // Register the willBlur event so we can save the draft upon closing
       this.props.navigation.addListener('willBlur', this._onWillBlur);
 
@@ -91,7 +104,7 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
    * Remove the key/value pair for this CAS id draft in Storage (if it exists).
    */
   async _discardDraft() {
-    let drafts = await Storage.retrieveValue('reflectionDrafts')
+    let drafts = await Storage.retrieveValue('reflectionDrafts');
     if (!drafts) return;
     drafts = JSON.parse(drafts);
     delete drafts[this.props.navigation.getParam('id', null)];
@@ -167,9 +180,7 @@ export default class ManagebacAddCASReflectionScreen extends React.Component {
       async () => {
         const credentials = await Storage.retrieveCredentials();
         await fetch(
-          `${BASE_URL}/api/cas/${
-            this.props.navigation.state.params.id
-          }/reflections`,
+          `${BASE_URL}/api/cas/${this.props.navigation.state.params.id}/reflections`,
           {
             method: 'POST',
             headers: {

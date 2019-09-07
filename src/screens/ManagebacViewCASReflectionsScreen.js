@@ -11,7 +11,9 @@ import {
   RefreshControl,
   Alert,
   InteractionManager,
-  Animated
+  Animated,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import * as Haptics from 'expo-haptics';
@@ -49,7 +51,18 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
     this._renderPhotoCarouselItem = this._renderPhotoCarouselItem.bind(this);
   }
 
+  /**
+   * Set the status bar color to blue.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.blue);
+    StatusBar.setBarStyle('light-content');
+  }
+
   componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     this._isMounted = true;
     this.props.navigation.setParams({
       refreshPage: this._onRefresh
@@ -85,9 +98,7 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
    */
   async _fetchReflectionsData(credentials) {
     const response = await fetch(
-      `${BASE_URL}/api/cas/${
-        this.props.navigation.state.params.id
-      }/reflections`,
+      `${BASE_URL}/api/cas/${this.props.navigation.state.params.id}/reflections`,
       {
         method: 'GET',
         headers: {
@@ -425,10 +436,14 @@ export default class ManagebacViewCASReflectionsScreen extends React.Component {
           style={[
             reflectionListStyles.appBar,
             {
-              transform: [{translateY: this.state.menuVisibility.interpolate({
-                inputRange: [0, 1],
-                outputRange: [56, 0]
-              })}]
+              transform: [
+                {
+                  translateY: this.state.menuVisibility.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [56, 0]
+                  })
+                }
+              ]
             }
           ]}
         >

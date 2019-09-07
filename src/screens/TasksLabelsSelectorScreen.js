@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, Platform, StatusBar } from 'react-native';
 
 import { connect } from 'react-redux';
 
@@ -13,7 +13,7 @@ class TasksLabelsSelectorScreen extends React.Component {
     this.state = {
       subject_id: this.props.navigation.getParam('subject_id'),
       category_id: this.props.navigation.getParam('category_id')
-    }
+    };
 
     this._handleChange = this._handleChange.bind(this);
   }
@@ -21,12 +21,27 @@ class TasksLabelsSelectorScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Edit labels'
-    }
+    };
+  };
+
+  /**
+   * Set the status bar color to brown.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.primary);
+    StatusBar.setBarStyle('light-content');
   }
 
+  componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+  }
 
   _handleChange(type, id) {
-    this.props.navigation.state.params.onChange(type, this.state[type] === id ? null : id);
+    this.props.navigation.state.params.onChange(
+      type,
+      this.state[type] === id ? null : id
+    );
 
     this.setState(prevState => {
       prevState[type] = prevState[type] === id ? null : id;
@@ -38,7 +53,7 @@ class TasksLabelsSelectorScreen extends React.Component {
     subjects = this.props.subjects
       .sort((a, b) => a.name.localeCompare(b.name))
       .map(label => (
-        <Label 
+        <Label
           key={label.name}
           label={label}
           list={[this.state.subject_id]}
@@ -49,7 +64,7 @@ class TasksLabelsSelectorScreen extends React.Component {
     categories = this.props.categories
       .sort((a, b) => a.name.localeCompare(b.name))
       .map(label => (
-        <Label 
+        <Label
           key={label.name}
           label={label}
           list={[this.state.category_id]}
@@ -58,7 +73,13 @@ class TasksLabelsSelectorScreen extends React.Component {
       ));
 
     return (
-      <ScrollView style={{ flex: 1, backgroundColor: colors.lightBackground, paddingVertical: 4 }}>
+      <ScrollView
+        style={{
+          flex: 1,
+          backgroundColor: colors.lightBackground,
+          paddingVertical: 4
+        }}
+      >
         {subjects}
         {categories}
       </ScrollView>
