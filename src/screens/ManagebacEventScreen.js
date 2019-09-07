@@ -8,7 +8,9 @@ import {
   Alert,
   ScrollView,
   FlatList,
-  InteractionManager
+  InteractionManager,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import { BASE_URL } from '../../env';
@@ -31,7 +33,18 @@ export default class ManagebacEventScreen extends React.Component {
     this._onRefresh = this._onRefresh.bind(this);
   }
 
+  /**
+   * Set the status bar color to blue.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.blue);
+    StatusBar.setBarStyle('light-content');
+  }
+
   componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     this._isMounted = true;
     InteractionManager.runAfterInteractions(this._onRefresh);
   }
@@ -55,14 +68,17 @@ export default class ManagebacEventScreen extends React.Component {
         refreshing: true
       },
       async () => {
-        const credentials = await Storage.retrieveCredentials()
-        const response = await fetch(BASE_URL + this.props.navigation.getParam('link', '/404'), {
-          method: 'GET',
-          headers: {
-            'Login-Token': credentials
-          },
-          mode: 'no-cors'
-        });
+        const credentials = await Storage.retrieveCredentials();
+        const response = await fetch(
+          BASE_URL + this.props.navigation.getParam('link', '/404'),
+          {
+            method: 'GET',
+            headers: {
+              'Login-Token': credentials
+            },
+            mode: 'no-cors'
+          }
+        );
         if (!this._isMounted) return;
         if (response.status === 200) {
           const data = await response.json();

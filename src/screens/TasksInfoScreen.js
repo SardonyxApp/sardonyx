@@ -1,12 +1,11 @@
 import React from 'react';
-import { ScrollView, StatusBar } from 'react-native';
+import { ScrollView, StatusBar, Platform } from 'react-native';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import { Header } from 'react-navigation';
 
 import { colors } from '../styles';
 
 import TaskTitle from '../components/TaskTitle';
-import OverviewHeading from '../components/OverviewHeading';
 import TaskLabels from '../components/TaskLabels';
 import TaskDescription from '../components/TaskDescription';
 import TaskDue from '../components/TaskDue';
@@ -25,6 +24,18 @@ export default class TasksInfoScreen extends React.Component {
       headerStyle: { borderBottomWidth: 0 }
     };
   };
+
+  /**
+   * Set the status bar color to white.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.lightBackground);
+    StatusBar.setBarStyle('dark-content');
+  }
+
+  componentDidMount() {
+    Platform.OS === 'android' && this.props.navigation.addListener('didFocus', this._setStatusBar);
+  }
 
   render() {
     const tasks = this.props.navigation.getParam('tasks');

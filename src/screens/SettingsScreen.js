@@ -8,7 +8,9 @@ import {
   View,
   Image,
   StyleSheet,
-  Alert
+  Alert,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import { TouchableRipple, Switch } from 'react-native-paper';
@@ -106,6 +108,19 @@ class SettingsScreen extends React.Component {
     };
   };
 
+  /**
+   * Set the status bar color to white.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.white);
+    StatusBar.setBarStyle('dark-content');
+  }
+
+  componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+  }
+
   _confirmLogout() {
     Alert.alert('', 'Are you sure you want to log out?', [
       {
@@ -166,10 +181,7 @@ class SettingsScreen extends React.Component {
             ) : null}
           </View>
           <View style={settingsStyles.checkboxContainer} pointerEvents="none">
-            <Switch
-              color={colors.primary}
-              value={reduxValue}
-            />
+            <Switch color={colors.primary} value={reduxValue} />
           </View>
         </View>
       </TouchableRipple>

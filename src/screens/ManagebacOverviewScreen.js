@@ -4,7 +4,9 @@ import {
   ScrollView,
   RefreshControl,
   StyleSheet,
-  InteractionManager
+  InteractionManager,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -50,7 +52,18 @@ class ManagebacOverviewScreen extends React.PureComponent {
     };
   }
 
+  /**
+   * Set the status bar color to blue.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.blue);
+    StatusBar.setBarStyle('light-content');
+  }
+
   componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     this.props.navigation.setParams({
       refreshPage: this._onRefresh,
       notificationCount: this.props.overview.notificationCount

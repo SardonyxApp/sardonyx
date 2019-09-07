@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, Text, Alert } from 'react-native';
+import { ScrollView, Text, Alert, Platform, StatusBar } from 'react-native';
 
 import { connect } from 'react-redux';
 
@@ -20,6 +20,19 @@ class TasksManageLabelsScreen extends React.Component {
     };
   };
 
+  /**
+   * Set the status bar color to brown.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.primary);
+    StatusBar.setBarStyle('light-content');
+  }
+
+  componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+  }
+
   _handleUpdate(type, obj) {
     this.props.navigation.state.params.onUpdate(type, obj);
   }
@@ -35,7 +48,10 @@ class TasksManageLabelsScreen extends React.Component {
         {
           text: 'OK',
           onPress: () => {
-            this.props.navigation.state.params.onDelete(this.props.navigation.getParam('type'), id);
+            this.props.navigation.state.params.onDelete(
+              this.props.navigation.getParam('type'),
+              id
+            );
           }
         }
       ]
@@ -47,7 +63,7 @@ class TasksManageLabelsScreen extends React.Component {
       .sort((a, b) => a.name.localeCompare(b.name))
       .map(label => {
         return (
-          <Label 
+          <Label
             label={label}
             style={{
               paddingHorizontal: 24,
@@ -56,8 +72,14 @@ class TasksManageLabelsScreen extends React.Component {
             containerStyle={{
               marginVertical: 4
             }}
-            updatable={true} 
-            onUpdate={() => this.props.navigation.navigate('UpdateLabel', { onUpdate: this._handleUpdate, label, type: this.props.navigation.getParam('type') })}
+            updatable={true}
+            onUpdate={() =>
+              this.props.navigation.navigate('UpdateLabel', {
+                onUpdate: this._handleUpdate,
+                label,
+                type: this.props.navigation.getParam('type')
+              })
+            }
             removable={true}
             onRemove={this._handleRemove}
             key={label.name}
@@ -65,10 +87,18 @@ class TasksManageLabelsScreen extends React.Component {
         );
       });
 
-    if (!labels.length) labels.push(<Text key="no labels" style={{ ...fonts.jost400, fontSize: 18 }}>NO LABELS FOUND</Text>)
-    
+    if (!labels.length)
+      labels.push(
+        <Text key="no labels" style={{ ...fonts.jost400, fontSize: 18 }}>
+          NO LABELS FOUND
+        </Text>
+      );
+
     return (
-      <ScrollView style={{ flex: 1, backgroundColor: colors.lightBackground }} contentContainerStyle={{ paddingVertical: 4, paddingHorizontal: 12 }}>
+      <ScrollView
+        style={{ flex: 1, backgroundColor: colors.lightBackground }}
+        contentContainerStyle={{ paddingVertical: 4, paddingHorizontal: 12 }}
+      >
         {labels}
       </ScrollView>
     );
@@ -78,7 +108,7 @@ class TasksManageLabelsScreen extends React.Component {
 const mapStateToProps = state => {
   const subjects = state.labels.subjects;
   const categories = state.labels.categories;
-  // Include both in props because navigation parameters are not accessible outside of the class 
+  // Include both in props because navigation parameters are not accessible outside of the class
   return { subjects, categories };
 };
 

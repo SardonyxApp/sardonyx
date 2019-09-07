@@ -8,7 +8,9 @@ import {
   InteractionManager,
   Dimensions,
   Linking,
-  StyleSheet
+  StyleSheet,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -43,8 +45,18 @@ export default class ManagebacGroupScreen extends React.Component {
     this._fetchGroupOverviewData = this._fetchGroupOverviewData.bind(this);
     this._fetchGroupMessagesData = this._fetchGroupMessagesData.bind(this);
   }
+  /**
+   * Set the status bar color to blue.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.blue);
+    StatusBar.setBarStyle('light-content');
+  }
 
   componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     this._isMounted = true;
     InteractionManager.runAfterInteractions(this._onRefresh);
   }

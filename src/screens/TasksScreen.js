@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, InteractionManager, RefreshControl } from 'react-native';
+import { View, ScrollView, InteractionManager, RefreshControl, Platform, StatusBar } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 
@@ -53,8 +53,18 @@ class TasksScreen extends React.Component {
     this._handleDeleteLabel = this._handleDeleteLabel.bind(this);
   }
 
+  /**
+   * Set the status bar color to brown.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.primary);
+    StatusBar.setBarStyle('light-content');
+  }
+
   // Safely fetch data after initial render 
   async componentDidMount() {
+    Platform.OS === 'android' && this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     InteractionManager.runAfterInteractions(async () => {
       const token = await Storage.retrieveValue('sardonyxToken');
       const sardonyxToken = { 'Sardonyx-Token': token };

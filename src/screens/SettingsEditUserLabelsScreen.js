@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, ActivityIndicator } from 'react-native';
+import { ScrollView, ActivityIndicator, Platform, StatusBar } from 'react-native';
 import Label from '../components/TasksSelectableLabel';
 
 import { Storage } from '../helpers';
@@ -29,7 +29,18 @@ class SettingsEditUserLabelsScreen extends React.Component {
     }
   })
 
+  /**
+   * Set the status bar color to white.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.white);
+    StatusBar.setBarStyle('dark-content');
+  }
+
   async componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+
     // If default user labels are not already loaded by TasksScreen, load here
     if (!this.props.userLabels.loaded) {
       const token = await Storage.retrieveValue('sardonyxToken');

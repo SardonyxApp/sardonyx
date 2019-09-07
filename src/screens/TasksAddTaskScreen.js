@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, Text, TextInput, StyleSheet, Platform } from 'react-native';
+import { ScrollView, Text, TextInput, StyleSheet, Platform, StatusBar } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 
 import { fonts, styles, colors } from '../styles';
@@ -35,6 +35,19 @@ export default class TasksAddTaskScreen extends React.Component {
       )
     };
   };
+
+  /**
+   * Set the status bar color to brown.
+   */
+  _setStatusBar() {
+    StatusBar.setBackgroundColor(colors.primary);
+    StatusBar.setBarStyle('light-content');
+  }
+
+  componentDidMount() {
+    Platform.OS === 'android' &&
+      this.props.navigation.addListener('willFocus', this._setStatusBar);
+  }
 
   _handlePress() {
     if (!this.state.name) return;
