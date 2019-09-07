@@ -23,6 +23,7 @@ export default class RoundIconCarousel extends React.PureComponent {
     return (
       <View style={classesCarouselStyles.carouselContainer}>
         <Carousel
+          removeClippedSubviews={true}
           data={this.props.list}
           renderItem={this._renderItem}
           sliderWidth={Dimensions.get('window').width}
@@ -84,7 +85,9 @@ class RoundIcon extends React.PureComponent {
                 ]}
               >
                 <Text style={classesCarouselStyles.letter}>
-                  {decodeURI(this.props.data.title).trim()[0].toUpperCase()}
+                  {decodeURI(this.props.data.title)
+                    .trim()[0]
+                    .toUpperCase()}
                 </Text>
               </View>
               <View style={classesCarouselStyles.iconContainer}>
@@ -145,8 +148,8 @@ const classesCarouselStyles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
-    top: ((72 - 8) / 2),
-    left: ((72 - 8) / 2)
+    top: (72 - 8) / 2,
+    left: (72 - 8) / 2
   },
   text: {
     textAlign: 'center',

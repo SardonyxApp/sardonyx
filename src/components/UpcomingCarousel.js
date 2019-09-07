@@ -242,6 +242,7 @@ export default class UpcomingCarousel extends React.Component {
     return (
       <View style={upcomingCarouselStyles.carouselContainer}>
         <Carousel
+          removeClippedSubviews={true}
           firstItem={this.state.completedLength}
           ref={c => {
             this._carousel = c;

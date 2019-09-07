@@ -98,6 +98,7 @@ export default class CASExpandableCard extends ExpandableCard {
     return 'cas' in this.state.casExperiences &&
       this.state.casExperiences.cas.length > 0 ? (
       <FlatList
+        removeClippedSubviews={true}
         data={this.state.casExperiences.cas}
         keyExtractor={item => item.link}
         renderItem={({ item }) => (
