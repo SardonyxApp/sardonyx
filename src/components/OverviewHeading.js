@@ -20,7 +20,6 @@ const headingStyles = StyleSheet.create({
     fontSize: 28,
     color: colors.darkPrimary2,
     marginHorizontal: 16,
-    marginTop: 8,
-    marginBottom: -16
+    marginTop: 8
   }
 });
