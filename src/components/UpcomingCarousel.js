@@ -107,7 +107,7 @@ export default class UpcomingCarousel extends React.Component {
           style={[
             upcomingCarouselStyles.containerWrapper,
             {
-              backgroundColor: colors.lightBlue2
+              borderColor: colors.lightBlue2
             }
           ]}
         >
@@ -254,11 +254,14 @@ export default class UpcomingCarousel extends React.Component {
           activeSlideAlignment={'start'}
           inactiveSlideScale={1}
           inactiveSlideOpacity={1}
+          containerCustomStyle={{
+            paddingHorizontal: 8
+          }}
           contentContainerCustomStyle={
             this.state.upcomingLength > 1
               ? {
                   overflow: 'hidden',
-                  width: 300 * this.state.parsedData.length
+                  width: 300 * this.state.parsedData.length + 16
                 }
               : undefined
           }
@@ -270,17 +273,18 @@ export default class UpcomingCarousel extends React.Component {
 
 const upcomingCarouselStyles = StyleSheet.create({
   carouselContainer: {
-    height: 150
+    height: 100,
+    marginVertical: 8
   },
   wrapper: {
-    paddingHorizontal: 16,
-    paddingVertical: 25
+    paddingHorizontal: 8
   },
   containerWrapper: {
+    borderColor: colors.gray1,
+    borderWidth: 2,
     backgroundColor: colors.white,
     height: 100,
-    borderRadius: 4,
-    ...elevations.thirteen // Really increase this so the shadows appear blurry like iOS,
+    borderRadius: 8
   },
   container: {
     flexDirection: 'row'
