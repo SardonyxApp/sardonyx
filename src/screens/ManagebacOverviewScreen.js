@@ -114,7 +114,7 @@ class ManagebacOverviewScreen extends React.PureComponent {
           notificationCount={this.props.overview.notificationCount}
           navigation={this.props.navigation}
         />
-        <OverviewHeading>Upcoming</OverviewHeading>
+        <OverviewHeading style={{ marginBottom: -8 }}>Upcoming</OverviewHeading>
         <UpcomingCarousel
           upcomingEvents={this.state.upcomingEvents}
           allGroupsAndClasses={[
@@ -123,14 +123,14 @@ class ManagebacOverviewScreen extends React.PureComponent {
           ]}
           navigation={this.props.navigation}
         />
-        <OverviewHeading>Classes</OverviewHeading>
+        <OverviewHeading style={{ marginBottom: -8 }}>Classes</OverviewHeading>
         <RoundIconCarousel
           color={colors.primary}
           type={'class'}
           list={this.state.classList}
           navigation={this.props.navigation}
         />
-        <OverviewHeading>Groups</OverviewHeading>
+        <OverviewHeading style={{ marginBottom: -8 }}>Groups</OverviewHeading>
         <RoundIconCarousel
           color={colors.lightPrimary}
           type={'group'}
