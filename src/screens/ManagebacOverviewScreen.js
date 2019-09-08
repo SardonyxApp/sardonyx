@@ -14,7 +14,6 @@ import { bindActionCreators } from 'redux';
 import { setManagebacOverview } from '../actions';
 import { BASE_URL } from '../../env';
 
-import HeaderNotificationIcon from '../components/HeaderNotificationIcon';
 import GreetingsCard from '../components/GreetingsCard';
 import OverviewHeading from '../components/OverviewHeading';
 import UpcomingCarousel from '../components/UpcomingCarousel';
@@ -39,25 +38,16 @@ class ManagebacOverviewScreen extends React.PureComponent {
 
   static navigationOptions({ navigation }) {
     return {
-      title: 'ManageBac',
-      headerRight: (
-        <HeaderNotificationIcon
-          onPress={() => {
-            navigation.navigate('Alerts', {
-              refreshPage: navigation.state.params.refreshPage
-            });
-          }}
-        />
-      )
+      header: null
     };
   }
 
   /**
-   * Set the status bar color to blue.
+   * Set the status bar color to white.
    */
   _setStatusBar() {
-    StatusBar.setBackgroundColor(colors.blue);
-    StatusBar.setBarStyle('light-content');
+    StatusBar.setBackgroundColor(colors.white);
+    StatusBar.setBarStyle('dark-content');
   }
 
   componentDidMount() {
@@ -119,7 +109,11 @@ class ManagebacOverviewScreen extends React.PureComponent {
           />
         }
       >
-        <GreetingsCard name={this.props.overview.user.name} />
+        <GreetingsCard
+          name={this.props.overview.user.name}
+          notificationCount={this.props.overview.notificationCount}
+          navigation={this.props.navigation}
+        />
         <OverviewHeading>Upcoming</OverviewHeading>
         <UpcomingCarousel
           upcomingEvents={this.state.upcomingEvents}
