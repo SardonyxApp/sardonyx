@@ -114,7 +114,7 @@ class ManagebacOverviewScreen extends React.PureComponent {
           notificationCount={this.props.overview.notificationCount}
           navigation={this.props.navigation}
         />
-        <OverviewHeading style={{ marginBottom: -8 }}>Upcoming</OverviewHeading>
+        <OverviewHeading>Upcoming</OverviewHeading>
         <UpcomingCarousel
           upcomingEvents={this.state.upcomingEvents}
           allGroupsAndClasses={[
