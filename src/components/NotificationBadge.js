@@ -29,7 +29,6 @@ const notificationBadgeStyles = StyleSheet.create({
     top: -5,
     color: colors.white,
     backgroundColor: colors.primary
-    
   }
 });
 
