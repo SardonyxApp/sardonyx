@@ -117,6 +117,7 @@ class GreetingsCard extends React.PureComponent {
             });
           }}
         >
+          <NotificationBadge style={{ position: 'relative' }}/>
           <Icon
             name={
               this.props.notificationCount
@@ -125,7 +126,6 @@ class GreetingsCard extends React.PureComponent {
             }
             color={colors.primary}
           />
-          <NotificationBadge />
         </TouchableOpacity>
       </View>
     );
@@ -162,7 +162,10 @@ const greetingsCardStyles = StyleSheet.create({
   notificationIcon: {
     position: 'absolute',
     top: 16,
-    right: 8
+    right: 8,
+    height: 24,
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 });
 
