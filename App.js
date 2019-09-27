@@ -1,11 +1,9 @@
 import React from 'react';
 
-import { Platform, YellowBox } from 'react-native';
 import {
   createSwitchNavigator,
   createAppContainer,
-  createStackNavigator,
-  SafeAreaView
+  createStackNavigator
 } from 'react-navigation';
 import { useScreens } from 'react-native-screens';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
@@ -27,10 +25,6 @@ import LoginScreen from './src/screens/LoginScreen';
 import { colors, fonts } from './src/styles';
 
 const { store, persistor } = configureStore();
-
-if (Platform.OS === 'android') {
-  SafeAreaView.setStatusBarHeight(0);
-}
 
 // Use native screens for faster performance in Navigators
 useScreens();
@@ -142,6 +136,7 @@ registerRootComponent(Root);
 // To ignore warnings for WebSocket, which is completely fine to use.
 // See this page: https://stackoverflow.com/questions/53638667/unrecognized-websocket-connection-options-agent-permessagedeflate-pfx
 console.ignoredYellowBox = ['Remote debugger'];
+import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings([
   'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);

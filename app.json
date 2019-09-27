@@ -29,6 +29,7 @@
       "package": "app.sardonyx",
       "permissions": []
     },
+    "androidStatusBarColor": "#ffffff",
     "androidStatusBar": {
       "backgroundColor": "#ffffff"
     }
