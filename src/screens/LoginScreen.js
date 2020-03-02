@@ -13,16 +13,13 @@ import {
 
 import { Button } from 'react-native-elements';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { setManagebacOverview } from '../actions';
 import { BASE_URL } from '../../env';
 
 import PreloadImage from '../components/PreloadImage';
 import { Storage } from '../helpers';
 import { styles, colors, preset, fonts } from '../styles';
 
-class Login extends React.Component {
+export default class Login extends React.Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -52,11 +49,10 @@ class Login extends React.Component {
                 Sardonyx
               </Text>
               <Text style={[styles.p, styles.alignCenter, fonts.jost400]}>
-                Login with ManageBac
+                Login
               </Text>
               <LoginForm
                 navigation={this.props.navigation}
-                setManagebacOverview={this.props.setManagebacOverview}
               />
               <ErrorMessage
                 error={this.props.navigation.getParam('errorMessage', null)}
@@ -99,7 +95,6 @@ class LoginForm extends React.Component {
         // disable button while sending network requests
         this.toggleButton(true);
 
-        // construct form data to send to ManageBac
         const formData = new FormData();
         formData.append('login', this.state.username);
         formData.append('password', this.state.password);
@@ -118,19 +113,18 @@ class LoginForm extends React.Component {
       this.setState(
         {
           usernameError: !emailRegex.test(this.state.username),
-          teacherEmailError: this.state.username.includes('sardonyx.app'),
           passwordError: this.state.password.length < 1
         },
         () => {
           // if there is either error, return false to reject request
-          resolve(this.state.usernameError || this.state.teacherEmailError || this.state.passwordError);
+          resolve(this.state.usernameError || this.state.passwordError);
         }
       );
     });
   }
 
   async sendForm(formData) {
-    const response = await fetch(BASE_URL + '/api/login', {
+    const response = await fetch(BASE_URL + '/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -147,16 +141,16 @@ class LoginForm extends React.Component {
     });
     if (response.status === 200) {
       // store response tokens
-      const credentials = {
-        ...JSON.parse(response.headers.map['login-token'] || '{}'),
-        ...{ sardonyxToken: response.headers.map['sardonyx-token'] }
-      };
+      const sardonyxToken = response.headers.map['sardonyx-token'];
       try {
-        Storage.writeCredentials(credentials);
-        this.props.setManagebacOverview(await response.json());
+        Storage.writeValue('sardonyxToken', sardonyxToken);
+        Storage.writeCredentials({
+          login: this.state.username,
+          password: this.state.password
+        })
         this.toggleButton(); // Make button available again
         this.props.navigation.navigate(
-          this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'
+          'TasksTabs'
         );
       } catch (e) {
         this.toggleButton();
@@ -174,11 +168,6 @@ class LoginForm extends React.Component {
       );
     else if (response.status === 404)
       Alert.alert('', 'Validation failed due to a server error.');
-    else if (response.status === 503)
-      Alert.alert(
-        '',
-        'Sardonyx is unavailable because ManageBac is under maintenance. Please retry later.'
-      );
     else
       Alert.alert(
         '',
@@ -221,16 +210,6 @@ class LoginForm extends React.Component {
           ]}
         >
           Please enter a valid email address.
-        </Text>
-        <Text
-          style={[
-            styles.error,
-            styles.alignCenter,
-            fonts.jost400,
-            this.state.teacherEmailError ? {} : styles.hidden
-          ]}
-        >
-          Teachers cannot use the mobile app.
         </Text>
 
         <TextInput
@@ -319,9 +298,6 @@ function DisclaimerMessage() {
           fonts.jost300
         ]}
       >
-        Sardonyx is not affiliated, associated, authorized, endorsed by, or in
-        any way officially connected with ManageBac, or any of its subsidiaries
-        or its affiliates.
       </Text>
     </View>
   );
@@ -337,21 +313,3 @@ function ErrorMessage(props) {
   }
   return null;
 }
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      setManagebacOverview
-    },
-    dispatch
-  );
-
-const mapStateToProps = state => {
-  const firstScreenManagebac = state.settings.general.firstScreenManagebac;
-  return { firstScreenManagebac };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);

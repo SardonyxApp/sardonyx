@@ -13,9 +13,7 @@ import {
   StatusBar
 } from 'react-native';
 
-import { TouchableRipple, Switch } from 'react-native-paper';
-import { bindActionCreators } from 'redux';
-import { setSettings } from '../actions';
+import { TouchableRipple } from 'react-native-paper';
 import { connect } from 'react-redux';
 import { version } from '../../package.json';
 
@@ -25,22 +23,8 @@ import { colors, fonts, elevations } from '../styles';
 class SettingsScreen extends React.Component {
   settingsSections = [
     {
-      title: 'General',
+      title: 'Tasks',
       data: [
-        {
-          title: 'Animations on Overview',
-          description:
-            'Enable to show stick figure animations in the ManageBac Overview page.',
-          type: 'checkbox',
-          redux: 'general.showOverviewAnimation'
-        },
-        {
-          title: 'Start app on ManageBac',
-          description:
-            'Enable to launch the app on the ManageBac page instead of Tasks. (applies from next launch)',
-          type: 'checkbox',
-          redux: 'general.firstScreenManagebac'
-        },
         {
           title: 'Configure default tasklist labels',
           description:
@@ -165,46 +149,19 @@ class SettingsScreen extends React.Component {
     return o;
   }
 
-  _renderCheckboxRow(item) {
-    const reduxValue = this._objectKeyByString(this.props.settings, item.redux);
-    return (
-      <TouchableRipple
-        onPress={() => {
-          this.props.setSettings(item.redux, !reduxValue);
-        }}
-      >
-        <View style={[settingsStyles.item, settingsStyles.checkboxItem]}>
-          <View style={settingsStyles.nonCheckboxContainer}>
-            <Text style={settingsStyles.title}>{item.title}</Text>
-            {item.description ? (
-              <Text style={settingsStyles.description}>{item.description}</Text>
-            ) : null}
-          </View>
-          <View style={settingsStyles.checkboxContainer} pointerEvents="none">
-            <Switch color={colors.primary} value={reduxValue} />
-          </View>
-        </View>
-      </TouchableRipple>
-    );
-  }
-
   _renderRow({ item }) {
     return (
       <View style={settingsStyles.itemContainer}>
-        {item.type === 'checkbox' ? (
-          this._renderCheckboxRow(item)
-        ) : (
-          <TouchableRipple onPress={item.onPress}>
-            <View style={settingsStyles.item}>
-              <Text style={settingsStyles.title}>{item.title}</Text>
-              {item.description ? (
-                <Text style={settingsStyles.description}>
-                  {item.description}
-                </Text>
-              ) : null}
-            </View>
-          </TouchableRipple>
-        )}
+        <TouchableRipple onPress={item.onPress}>
+          <View style={settingsStyles.item}>
+            <Text style={settingsStyles.title}>{item.title}</Text>
+            {item.description ? (
+              <Text style={settingsStyles.description}>
+                {item.description}
+              </Text>
+            ) : null}
+          </View>
+        </TouchableRipple>
       </View>
     );
   }
@@ -222,13 +179,7 @@ class SettingsScreen extends React.Component {
       <ScrollView style={settingsStyles.page}>
         <View style={[settingsStyles.item, settingsStyles.profileRow]}>
           <Image
-            source={
-              this.props.user.avatar
-                ? {
-                    uri: this.props.user.avatar
-                  }
-                : require('../assets/logos/Icon.png')
-            }
+            source={require('../assets/logos/Icon.png')}
             style={settingsStyles.profileIcon}
           />
           <Text style={settingsStyles.profileName}>{this.props.user.name}</Text>
@@ -305,21 +256,11 @@ const settingsStyles = StyleSheet.create({
   }
 });
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      setSettings
-    },
-    dispatch
-  );
-
 const mapStateToProps = state => {
-  const settings = state.settings;
-  const user = state.managebac.overview.user;
-  return { settings, user };
+  const user = state.user;
+  return { user };
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
 )(SettingsScreen);
