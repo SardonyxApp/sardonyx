@@ -2,40 +2,16 @@ import { combineReducers } from 'redux';
 
 // The reducers are functions that take a initial state and action, and sets the state.
 
-const SETTINGS_INITIAL_STATE = {
-  general: {
-    showOverviewAnimation: true,
-    firstScreenManagebac: false
-  }
+const USER_INITIAL_STATE = {
+  name: '',
 };
 
-const settingsReducer = (state = SETTINGS_INITIAL_STATE, action) => {
+const userReducer = (state = USER_INITIAL_STATE, action) => {
   switch (action.type) {
-    case 'SETTINGS_SET':
-      const newState = {
-        ...state
-      };
-      setPath(newState, action.settings[0], action.settings[1]);
-      return newState;
-    default:
-      return state;
-  }
-};
-
-const setPath = (object, path, value) => path
-   .split('.')
-   .reduce((o,p,i) => o[p] = path.split('.').length === ++i ? value : o[p] || {}, object)
-
-const MANAGEBAC_INITIAL_STATE = {
-  overview: {}
-};
-
-const managebacReducer = (state = MANAGEBAC_INITIAL_STATE, action) => {
-  switch (action.type) {
-    case 'MANAGEBAC_SET_OVERVIEW':
+    case 'SET_USER':
       return {
         ...state,
-        overview: action.overview
+        name: action.user.name
       };
     default:
       return state;
@@ -102,8 +78,7 @@ const labelsReducer = (state = LABELS_INITIAL_STATE, action) => {
 };
 
 export default combineReducers({
-  settings: settingsReducer,
-  managebac: managebacReducer,
+  user: userReducer,
   userLabels: userLabelsReducer,
   labels: labelsReducer
 });

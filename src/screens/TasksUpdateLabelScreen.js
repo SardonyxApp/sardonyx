@@ -15,9 +15,7 @@ export default class TasksUpdateLabelScreen extends React.Component {
       focused: null,
       name: '',
       color: '',
-      managebac: '',
       nameError: false,
-      managebacError: false,
       type: ''
     };
 
@@ -49,7 +47,6 @@ export default class TasksUpdateLabelScreen extends React.Component {
       this.setState({
         name: label.name,
         color: label.color,
-        managebac: label.managebac,
         type: this.props.navigation.getParam('type')
       });
     } else {
@@ -68,20 +65,10 @@ export default class TasksUpdateLabelScreen extends React.Component {
       color: this.state.color.toLowerCase()
     };
     let errors = {
-      nameError: false,
-      managebacError: false
+      nameError: false
     };
 
     if (!payload.name) errors.nameError = true;
-    if (this.state.type === 'subjects')
-      payload.managebac = this.state.managebac;
-    if (payload.managebac && payload.managebac.substr(-1) === '/')
-      payload.managebac = payload.managebac.slice(0, -1);
-    if (
-      payload.managebac &&
-      !payload.managebac.match(/^https:\/\/kokusaiib\.managebac\.com\/student/)
-    )
-      errors.managebacError = true;
 
     this.setState({
       ...errors
@@ -134,35 +121,6 @@ export default class TasksUpdateLabelScreen extends React.Component {
             onChangeColor={color => this.setState({ color })}
             color={this.state.color}
           />
-          {this.state.type === 'subjects' ? (
-            <View>
-              <Text style={updateStyles.heading}>Managebac URL (optional)</Text>
-              <Text style={updateStyles.description}>
-                This field is for syncing the tasklist with Managebac.
-              </Text>
-              <TextInput
-                style={[
-                  updateStyles.input,
-                  {
-                    borderBottomColor:
-                      this.state.focused === 'managebac'
-                        ? colors.blue
-                        : this.state.managebacError
-                        ? colors.error
-                        : colors.gray1
-                  }
-                ]}
-                maxLength={255}
-                multiline={false}
-                value={this.state.managebac}
-                onChangeText={text => this.setState({ managebac: text })}
-                onFocus={() => this.setState({ focused: 'managebac' })}
-                onBlur={() => this.setState({ focused: null })}
-                onSubmitEditing={this._handlePress}
-                returnKeyType="go"
-              />
-            </View>
-          ) : null}
           <Button
             title={
               this.props.navigation.getParam('label')

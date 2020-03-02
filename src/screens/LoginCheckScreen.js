@@ -3,15 +3,12 @@ import React from 'react';
 import { View, Text, StatusBar, ActivityIndicator } from 'react-native';
 
 import Lottie from 'lottie-react-native';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { setManagebacOverview } from '../actions';
 import { BASE_URL } from '../../env.json';
 
-import { Storage } from '../helpers';
+import { Storage, toFormData } from '../helpers';
 import { styles, colors, fonts } from '../styles';
 
-class LoginCheckScreen extends React.Component {
+export default class LoginCheckScreen extends React.Component {
   constructor(props) {
     super(props);
     Storage.retrieveCredentials()
@@ -24,13 +21,14 @@ class LoginCheckScreen extends React.Component {
       });
   }
 
-  async check(credentials = '{}') {
+  async check(credentials = {}) {
     // Check for existing session
-    const response = await fetch(BASE_URL + '/api/validate', {
-      method: 'GET',
+    const response = await fetch(BASE_URL + '/login', {
+      method: 'POST',
       headers: {
-        'Login-Token': credentials
+        'Content-Type': 'multipart/form-data'
       },
+      body: toFormData(credentials),
       mode: 'no-cors'
     }).catch(error => {
       // promise rejected
@@ -41,14 +39,9 @@ class LoginCheckScreen extends React.Component {
     });
     if (response.status === 200) {
       // Validation succeeded
-      const credentials = {
-        ...JSON.parse(response.headers.map['login-token'] || '{}'),
-        ...{ sardonyxToken: response.headers.map['sardonyx-token'] }
-      };
-      Storage.writeCredentials(credentials);
-      this.props.setManagebacOverview(await response.json());
+      Storage.writeValue("sardonyxToken", response.headers.map['sardonyx-token']);
       this.props.navigation.navigate(
-        this.props.firstScreenManagebac ? 'ManagebacTabs' : 'TasksTabs'
+        'TasksTabs'
       );
       return;
     }
@@ -63,13 +56,6 @@ class LoginCheckScreen extends React.Component {
         */
       this.props.navigation.navigate('Login', {
         errorMessage: null
-      });
-      return;
-    }
-
-    if (response.status === 403) {
-      this.props.navigation.navigate('Login', {
-        errorMessage: 'We\'re sorry, but this app is designed for students and not teachers.'
       });
       return;
     }
@@ -112,21 +98,3 @@ class LoginCheckScreen extends React.Component {
     );
   }
 }
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      setManagebacOverview
-    },
-    dispatch
-  );
-
-const mapStateToProps = state => {
-  const firstScreenManagebac = state.settings.general.firstScreenManagebac;
-  return { firstScreenManagebac };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginCheckScreen);

@@ -81,7 +81,7 @@ export default class TasksInfoScreen extends React.Component {
             due={task.due}
             onUpdateTask={this.props.navigation.state.params.onUpdateTask}
           />
-          <TaskAuthor author={task.student_name || task.teacher_name} />
+          <TaskAuthor author={task.user_name} />
           <TaskDelete
             id={task.id}
             navigation={this.props.navigation}

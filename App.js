@@ -13,10 +13,6 @@ import { Provider } from 'react-redux';
 import configureStore from './configureStore';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import ManagebacStack from './src/ManagebacStack';
-import ManagebacMessageEditorScreen from './src/screens/ManagebacMessageEditorScreen';
-import ManagebacEditCASReflectionScreen from './src/screens/ManagebacEditCASReflectionScreen';
-import ManagebacAddCASReflectionScreen from './src/screens/ManagebacAddCASReflectionScreen';
 import TasksStack from './src/TasksStack';
 import SettingsStack from './src/SettingsStack';
 import LoginCheckScreen from './src/screens/LoginCheckScreen';
@@ -33,12 +29,11 @@ useScreens();
 // Screens made later on (individual message screens, feed, or whatever) will be added here
 const AppMaterialBottomBar = createMaterialBottomTabNavigator(
   {
-    ManagebacTabs: ManagebacStack,
     TasksTabs: TasksStack,
     SettingsTabs: SettingsStack
   },
   {
-    initialRouteName: 'ManagebacTabs',
+    initialRouteName: 'TasksTabs',
     shifting: true,
     activeColor: colors.primary,
     inactiveColor: colors.inactive,
@@ -52,14 +47,9 @@ const AppMaterialBottomBar = createMaterialBottomTabNavigator(
 );
 
 // Here we define some screens that will go over the tab bar, such as Message Editors.
-// We could also manually hide the tab bar in specific screens inside ManagebacTabs, but it leads
-// to undesired glitchy keyboard effects
 const AppStack = createStackNavigator(
   {
-    AppMaterialBottomBar,
-    MessageEditor: ManagebacMessageEditorScreen,
-    EditCASReflection: ManagebacEditCASReflectionScreen,
-    AddCASReflection: ManagebacAddCASReflectionScreen
+    AppMaterialBottomBar
   },
   {
     initialRouteName: 'AppMaterialBottomBar',

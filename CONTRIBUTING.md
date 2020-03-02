@@ -1,4 +1,4 @@
-**Important**: We will only accept contributions from trusted authors within Tokyo Metropolitan Kokusai High School.
+**Important**: We will only accept contributions from trusted authors.
 
 ## Table of Contents
 
@@ -195,42 +195,6 @@ $ npm test
 To run a specific test suite, append the name of the test.
 ```
 $ npm test api
-```
-
-You may need to store personal information in the `.env` file. 
-```sh
-# Managebac cedentials
-LOGIN="foo@bar.com"
-PASSWORD="foobar1234"
-
-# Managebac cookies 
-CFDUID="cfduid=foobar"
-MANAGEBAC_SESSION="_managebac_session=foobar"
-AUTHENTICITY_TOKEN="foobar"
-
-# Pages that you want to test 
-CLASS_ID="123456"
-GROUP_ID="123456"
-CLASS_ASSIGNMENT_ID="123456"
-EVENT_ID="123456"
-GROUP_EVENT_ID= "123456" # class events are not tested 
-CLASS_MESSAGE_ID="123456"
-CLASS_MESSAGE_PAGE_ID="2"
-GROUP_MESSAGE_ID="123456"
-GROUP_MESSAGE_PAGE_ID="2"
-GROUP_MESSAGE_REPLY_OF_REPLY_ID="123456"
-NOTIFICATION_ID="123456"
-NOTIFICATION_PAGE_ID="2"
-CAS_ID="123456" 
-
-# Sample variables for testing the tasklist app
-STUDENT_ID="1"
-STUDENT_EMAIL="johndoe@example.com"
-STUDENT_TASKLIST="1"
-TEACHER_ID="1"
-TEACHER_EMAIL="janedoe@example.com"
-TEACHER_DEFAULT_TASKLIST="1"
-TASKLIST_ID="1"
 ```
 
 To run a custom test, create a `tmp.test.js` file under `__tests__`. 

@@ -5,7 +5,7 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setUserLabels, setLabels, addLabel, updateLabel, deleteLabel } from '../actions';
+import { setUser, setUserLabels, setLabels, addLabel, updateLabel, deleteLabel } from '../actions';
 
 import io from 'socket.io-client';
 import { BASE_URL } from '../../env';
@@ -25,7 +25,6 @@ class TasksScreen extends React.Component {
     // Set initial state with empty values to not cause any rendering errors 
     this.state = { 
       user: { 
-        teacher: false,
         name: '', 
         email: '',
         tasklist_id: ''
@@ -86,6 +85,7 @@ class TasksScreen extends React.Component {
           categoriesFilter: responses[0].categories,
         });
 
+        this.props.setUser(responses[0]);
         this.props.setUserLabels(responses[0].subjects, responses[0].categories);
         this.props.setLabels(responses[3], responses[4]);
 
@@ -213,8 +213,7 @@ class TasksScreen extends React.Component {
       description: obj.description || null,
       due: obj.due || null,
       tasklist_id: this.state.tasklist.id,
-      student_id: this.state.user.teacher ? null : this.state.user.id,
-      teacher_id: this.state.user.teacher ? this.state.user.id : null,
+      user_id: this.state.user.id,
       subject_id: obj.subject_id || null,
       category_id: obj.category_id || null
     };
@@ -235,8 +234,7 @@ class TasksScreen extends React.Component {
         return {
           tasks: [...prevState.tasks, Object.assign({
             id: response.insertId,
-            student_name: prevState.user.teacher ? null : prevState.user.name,
-            teacher_name: prevState.user.teacher ? prevState.user.name : null,
+            user_name: prevState.user.name,
             subject_name: null, // TODO: initially set these according to task.subject_id 
             subject_color: null,
             category_name: null,
@@ -358,7 +356,6 @@ class TasksScreen extends React.Component {
    * @param {Object} obj.id required 
    * @param {String} obj.name 
    * @param {String} obj.color 
-   * @param {String} obj.managebac 
    */
   async _handleUpdateLabel(type, obj) {
     const token = await Storage.retrieveValue('sardonyxToken');
@@ -443,7 +440,7 @@ const mapStateToProps = state => {
   return { userLabels };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ setUserLabels, setLabels, addLabel, updateLabel, deleteLabel }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ setUser, setUserLabels, setLabels, addLabel, updateLabel, deleteLabel }, dispatch);
 
 const connectedTasksScreen = connect(
   mapStateToProps,
