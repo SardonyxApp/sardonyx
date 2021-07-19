@@ -156,6 +156,7 @@ Define environment variables as appropriate.
 PORT=3000
 PRIVATE_KEY="abcdef" # Used to encode JWTs
 MODE="development" # Options: development or production 
+DB_TYPE="cloudsql" # Options: cloudsql, ssl or tcp
 
 DB_HOST="localhost"
 DB_LOGIN="root" # Or however you have set the database up in your machine
