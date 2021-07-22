@@ -163,6 +163,9 @@ DB_LOGIN="root" # Or however you have set the database up in your machine
 DB_PASSWORD="root" 
 DB_DATABASE="sardonyx" # Name of the database 
 DB_INSTANCE="sardony-app:asia-northeast1:sardonyx-db" # <project name>:<region>:<instance connection name>
+
+# CA="------BEGIN CERTIFICATE-----\nA..."
+# Only needed for no-mb-gae branch
 ```
 
 Check the server files and define any other variables necessary. Variables in `.env` are referred to as `process.env.VARIABLE_NAME`.
